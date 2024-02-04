@@ -1,4 +1,4 @@
-package com.example.cloudsimpluswebapp.services;
+package com.example.cloudsimpluswebapp.services.impl;
 
 import com.example.cloudsimpluswebapp.models.PersonCredential;
 import com.example.cloudsimpluswebapp.repositories.PersonCredentialRepository;
@@ -10,12 +10,12 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
-public class PersonCredentialDetailServices implements UserDetailsService {
+public class PersonCredentialDetailService implements UserDetailsService {
 
     private final PersonCredentialRepository personCredentialRepository;
 
     @Autowired
-    public PersonCredentialDetailServices(PersonCredentialRepository personCredentialRepository) {
+    public PersonCredentialDetailService(PersonCredentialRepository personCredentialRepository) {
         this.personCredentialRepository = personCredentialRepository;
     }
 

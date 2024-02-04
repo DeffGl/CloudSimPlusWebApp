@@ -14,6 +14,7 @@ public class PersonCredential {
 
     @Id
     @Column(name = "credential_id")
+    @GeneratedValue(generator = "uuid2")
     private UUID id;
 
     @Column(name = "username", unique = true)
@@ -22,7 +23,7 @@ public class PersonCredential {
     @Column(name = "password")
     private String password;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "person_id")
     private Person person;
 }

@@ -1,13 +1,12 @@
 package com.example.cloudsimpluswebapp.config;
 
-import com.example.cloudsimpluswebapp.services.PersonCredentialDetailServices;
+import com.example.cloudsimpluswebapp.services.impl.PersonCredentialDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -15,26 +14,34 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private final PersonCredentialDetailServices personCredentialDetailServices;
+    private final PersonCredentialDetailService personCredentialDetailService;
 
     @Autowired
-    public SecurityConfig(PersonCredentialDetailServices personCredentialDetailServices) {
-        this.personCredentialDetailServices = personCredentialDetailServices;
+    public SecurityConfig(PersonCredentialDetailService personCredentialDetailService) {
+        this.personCredentialDetailService = personCredentialDetailService;
+    }
+
+    @Bean
+    public DaoAuthenticationProvider authProvider() {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(personCredentialDetailService);
+        authProvider.setPasswordEncoder(getPasswordEncoder());
+        return authProvider;
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests((request) -> request.requestMatchers("/").permitAll()
+        http.authorizeHttpRequests((request) -> request.requestMatchers("/public/**", "/auth/login", "/auth/registration", "/error").permitAll()
                         .anyRequest().authenticated())
-                .formLogin((form) -> form.loginPage("/login")
+                .formLogin((form) -> form
+                        .loginPage("/auth/login")
+                        .loginProcessingUrl("/process_login")
+                        .defaultSuccessUrl("/main")
+                        .failureUrl("/auth/login?error")
                         .permitAll())
-                .logout(LogoutConfigurer::permitAll);
-        return http.build();
-    }
+                .logout(httpSecurityLogoutConfigurer -> httpSecurityLogoutConfigurer.logoutUrl("/logout").logoutSuccessUrl("/auth/login"));
 
-    @Bean
-    public UserDetailsService userDetailsService(){
-        return personCredentialDetailServices;
+        return http.build();
     }
 
     @Bean

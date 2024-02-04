@@ -1,0 +1,15 @@
+.button-link {
+    display: inline-block;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    background-color: #4CAF50; /* Цвет фона */
+    color: white; /* Цвет текста */
+    border: 1px solid #4CAF50; /* Рамка вокруг кнопки */
+    border-radius: 4px; /* Закругление углов */
+    cursor: pointer;
+}
+
+.button-link:hover {
+    background-color: #45a049; /* Изменение цвета при наведении курсора */
+}
