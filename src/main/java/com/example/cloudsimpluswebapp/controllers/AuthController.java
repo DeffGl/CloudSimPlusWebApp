@@ -4,10 +4,10 @@ import com.example.cloudsimpluswebapp.dto.PersonCredentialDTO;
 import com.example.cloudsimpluswebapp.services.PersonCredentialService;
 import com.example.cloudsimpluswebapp.utils.mappers.PersonCredentialMapper;
 import com.example.cloudsimpluswebapp.utils.validators.PersonCredentialsValidator;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -36,8 +36,11 @@ public class AuthController {
     }
 
     @PostMapping("/registration")
-    public String performRegistration(@ModelAttribute("personCredentialDTO")  @Valid PersonCredentialDTO personCredentialDTO, BindingResult bindingResult) {
+    public String performRegistration(@ModelAttribute("personCredentialDTO") @Validated PersonCredentialDTO personCredentialDTO, BindingResult bindingResult) {
         personCredentialsValidator.validate(personCredentialDTO, bindingResult);
+        if (bindingResult.hasErrors()){
+            return "auth/registration";
+        }
         personCredentialService.registerCredential(personCredentialMapper.map(personCredentialDTO));
         return "redirect:auth/login";
     }

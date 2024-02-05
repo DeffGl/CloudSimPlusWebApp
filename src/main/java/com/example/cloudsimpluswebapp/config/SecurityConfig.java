@@ -36,7 +36,7 @@ public class SecurityConfig {
                 .formLogin((form) -> form
                         .loginPage("/auth/login")
                         .loginProcessingUrl("/process_login")
-                        .defaultSuccessUrl("/main")
+                        .defaultSuccessUrl("/")
                         .failureUrl("/auth/login?error")
                         .permitAll())
                 .logout(httpSecurityLogoutConfigurer -> httpSecurityLogoutConfigurer.logoutUrl("/logout").logoutSuccessUrl("/auth/login"));
