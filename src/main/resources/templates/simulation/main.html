@@ -2,9 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Главная страница</title>
 </head>
 <body>
+
+<a th:href="@{/simulation/basic}">Симуляция 1</a>
 ПРИВЕТ!
 <form th:method="POST" th:action="@{/logout}">
     <input type="submit" value="Выйти"/>

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -21,4 +22,7 @@ public class Person {
 
     @Column(name = "email")
     private String email;
+
+    @OneToMany(mappedBy = "person", fetch = FetchType.LAZY)
+    private List<Simulation> simulation;
 }
