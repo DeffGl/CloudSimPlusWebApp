@@ -12,12 +12,12 @@
     <div style="color:red" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Username Errors</div>
 
     <label for="name">Введите имя пользователя</label>
-    <input type="text" th:field="*{person.name}" id="name">
-    <div style="color:red" th:if="${#fields.hasErrors('person.name')}" th:errors="*{person.name}">Name Errors</div>
+    <input type="text" th:field="*{personDTO.name}" id="name">
+    <div style="color:red" th:if="${#fields.hasErrors('personDTO.name')}" th:errors="*{personDTO.name}">Name Errors</div>
 
     <label for="email">Введите почту</label>
-    <input type="text" th:field="*{person.email}" id="email">
-    <div style="color:red" th:if="${#fields.hasErrors('person.email')}" th:errors="*{person.email}">Username Errors</div>
+    <input type="text" th:field="*{personDTO.email}" id="email">
+    <div style="color:red" th:if="${#fields.hasErrors('personDTO.email')}" th:errors="*{personDTO.email}">Username Errors</div>
 
     <label for="password">Введите пароль:</label>
     <input type="password" th:field="*{password}" id="password">

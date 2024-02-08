@@ -1,6 +1,5 @@
 package com.example.cloudsimpluswebapp.dto;
 
-import com.example.cloudsimpluswebapp.models.Simulation;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -14,5 +13,5 @@ public class HostDTO {
     private long hostRam;
     private long hostBw;
     private long hostStorage;
-    private Simulation simulation;
+    private SimulationDTO simulationDTO;
 }

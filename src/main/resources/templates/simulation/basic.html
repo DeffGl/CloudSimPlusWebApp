@@ -6,5 +6,23 @@
 </head>
 <body>
 
+<form th:method="POST" th:action="@{/simulation/start}" th:object="${simulationDTO}">
+    <label for="nameSimulation">Введите название симуляции</label>
+    <input type="text" th:field="*{nameSimulation}" id="nameSimulation">
+    <div style="color:red" th:if="${#fields.hasErrors('nameSimulation')}" th:errors="*{nameSimulation}">Name simulation Errors</div>
+
+
+    <input type="submit" value="Старт"/>
+
+    <div th:if="${param.error}" style="color:red">
+        Неправильные имя и пароль
+    </div>
+</form>
+<div id="app">
+    {{ message }}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.7.8/dist/vue.js"></script>
+<script src="/public/js/main.js"></script>
 </body>
 </html>

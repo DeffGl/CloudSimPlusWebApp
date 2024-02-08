@@ -1,6 +1,5 @@
 package com.example.cloudsimpluswebapp.dto;
 
-import com.example.cloudsimpluswebapp.models.Simulation;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -11,5 +10,5 @@ public class CloudletDTO {
     private int cloudletsCount;
     private int cloudletPes;
     private int cloudletLength;
-    private Simulation simulation;
+    private SimulationDTO simulationDTO;
 }

@@ -12,6 +12,12 @@ import org.mapstruct.*;
         unmappedTargetPolicy = ReportingPolicy.IGNORE
 )
 public abstract class PersonCredentialMapper {
+    @Mappings({
+            @Mapping(target = "id", ignore = true), // Убедитесь, что id не мапится
+            @Mapping(target = "person.name", source = "personDTO.name"),
+            @Mapping(target = "person.email", source = "personDTO.email"),
+            // Другие маппинги, если они есть
+    })
     public abstract PersonCredential map(PersonCredentialDTO personCredentialDTO);
     public abstract PersonCredentialDTO map(PersonCredential personCredential);
     public abstract void update(PersonCredentialDTO personCredentialDTO, @MappingTarget PersonCredential personCredential);

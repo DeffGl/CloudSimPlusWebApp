@@ -1,6 +1,5 @@
 package com.example.cloudsimpluswebapp.dto;
 
-import com.example.cloudsimpluswebapp.models.Simulation;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -9,5 +8,5 @@ import lombok.experimental.Accessors;
 public class VmDTO {
     private int vmsCount;
     private int vmPes;
-    private Simulation simulation;
+    private SimulationDTO simulationDTO;
 }

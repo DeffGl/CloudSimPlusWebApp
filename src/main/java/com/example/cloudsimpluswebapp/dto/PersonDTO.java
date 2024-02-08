@@ -1,6 +1,5 @@
 package com.example.cloudsimpluswebapp.dto;
 
-import com.example.cloudsimpluswebapp.models.Simulation;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
@@ -18,5 +17,5 @@ public class PersonDTO {
     @Email(message = "Почта должна быть валидной")
     private String email;
 
-    private List<Simulation> simulation;
+    private List<SimulationDTO> simulationDTOS;
 }

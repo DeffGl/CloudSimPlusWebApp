@@ -1,6 +1,5 @@
 package com.example.cloudsimpluswebapp.dto;
 
-import com.example.cloudsimpluswebapp.models.Person;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -15,5 +14,5 @@ public class PersonCredentialDTO {
     private String username;
     @NotEmpty(message = "Поле с паролем не должно быть пустым")
     private String password;
-    private Person person;
+    private PersonDTO personDTO;
 }
