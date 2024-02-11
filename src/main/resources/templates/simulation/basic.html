@@ -2,27 +2,95 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Базовая симуляция</title>
 </head>
 <body>
 
-<form th:method="POST" th:action="@{/simulation/start}" th:object="${simulationDTO}">
-    <label for="nameSimulation">Введите название симуляции</label>
-    <input type="text" th:field="*{nameSimulation}" id="nameSimulation">
-    <div style="color:red" th:if="${#fields.hasErrors('nameSimulation')}" th:errors="*{nameSimulation}">Name simulation Errors</div>
+<div id="form">
+    <form th:method="POST" th:action="@{/simulation/start}" th:object="${simulationDTO}" @submit.prevent="submitForm">
+        <div id="simulationDTOJson" th:data-simulation-dto="${simulationDTOJson}"></div>
+        <label for="nameSimulation">Введите название симуляции</label>
+        <input type="text" th:field="*{nameSimulation}" id="nameSimulation">
+        <div style="color:red" th:if="${#fields.hasErrors('nameSimulation')}" th:errors="*{nameSimulation}">Name simulation Errors</div>
+
+        <table id="hostTable" v-show="showTableHost">
+            <thead>
+            <tr>
+                <th>Host Number</th>
+                <th>Host Count</th>
+                <th>Host Pes</th>
+                <th>Host Mips</th>
+                <th>Host Ram</th>
+                <th>Host Bandwidth</th>
+                <th>Host Storage</th>
+
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="(host, index) in simulationDTO.hostDTOS">
+                <td>{{ index + 1 }}</td>
+                <td><input type="text" v-model="host.hostsCount" /></td>
+                <td><input type="text" v-model="host.hostPes" /></td>
+                <td><input type="text" v-model="host.hostMips" /></td>
+                <td><input type="text" v-model="host.hostRam" /></td>
+                <td><input type="text" v-model="host.hostBw" /></td>
+                <td><input type="text" v-model="host.hostStorage" /></td>
+                <td><button type="button" @click="removeHost(index)">Удалить</button></td> <!-- Delete button -->
+            </tr>
+            </tbody>
+        </table>
+        <button type="button" @click="addHost">Добавить хост</button>
+
+        <table id="cloudletTable" v-show="showTableCloudlet">
+            <thead>
+            <tr>
+                <th>Cloudlet Number</th>
+                <th>Cloudlet Count</th>
+                <th>Cloudlet Pes</th>
+                <th>Cloudlet Length</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="(cloudlet, index) in simulationDTO.cloudletDTOS">
+                <td>{{ index + 1 }}</td>
+                <td><input type="text" v-model="cloudlet.cloudletsCount" /></td>
+                <td><input type="text" v-model="cloudlet.cloudletPes" /></td>
+                <td><input type="text" v-model="cloudlet.cloudletLength" /></td>
+                <td><button type="button" @click="removeCloudlet(index)">Удалить</button></td> <!-- Delete button -->
+            </tr>
+            </tbody>
+        </table>
+        <button type="button" @click="addCloudlet">Добавить задачу</button>
+
+        <table id="vmTable" v-show="showTableVm">
+            <thead>
+            <tr>
+                <th>Cloudlet Number</th>
+                <th>Vm Count</th>
+                <th>Vm Pes</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="(vm, index) in simulationDTO.vmDTOS">
+                <td>{{ index + 1 }}</td>
+                <td><input type="text" v-model="vm.vmsCount" /></td>
+                <td><input type="text" v-model="vm.vmPes" /></td>
+                <td><button type="button" @click="removeVm(index)">Удалить</button></td> <!-- Delete button -->
+            </tr>
+            </tbody>
+        </table>
+        <button type="button" @click="addVm">Добавить виртуальную машину</button>
 
 
-    <input type="submit" value="Старт"/>
+        <input type="submit" value="Старт"/>
 
-    <div th:if="${param.error}" style="color:red">
-        Неправильные имя и пароль
-    </div>
-</form>
-<div id="app">
-    {{ message }}
+        <div th:if="${param.error}" style="color:red">
+            Неправильные имя и пароль
+        </div>
+    </form>
 </div>
-
 <script src="https://cdn.jsdelivr.net/npm/vue@2.7.8/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script src="/public/js/main.js"></script>
 </body>
 </html>

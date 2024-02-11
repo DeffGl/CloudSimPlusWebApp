@@ -8,5 +8,4 @@ import lombok.experimental.Accessors;
 public class VmDTO {
     private int vmsCount;
     private int vmPes;
-    private SimulationDTO simulationDTO;
 }

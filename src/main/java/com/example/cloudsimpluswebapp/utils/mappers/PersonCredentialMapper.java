@@ -1,8 +1,6 @@
 package com.example.cloudsimpluswebapp.utils.mappers;
 
 import com.example.cloudsimpluswebapp.dto.PersonCredentialDTO;
-import com.example.cloudsimpluswebapp.dto.PersonDTO;
-import com.example.cloudsimpluswebapp.models.Person;
 import com.example.cloudsimpluswebapp.models.PersonCredential;
 import org.mapstruct.*;
 
@@ -13,10 +11,9 @@ import org.mapstruct.*;
 )
 public abstract class PersonCredentialMapper {
     @Mappings({
-            @Mapping(target = "id", ignore = true), // Убедитесь, что id не мапится
+            @Mapping(target = "id", ignore = true),
             @Mapping(target = "person.name", source = "personDTO.name"),
             @Mapping(target = "person.email", source = "personDTO.email"),
-            // Другие маппинги, если они есть
     })
     public abstract PersonCredential map(PersonCredentialDTO personCredentialDTO);
     public abstract PersonCredentialDTO map(PersonCredential personCredential);

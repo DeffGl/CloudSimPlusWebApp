@@ -33,6 +33,7 @@ dependencies {
 	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
 	implementation 'org.cloudsimplus:cloudsimplus:8.5.0'
 	implementation 'org.mapstruct:mapstruct:1.5.5.Final'
+	testImplementation 'junit:junit:4.13.2'
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'org.postgresql:postgresql'

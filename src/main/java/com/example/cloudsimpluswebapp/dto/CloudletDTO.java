@@ -10,5 +10,4 @@ public class CloudletDTO {
     private int cloudletsCount;
     private int cloudletPes;
     private int cloudletLength;
-    private SimulationDTO simulationDTO;
 }

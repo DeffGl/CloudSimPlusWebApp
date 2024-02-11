@@ -41,7 +41,8 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests((request) -> request.requestMatchers("/public/**", "/auth/login", "/auth/registration", "/error").permitAll()
+        http.authorizeHttpRequests((request) -> request.requestMatchers("/public/**",
+                                "/auth/login", "/auth/registration", "/error").permitAll()
                         .anyRequest().authenticated())
                 .formLogin((form) -> form
                         .loginPage("/auth/login")

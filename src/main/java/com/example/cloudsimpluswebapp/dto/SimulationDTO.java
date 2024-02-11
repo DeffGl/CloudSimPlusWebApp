@@ -4,6 +4,7 @@ import com.example.cloudsimpluswebapp.models.enums.SimulationStatus;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -11,10 +12,9 @@ import java.util.List;
 @Accessors(chain = true)
 public class SimulationDTO {
     private String nameSimulation;
-    private Date dateOfCreation;
-    private List<HostDTO> hostDTOS;
-    private List<CloudletDTO> cloudletDTOS;
-    private List<VmDTO> vmDTOS;
-    private SimulationStatus simulationStatus;
-    private PersonDTO personDTO;
+    private Date dateOfCreation = new Date();
+    private List<HostDTO> hostDTOS = new ArrayList<>();
+    private List<CloudletDTO> cloudletDTOS = new ArrayList<>();
+    private List<VmDTO> vmDTOS = new ArrayList<>();
+    private SimulationStatus simulationStatus = SimulationStatus.FAILURE;
 }

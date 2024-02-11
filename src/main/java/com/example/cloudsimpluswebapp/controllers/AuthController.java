@@ -37,7 +37,6 @@ public class AuthController {
 
     @PostMapping("/registration")
     public String performRegistration(@ModelAttribute("personCredentialDTO") @Validated PersonCredentialDTO personCredentialDTO, BindingResult bindingResult) {
-        //TODO перестала работать регистрация, проблема в маппере надо исправить и доделать маппинги других сущностей
         personCredentialsValidator.validate(personCredentialDTO, bindingResult);
         System.out.println(personCredentialDTO);
 

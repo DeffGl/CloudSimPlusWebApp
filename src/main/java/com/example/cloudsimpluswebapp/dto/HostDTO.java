@@ -13,5 +13,4 @@ public class HostDTO {
     private long hostRam;
     private long hostBw;
     private long hostStorage;
-    private SimulationDTO simulationDTO;
 }
