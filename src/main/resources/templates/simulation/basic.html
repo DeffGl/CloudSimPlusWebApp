@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Базовая симуляция</title>
+    <link rel="stylesheet" type="text/css" href="/public/css/tables.css">
 </head>
 <body>
 
@@ -17,7 +18,6 @@
             <thead>
             <tr>
                 <th>Host Number</th>
-                <th>Host Count</th>
                 <th>Host Pes</th>
                 <th>Host Mips</th>
                 <th>Host Ram</th>
@@ -29,7 +29,6 @@
             <tbody>
             <tr v-for="(host, index) in simulationDTO.hostDTOS">
                 <td>{{ index + 1 }}</td>
-                <td><input type="text" v-model="host.hostsCount" /></td>
                 <td><input type="text" v-model="host.hostPes" /></td>
                 <td><input type="text" v-model="host.hostMips" /></td>
                 <td><input type="text" v-model="host.hostRam" /></td>
@@ -39,23 +38,25 @@
             </tr>
             </tbody>
         </table>
+
+
         <button type="button" @click="addHost">Добавить хост</button>
 
         <table id="cloudletTable" v-show="showTableCloudlet">
             <thead>
             <tr>
                 <th>Cloudlet Number</th>
-                <th>Cloudlet Count</th>
                 <th>Cloudlet Pes</th>
                 <th>Cloudlet Length</th>
+                <th>Cloudlet Size</th>
             </tr>
             </thead>
             <tbody>
             <tr v-for="(cloudlet, index) in simulationDTO.cloudletDTOS">
                 <td>{{ index + 1 }}</td>
-                <td><input type="text" v-model="cloudlet.cloudletsCount" /></td>
                 <td><input type="text" v-model="cloudlet.cloudletPes" /></td>
                 <td><input type="text" v-model="cloudlet.cloudletLength" /></td>
+                <td><input type="text" v-model="cloudlet.cloudletSize" /></td>
                 <td><button type="button" @click="removeCloudlet(index)">Удалить</button></td> <!-- Delete button -->
             </tr>
             </tbody>
@@ -66,15 +67,19 @@
             <thead>
             <tr>
                 <th>Cloudlet Number</th>
-                <th>Vm Count</th>
                 <th>Vm Pes</th>
+                <th>Vm Ram</th>
+                <th>Vm Bandwidth</th>
+                <th>Vm Storage</th>
             </tr>
             </thead>
             <tbody>
             <tr v-for="(vm, index) in simulationDTO.vmDTOS">
                 <td>{{ index + 1 }}</td>
-                <td><input type="text" v-model="vm.vmsCount" /></td>
                 <td><input type="text" v-model="vm.vmPes" /></td>
+                <td><input type="text" v-model="vm.vmRam" /></td>
+                <td><input type="text" v-model="vm.vmBw" /></td>
+                <td><input type="text" v-model="vm.vmStorage" /></td>
                 <td><button type="button" @click="removeVm(index)">Удалить</button></td> <!-- Delete button -->
             </tr>
             </tbody>

@@ -16,13 +16,15 @@ public class Vm {
     @GeneratedValue(generator = "uuid2")
     private UUID id;
 
-    @Column(name = "vms_count")
-    private int vmsCount;
-
     @Column(name = "vm_pes")
     private int vmPes;
 
-    @ManyToOne
-    @JoinColumn(name = "simulation_id", referencedColumnName = "simulation_id")
-    private Simulation simulation;
+    @Column(name = "vm_ram")
+    private long vmRam;
+
+    @Column(name = "vm_bw")
+    private long vmBw;
+
+    @Column(name = "vm_storage")
+    private long vmStorage;
 }

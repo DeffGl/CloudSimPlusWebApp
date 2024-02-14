@@ -16,16 +16,12 @@ public class Cloudlet {
     @GeneratedValue(generator = "uuid2")
     private UUID id;
 
-    @Column(name = "cloudlets_count")
-    private int cloudletsCount;
-
     @Column(name = "cloudlet_pes")
     private int cloudletPes;
 
     @Column(name = "cloudlet_length")
     private int cloudletLength;
 
-    @ManyToOne
-    @JoinColumn(name = "simulation_id", referencedColumnName = "simulation_id")
-    private Simulation simulation;
+    @Column(name="cloudlet_size")
+    private long cloudletSize;
 }

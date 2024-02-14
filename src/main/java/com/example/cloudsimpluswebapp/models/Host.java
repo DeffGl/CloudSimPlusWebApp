@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -15,9 +16,6 @@ public class Host {
     @Column(name = "host_id")
     @GeneratedValue(generator = "uuid2")
     private UUID id;
-
-    @Column(name = "hosts_count")
-    private int hostsCount;
 
     @Column(name = "host_pes")
     private int hostPes;
@@ -33,8 +31,8 @@ public class Host {
 
     @Column(name = "host_storage")
     private long hostStorage;
-
-    @ManyToOne
-    @JoinColumn(name = "simulation_id", referencedColumnName = "simulation_id")
-    private Simulation simulation;
+//TODO Нужно реализовать корректное отображение виртуальных машин и работу с ними на фронте
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "host_id")
+    private List<Vm> vms;
 }

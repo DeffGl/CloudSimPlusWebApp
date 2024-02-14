@@ -2,9 +2,9 @@ var form = new Vue({
     el: '#form',
     data: {
         simulationDTO: JSON.parse(document.getElementById('simulationDTOJson').getAttribute('data-simulation-dto')),
-        showTableHost: false,
-        showTableCloudlet: false,
-        showTableVm: false
+        showTableHost: true,
+        showTableCloudlet: true,
+        showTableVm: true
     },
     methods: {
         submitForm: function () {
@@ -34,7 +34,6 @@ var form = new Vue({
                 this.showTableHost = true
             }
             var newHost = {
-                hostsCount: '',
                 hostPes: '',
                 hostMips: '',
                 hostRam: '',
@@ -57,9 +56,9 @@ var form = new Vue({
                 this.showTableCloudlet = true
             }
             var newCloudlet = {
-                cloudletsCount: '',
                 cloudletPes: '',
-                cloudletLength: ''
+                cloudletLength: '',
+                cloudletSize: ''
             };
             this.simulationDTO.cloudletDTOS.push(newCloudlet);
         },
@@ -70,16 +69,15 @@ var form = new Vue({
             }
         },
 
-
-
-
         addVm: function () {
             if (!this.showTableVm){
                 this.showTableVm = true
             }
             var newVm = {
-                vmsCount: '',
-                vmPes: ''
+                vmPes: '',
+                vmRam: '',
+                vmBw: '',
+                vmStorage: ''
             };
             this.simulationDTO.vmDTOS.push(newVm);
         },
@@ -89,5 +87,48 @@ var form = new Vue({
                 this.showTableVm = false;
             }
         }
+    },
+    mounted: function () {
+        // После загрузки компонента добавим пустые объекты в списки
+
+        this.simulationDTO.hostDTOS.push({
+            hostPes: 8,
+            hostMips: 1000,
+            hostRam: 2048,
+            hostBw: 10000,
+            hostStorage: 1000000
+        });
+        this.simulationDTO.cloudletDTOS.push({
+            cloudletPes: 2,
+            cloudletLength: 10000,
+            cloudletSize: 1024
+        });
+        this.simulationDTO.cloudletDTOS.push({
+            cloudletPes: 2,
+            cloudletLength: 10000,
+            cloudletSize: 1024
+        });
+        this.simulationDTO.cloudletDTOS.push({
+            cloudletPes: 2,
+            cloudletLength: 10000,
+            cloudletSize: 1024
+        });
+        this.simulationDTO.cloudletDTOS.push({
+            cloudletPes: 2,
+            cloudletLength: 10000,
+            cloudletSize: 1024
+        });
+        this.simulationDTO.vmDTOS.push({
+            vmPes: 4,
+            vmRam: 512,
+            vmBw: 1000,
+            vmStorage: 10000
+        });
+        this.simulationDTO.vmDTOS.push({
+            vmPes: 4,
+            vmRam: 512,
+            vmBw: 1000,
+            vmStorage: 10000
+        });
     }
 });

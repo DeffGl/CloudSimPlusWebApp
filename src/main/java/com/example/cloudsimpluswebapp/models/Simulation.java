@@ -28,20 +28,15 @@ public class Simulation {
     @DateTimeFormat(pattern = "dd/MM/yyyy")
     private Date dateOfCreation;
 
-    @OneToMany(mappedBy = "simulation", fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "simulation_id")
     private List<Host> hosts;
 
-    @OneToMany(mappedBy = "simulation", fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "simulation_id")
     private List<Cloudlet> cloudlets;
-
-    @OneToMany(mappedBy = "simulation", fetch = FetchType.LAZY)
-    private List<Vm> vms;
 
     @Column(name = "simulation_status")
     @Enumerated(EnumType.STRING)
     private SimulationStatus simulationStatus;
-
-    @ManyToOne
-    @JoinColumn(name = "person_id", referencedColumnName = "person_id")
-    private Person person;
 }

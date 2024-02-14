@@ -7,7 +7,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class CloudletDTO {
     //TODO Сделать валидацию
-    private int cloudletsCount;
     private int cloudletPes;
     private int cloudletLength;
+    private long cloudletSize;
 }

@@ -15,6 +15,5 @@ public class SimulationDTO {
     private Date dateOfCreation = new Date();
     private List<HostDTO> hostDTOS = new ArrayList<>();
     private List<CloudletDTO> cloudletDTOS = new ArrayList<>();
-    private List<VmDTO> vmDTOS = new ArrayList<>();
     private SimulationStatus simulationStatus = SimulationStatus.FAILURE;
 }

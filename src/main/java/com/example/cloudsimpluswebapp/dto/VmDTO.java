@@ -6,6 +6,8 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 public class VmDTO {
-    private int vmsCount;
     private int vmPes;
+    private long vmRam;
+    private long vmBw;
+    private long vmStorage;
 }
