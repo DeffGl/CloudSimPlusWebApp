@@ -3,6 +3,7 @@ package com.example.cloudsimpluswebapp.controllers;
 import com.example.cloudsimpluswebapp.dto.SimulationDTO;
 import com.example.cloudsimpluswebapp.services.SimulationService;
 import com.example.cloudsimpluswebapp.utils.mappers.SimulationMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.cloudsimplus.cloudlets.Cloudlet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,23 +23,27 @@ public class SimulationRestController {
 
     private final SimulationService simulationService;
     private final SimulationMapper simulationMapper;
+    private final ObjectMapper objectMapper;
 
     @Autowired
-    public SimulationRestController(SimulationService simulationService, SimulationMapper simulationMapper) {
+    public SimulationRestController(SimulationService simulationService, SimulationMapper simulationMapper, ObjectMapper objectMapper) {
         this.simulationService = simulationService;
         this.simulationMapper = simulationMapper;
+        this.objectMapper = objectMapper;
     }
 
     @PostMapping("/start")
     public ResponseEntity<String> startSimulation(@RequestBody SimulationDTO simulationDTO) {
-
+        String simulationListJson = "";
         log.info("TEST CHECK: " + simulationDTO);
         try {
-            //List<Cloudlet> cloudletList = simulationService.simulationStart(simulationMapper.map(simulationDTO));
-            //log.info("TEST CHECK: " + cloudletList);
+            List<Cloudlet> cloudletList = simulationService.simulationStart(simulationMapper.map(simulationDTO));
+            simulationListJson = objectMapper.writeValueAsString(simulationDTO);
+            log.info("TEST CHECK: " + cloudletList);
+            log.info("TEST CHECK: " + simulationListJson);
         }catch (Exception e){
             e.printStackTrace();
         }
-        return ResponseEntity.ok("");
+        return ResponseEntity.ok(simulationListJson);
     }
 }

@@ -1,7 +1,6 @@
 package com.example.cloudsimpluswebapp.simulations.impl;
 
 import com.example.cloudsimpluswebapp.models.Simulation;
-import com.example.cloudsimpluswebapp.services.impl.SimulationServiceImpl;
 import com.example.cloudsimpluswebapp.simulations.BasicSimulation;
 import org.cloudsimplus.brokers.DatacenterBroker;
 import org.cloudsimplus.brokers.DatacenterBrokerSimple;
@@ -54,6 +53,7 @@ public class BasicSimulationImpl implements BasicSimulation {
 
         cloudSimPlus.start();
         List<Cloudlet> cloudletFinishedList = broker0.getCloudletFinishedList();
+        //TODO Попробовать переделать возвращаемое значение на CloudletsTableBuilder и решить вопрос отображением результата на странице
         new CloudletsTableBuilder(cloudletFinishedList).build();
         log.info("DOSHEL DO KONCA");
         return cloudletFinishedList;

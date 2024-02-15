@@ -1,9 +1,9 @@
 package com.example.cloudsimpluswebapp.dto;
 
-import com.example.cloudsimpluswebapp.models.Vm;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -15,5 +15,5 @@ public class HostDTO {
     private long hostRam;
     private long hostBw;
     private long hostStorage;
-    private List<VmDTO> vmDTOS;
+    private List<VmDTO> vmDTOS = new ArrayList<>();
 }

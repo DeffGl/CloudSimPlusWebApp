@@ -38,7 +38,13 @@ var form = new Vue({
                 hostMips: '',
                 hostRam: '',
                 hostBw: '',
-                hostStorage: ''
+                hostStorage: '',
+                vmDTOS: [{
+                    vmPes: '',
+                    vmRam: '',
+                    vmBw: '',
+                    vmStorage: ''
+                }]
             };
             this.simulationDTO.hostDTOS.push(newHost);
         },
@@ -69,7 +75,7 @@ var form = new Vue({
             }
         },
 
-        addVm: function () {
+        addVm: function (index) {
             if (!this.showTableVm){
                 this.showTableVm = true
             }
@@ -79,11 +85,11 @@ var form = new Vue({
                 vmBw: '',
                 vmStorage: ''
             };
-            this.simulationDTO.vmDTOS.push(newVm);
+            this.simulationDTO.hostDTOS[index].vmDTOS.push(newVm);
         },
-        removeVm: function (index) {
-            this.simulationDTO.vmDTOS.splice(index, 1);
-            if (this.simulationDTO.vmDTOS.length === 0) {
+        removeVm: function (index, vmIndex) {
+            this.simulationDTO.hostDTOS[index].vmDTOS.splice(vmIndex, 1);
+            if (this.simulationDTO.hostDTOS[index].vmDTOS.length === 0) {
                 this.showTableVm = false;
             }
         }
@@ -96,7 +102,19 @@ var form = new Vue({
             hostMips: 1000,
             hostRam: 2048,
             hostBw: 10000,
-            hostStorage: 1000000
+            hostStorage: 1000000,
+            vmDTOS: [{
+                vmPes: 4,
+                vmRam: 512,
+                vmBw: 1000,
+                vmStorage: 10000
+            },
+                {
+                vmPes: 4,
+                vmRam: 512,
+                vmBw: 1000,
+                vmStorage: 10000
+            }]
         });
         this.simulationDTO.cloudletDTOS.push({
             cloudletPes: 2,
@@ -117,18 +135,6 @@ var form = new Vue({
             cloudletPes: 2,
             cloudletLength: 10000,
             cloudletSize: 1024
-        });
-        this.simulationDTO.vmDTOS.push({
-            vmPes: 4,
-            vmRam: 512,
-            vmBw: 1000,
-            vmStorage: 10000
-        });
-        this.simulationDTO.vmDTOS.push({
-            vmPes: 4,
-            vmRam: 512,
-            vmBw: 1000,
-            vmStorage: 10000
         });
     }
 });

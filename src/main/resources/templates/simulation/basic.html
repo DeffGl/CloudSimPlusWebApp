@@ -12,7 +12,9 @@
         <div id="simulationDTOJson" th:data-simulation-dto="${simulationDTOJson}"></div>
         <label for="nameSimulation">Введите название симуляции</label>
         <input type="text" th:field="*{nameSimulation}" id="nameSimulation">
-        <div style="color:red" th:if="${#fields.hasErrors('nameSimulation')}" th:errors="*{nameSimulation}">Name simulation Errors</div>
+        <div style="color:red" th:if="${#fields.hasErrors('nameSimulation')}" th:errors="*{nameSimulation}">Name
+            simulation Errors
+        </div>
 
         <table id="hostTable" v-show="showTableHost">
             <thead>
@@ -23,18 +25,53 @@
                 <th>Host Ram</th>
                 <th>Host Bandwidth</th>
                 <th>Host Storage</th>
-
+                <th>Virtual Machines</th> <!-- Новый столбец для виртуальных машин -->
             </tr>
             </thead>
             <tbody>
             <tr v-for="(host, index) in simulationDTO.hostDTOS">
                 <td>{{ index + 1 }}</td>
-                <td><input type="text" v-model="host.hostPes" /></td>
-                <td><input type="text" v-model="host.hostMips" /></td>
-                <td><input type="text" v-model="host.hostRam" /></td>
-                <td><input type="text" v-model="host.hostBw" /></td>
-                <td><input type="text" v-model="host.hostStorage" /></td>
-                <td><button type="button" @click="removeHost(index)">Удалить</button></td> <!-- Delete button -->
+                <td><input type="text" v-model="host.hostPes"/></td>
+                <td><input type="text" v-model="host.hostMips"/></td>
+                <td><input type="text" v-model="host.hostRam"/></td>
+                <td><input type="text" v-model="host.hostBw"/></td>
+                <td><input type="text" v-model="host.hostStorage"/></td>
+                <!-- Теперь добавляем столбец для виртуальных машин -->
+                <td>
+                    <!-- Создаем вложенную таблицу для виртуальных машин -->
+                    <table id="vmTable" v-show="showTableVm">
+                        <thead>
+                        <tr>
+                            <th>VM Number</th>
+                            <th>VM Pes</th>
+                            <th>VM Ram</th>
+                            <th>VM Bandwidth</th>
+                            <th>VM Storage</th>
+                            <th></th> <!-- Добавим столбец для кнопки удаления VM -->
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <!-- Теперь перебираем виртуальные машины этого хоста -->
+                        <tr v-for="(vm, vmIndex) in host.vmDTOS">
+                            <td>{{ vmIndex + 1 }}</td>
+                            <td><input type="text" v-model="vm.vmPes"/></td>
+                            <td><input type="text" v-model="vm.vmRam"/></td>
+                            <td><input type="text" v-model="vm.vmBw"/></td>
+                            <td><input type="text" v-model="vm.vmStorage"/></td>
+                            <!-- Кнопка удаления VM -->
+                            <td>
+                                <button type="button" @click="removeVm(index, vmIndex)">Удалить VM</button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <!-- Кнопка для добавления новой VM -->
+                    <button type="button" @click="addVm(index)">Добавить VM</button>
+                </td>
+                <!-- Кнопка удаления хоста -->
+                <td>
+                    <button type="button" @click="removeHost(index)">Удалить хост</button>
+                </td>
             </tr>
             </tbody>
         </table>
@@ -54,38 +91,16 @@
             <tbody>
             <tr v-for="(cloudlet, index) in simulationDTO.cloudletDTOS">
                 <td>{{ index + 1 }}</td>
-                <td><input type="text" v-model="cloudlet.cloudletPes" /></td>
-                <td><input type="text" v-model="cloudlet.cloudletLength" /></td>
-                <td><input type="text" v-model="cloudlet.cloudletSize" /></td>
-                <td><button type="button" @click="removeCloudlet(index)">Удалить</button></td> <!-- Delete button -->
+                <td><input type="text" v-model="cloudlet.cloudletPes"/></td>
+                <td><input type="text" v-model="cloudlet.cloudletLength"/></td>
+                <td><input type="text" v-model="cloudlet.cloudletSize"/></td>
+                <td>
+                    <button type="button" @click="removeCloudlet(index)">Удалить</button>
+                </td> <!-- Delete button -->
             </tr>
             </tbody>
         </table>
         <button type="button" @click="addCloudlet">Добавить задачу</button>
-
-        <table id="vmTable" v-show="showTableVm">
-            <thead>
-            <tr>
-                <th>Cloudlet Number</th>
-                <th>Vm Pes</th>
-                <th>Vm Ram</th>
-                <th>Vm Bandwidth</th>
-                <th>Vm Storage</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr v-for="(vm, index) in simulationDTO.vmDTOS">
-                <td>{{ index + 1 }}</td>
-                <td><input type="text" v-model="vm.vmPes" /></td>
-                <td><input type="text" v-model="vm.vmRam" /></td>
-                <td><input type="text" v-model="vm.vmBw" /></td>
-                <td><input type="text" v-model="vm.vmStorage" /></td>
-                <td><button type="button" @click="removeVm(index)">Удалить</button></td> <!-- Delete button -->
-            </tr>
-            </tbody>
-        </table>
-        <button type="button" @click="addVm">Добавить виртуальную машину</button>
-
 
         <input type="submit" value="Старт"/>
 
