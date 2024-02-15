@@ -33,16 +33,6 @@ public abstract class SimulationMapper {
     })
     public abstract void update(SimulationDTO simulationDTO, @MappingTarget Simulation simulation);
 
-    @Mappings({
-            @Mapping(target = "vmDTOS", ignore = true)
-    })
-    protected abstract HostDTO hostToHostDTO(Host host);
-
-    @Mappings({
-            @Mapping(target = "vms", ignore = true)
-    })
-    protected abstract Host hostDTOToHost(HostDTO hostDTO);
-
     @AfterMapping
     protected void addVmDTOsToHostDTO(@MappingTarget HostDTO hostDTO, Host host) {
         hostDTO.setVmDTOS(host.getVms().stream()
