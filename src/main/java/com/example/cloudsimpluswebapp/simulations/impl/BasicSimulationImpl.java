@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 @Service
 public class BasicSimulationImpl implements BasicSimulation {
@@ -60,21 +61,20 @@ public class BasicSimulationImpl implements BasicSimulation {
     }
 
     private Datacenter createDatacenter(List<com.example.cloudsimpluswebapp.models.Host> hosts, CloudSimPlus cloudSimPlus) {
-        List<Host>hostList = new ArrayList<>(hosts.size());
-        for(com.example.cloudsimpluswebapp.models.Host host : hosts) {
-            Host createdHost = createHost(host);
-            hostList.add(createdHost);
-        }
+        List<Host>hostList = new ArrayList<>();
+        hosts.stream()
+                .flatMap(host -> IntStream.range(0, host.getHostCount()).mapToObj(i -> createHost(host)))
+                .forEach(hostList::add);
 
         //Uses a VmAllocationPolicySimple by default to allocate VMs
         return new DatacenterSimple(cloudSimPlus, hostList);
     }
 
     private Host createHost(com.example.cloudsimpluswebapp.models.Host host) {
-        List<Pe> peList = new ArrayList<>(host.getHostPes());
-        for (int i = 0; i < host.getHostPes(); i++) {
-            peList.add(new PeSimple(host.getHostMips()));
-        }
+        List<Pe> peList = new ArrayList<>();
+        IntStream.range(0, host.getHostPes())
+                .mapToObj(i -> new PeSimple(host.getHostMips()))
+                .forEach(peList::add);
         return new HostSimple(host.getHostRam(), host.getHostBw(), host.getHostStorage(), peList);
     }
 
@@ -83,16 +83,18 @@ public class BasicSimulationImpl implements BasicSimulation {
      */
    private List<Vm> createVms(List<com.example.cloudsimpluswebapp.models.Host> hosts) {
        List<Vm> vmList = new ArrayList<>();
-       for (com.example.cloudsimpluswebapp.models.Host host : hosts){
-           List<com.example.cloudsimpluswebapp.models.Vm> vms = host.getVms();
-
-           for (com.example.cloudsimpluswebapp.models.Vm vm : vms){
-               Vm createdVm = new VmSimple(host.getHostMips(), vm.getVmPes());
-               createdVm.setRam(vm.getVmRam()).setBw(vm.getVmBw()).setSize(vm.getVmStorage());
-               vmList.add(createdVm);
-           }
-       }
-
+       hosts.stream()
+               .flatMap(host -> IntStream.range(0, host.getHostCount())
+                       .mapToObj(i -> host.getVms().stream()
+                               .flatMap(vm -> IntStream.range(0, vm.getVmCount())
+                                       .mapToObj(j -> {
+                                           Vm createdVm = new VmSimple(host.getHostMips(), vm.getVmPes());
+                                           createdVm.setRam(vm.getVmRam()).setBw(vm.getVmBw()).setSize(vm.getVmStorage());
+                                           return createdVm;
+                                       }))
+                       )
+               )
+               .forEach(vmStream -> vmStream.forEach(vmList::add));
         return vmList;
     }
 
@@ -100,17 +102,17 @@ public class BasicSimulationImpl implements BasicSimulation {
      * Creates a list of Cloudlets.
      */
     private List<Cloudlet> createCloudlets(List<com.example.cloudsimpluswebapp.models.Cloudlet> cloudlets) {
-        final var cloudletList = new ArrayList<Cloudlet>(cloudlets.size());
-
+        final var cloudletList = new ArrayList<Cloudlet>();
         //UtilizationModel defining the Cloudlets use only 50% of any resource all the time
         final var utilizationModel = new UtilizationModelDynamic(0.5);
 
-        for (com.example.cloudsimpluswebapp.models.Cloudlet cloudlet : cloudlets) {
-            Cloudlet createdCloudlet = new CloudletSimple(cloudlet.getCloudletLength(), cloudlet.getCloudletPes(), utilizationModel);
-            createdCloudlet.setSizes(cloudlet.getCloudletSize());
-            cloudletList.add(createdCloudlet);
-        }
 
+        cloudlets.stream()
+                .flatMap(cloudlet -> IntStream.range(0, cloudlet.getCloudletCount()).mapToObj(i->{
+                    Cloudlet createdCloudlet = new CloudletSimple(cloudlet.getCloudletLength(), cloudlet.getCloudletPes(), utilizationModel);
+                    createdCloudlet.setSizes(cloudlet.getCloudletSize());
+                    return createdCloudlet;
+                })).forEach(cloudletList::add);
         return cloudletList;
     }
 }

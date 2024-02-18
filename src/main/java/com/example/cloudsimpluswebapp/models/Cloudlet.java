@@ -16,6 +16,9 @@ public class Cloudlet {
     @GeneratedValue(generator = "uuid2")
     private UUID id;
 
+    @Column(name = "cloudlet_count")
+    private int cloudletCount;
+
     @Column(name = "cloudlet_pes")
     private int cloudletPes;
 

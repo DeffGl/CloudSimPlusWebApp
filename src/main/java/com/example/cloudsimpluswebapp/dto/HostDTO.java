@@ -10,6 +10,8 @@ import java.util.List;
 @Accessors(chain = true)
 public class HostDTO {
     //TODO Сделать валидацию
+
+    private int hostCount;
     private int hostPes;
     private long hostMips;
     private long hostRam;

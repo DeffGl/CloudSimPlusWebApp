@@ -16,6 +16,9 @@ public class Vm {
     @GeneratedValue(generator = "uuid2")
     private UUID id;
 
+    @Column(name = "vm_count")
+    private int vmCount;
+
     @Column(name = "vm_pes")
     private int vmPes;
 

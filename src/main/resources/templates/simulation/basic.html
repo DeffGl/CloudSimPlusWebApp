@@ -20,6 +20,7 @@
             <thead>
             <tr>
                 <th>Host Number</th>
+                <th>Host Count</th>
                 <th>Host Pes</th>
                 <th>Host Mips</th>
                 <th>Host Ram</th>
@@ -31,6 +32,7 @@
             <tbody>
             <tr v-for="(host, index) in simulationDTO.hostDTOS">
                 <td>{{ index + 1 }}</td>
+                <td><input type="text" v-model="host.hostCount" /></td>
                 <td><input type="text" v-model="host.hostPes"/></td>
                 <td><input type="text" v-model="host.hostMips"/></td>
                 <td><input type="text" v-model="host.hostRam"/></td>
@@ -43,6 +45,7 @@
                         <thead>
                         <tr>
                             <th>VM Number</th>
+                            <th>Vm Count</th>
                             <th>VM Pes</th>
                             <th>VM Ram</th>
                             <th>VM Bandwidth</th>
@@ -54,6 +57,7 @@
                         <!-- Теперь перебираем виртуальные машины этого хоста -->
                         <tr v-for="(vm, vmIndex) in host.vmDTOS">
                             <td>{{ vmIndex + 1 }}</td>
+                            <td><input type="text" v-model="vm.vmCount" /></td>
                             <td><input type="text" v-model="vm.vmPes"/></td>
                             <td><input type="text" v-model="vm.vmRam"/></td>
                             <td><input type="text" v-model="vm.vmBw"/></td>
@@ -83,6 +87,7 @@
             <thead>
             <tr>
                 <th>Cloudlet Number</th>
+                <th>Cloudlet Count</th>
                 <th>Cloudlet Pes</th>
                 <th>Cloudlet Length</th>
                 <th>Cloudlet Size</th>
@@ -91,6 +96,7 @@
             <tbody>
             <tr v-for="(cloudlet, index) in simulationDTO.cloudletDTOS">
                 <td>{{ index + 1 }}</td>
+                <td><input type="text" v-model="cloudlet.cloudletCount" /></td>
                 <td><input type="text" v-model="cloudlet.cloudletPes"/></td>
                 <td><input type="text" v-model="cloudlet.cloudletLength"/></td>
                 <td><input type="text" v-model="cloudlet.cloudletSize"/></td>

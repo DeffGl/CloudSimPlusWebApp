@@ -17,6 +17,9 @@ public class Host {
     @GeneratedValue(generator = "uuid2")
     private UUID id;
 
+    @Column(name = "host_count")
+    private int hostCount;
+
     @Column(name = "host_pes")
     private int hostPes;
 

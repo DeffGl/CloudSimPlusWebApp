@@ -34,12 +34,14 @@ var form = new Vue({
                 this.showTableHost = true
             }
             var newHost = {
+                hostCount: '',
                 hostPes: '',
                 hostMips: '',
                 hostRam: '',
                 hostBw: '',
                 hostStorage: '',
                 vmDTOS: [{
+                    vmCount: '',
                     vmPes: '',
                     vmRam: '',
                     vmBw: '',
@@ -62,6 +64,7 @@ var form = new Vue({
                 this.showTableCloudlet = true
             }
             var newCloudlet = {
+                cloudletCount: '',
                 cloudletPes: '',
                 cloudletLength: '',
                 cloudletSize: ''
@@ -80,6 +83,7 @@ var form = new Vue({
                 this.showTableVm = true
             }
             var newVm = {
+                vmCount: '',
                 vmPes: '',
                 vmRam: '',
                 vmBw: '',
@@ -98,18 +102,14 @@ var form = new Vue({
         // После загрузки компонента добавим пустые объекты в списки
 
         this.simulationDTO.hostDTOS.push({
+            hostCount: 2,
             hostPes: 8,
             hostMips: 1000,
             hostRam: 2048,
             hostBw: 10000,
             hostStorage: 1000000,
             vmDTOS: [{
-                vmPes: 4,
-                vmRam: 512,
-                vmBw: 1000,
-                vmStorage: 10000
-            },
-                {
+                vmCount: 2,
                 vmPes: 4,
                 vmRam: 512,
                 vmBw: 1000,
@@ -117,21 +117,7 @@ var form = new Vue({
             }]
         });
         this.simulationDTO.cloudletDTOS.push({
-            cloudletPes: 2,
-            cloudletLength: 10000,
-            cloudletSize: 1024
-        });
-        this.simulationDTO.cloudletDTOS.push({
-            cloudletPes: 2,
-            cloudletLength: 10000,
-            cloudletSize: 1024
-        });
-        this.simulationDTO.cloudletDTOS.push({
-            cloudletPes: 2,
-            cloudletLength: 10000,
-            cloudletSize: 1024
-        });
-        this.simulationDTO.cloudletDTOS.push({
+            cloudletCount: 4,
             cloudletPes: 2,
             cloudletLength: 10000,
             cloudletSize: 1024
