@@ -1,9 +1,10 @@
 package com.example.cloudsimpluswebapp.services.impl;
 
-import com.example.cloudsimpluswebapp.controllers.SimulationRestController;
-import com.example.cloudsimpluswebapp.models.Simulation;
+import com.example.cloudsimpluswebapp.dto.SimulationDTO;
 import com.example.cloudsimpluswebapp.services.SimulationService;
 import com.example.cloudsimpluswebapp.simulations.BasicSimulation;
+import com.example.cloudsimpluswebapp.utils.mappers.SimulationMapper;
+import com.example.cloudsimpluswebapp.utils.mappers.SimulationResultMapper;
 import org.cloudsimplus.cloudlets.Cloudlet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,20 +18,25 @@ public class SimulationServiceImpl implements SimulationService {
 
     private static final Logger log = LoggerFactory.getLogger(SimulationServiceImpl.class);
     private final BasicSimulation basicSimulation;
+    private final SimulationResultMapper simulationResultMapper;
+    private final SimulationMapper simulationMapper;
 
     @Autowired
-    public SimulationServiceImpl(BasicSimulation basicSimulation) {
+    public SimulationServiceImpl(BasicSimulation basicSimulation, SimulationResultMapper simulationResultMapper, SimulationMapper simulationMapper) {
         this.basicSimulation = basicSimulation;
+        this.simulationResultMapper = simulationResultMapper;
+        this.simulationMapper = simulationMapper;
     }
 
     @Override
-    public List<Cloudlet> simulationStart(Simulation simulation) {
+    public SimulationDTO simulationStart(SimulationDTO simulationDTO) {
         try {
-            log.info("TEST CHECK DOSHEl SERVICE");
-            return basicSimulation.startSimulation(simulation);
-        }catch (Exception e){
+            //TODO Привести в порядок метод сервиса
+            List<Cloudlet> resultList = basicSimulation.startSimulation(simulationDTO);
+            simulationDTO.setSimulationResultDTOS(resultList.stream().map(simulationResultMapper::map).toList());
+            return simulationDTO;
+        } catch (Exception e){
             e.printStackTrace();
-            log.info("TEST CHECK: SLOMALOS");
         }
         return null;
     }

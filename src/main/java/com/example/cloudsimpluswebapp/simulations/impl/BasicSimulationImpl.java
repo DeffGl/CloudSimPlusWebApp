@@ -1,6 +1,8 @@
 package com.example.cloudsimpluswebapp.simulations.impl;
 
-import com.example.cloudsimpluswebapp.models.Simulation;
+import com.example.cloudsimpluswebapp.dto.CloudletDTO;
+import com.example.cloudsimpluswebapp.dto.HostDTO;
+import com.example.cloudsimpluswebapp.dto.SimulationDTO;
 import com.example.cloudsimpluswebapp.simulations.BasicSimulation;
 import org.cloudsimplus.brokers.DatacenterBroker;
 import org.cloudsimplus.brokers.DatacenterBrokerSimple;
@@ -29,11 +31,10 @@ import java.util.stream.IntStream;
 public class BasicSimulationImpl implements BasicSimulation {
     private static final Logger log = LoggerFactory.getLogger(BasicSimulationImpl.class);
     @Override
-    public List<Cloudlet> startSimulation(Simulation simulation) {
-
-        log.info("TEST CHECK DOSHEl SIMULATION" + simulation);
-        List<com.example.cloudsimpluswebapp.models.Host> hosts = simulation.getHosts();
-        List<com.example.cloudsimpluswebapp.models.Cloudlet> cloudlets = simulation.getCloudlets();
+    public List<Cloudlet> startSimulation(SimulationDTO simulationDTO) {
+        //TODO Привести в порядок метод симуляции
+        List<HostDTO> hosts = simulationDTO.getHostDTOS();
+        List<CloudletDTO> cloudlets = simulationDTO.getCloudletDTOS();
 
         CloudSimPlus cloudSimPlus;
         DatacenterBroker broker0;
@@ -53,14 +54,12 @@ public class BasicSimulationImpl implements BasicSimulation {
         broker0.submitCloudletList(cloudletList);
 
         cloudSimPlus.start();
-        List<Cloudlet> cloudletFinishedList = broker0.getCloudletFinishedList();
-        //TODO Попробовать переделать возвращаемое значение на CloudletsTableBuilder и решить вопрос отображением результата на странице
-        new CloudletsTableBuilder(cloudletFinishedList).build();
-        log.info("DOSHEL DO KONCA");
-        return cloudletFinishedList;
+        new CloudletsTableBuilder(broker0.getCloudletFinishedList()).build();
+        broker0.getCloudletFinishedList().get(0);
+        return broker0.getCloudletFinishedList();
     }
 
-    private Datacenter createDatacenter(List<com.example.cloudsimpluswebapp.models.Host> hosts, CloudSimPlus cloudSimPlus) {
+    private Datacenter createDatacenter(List<HostDTO> hosts, CloudSimPlus cloudSimPlus) {
         List<Host>hostList = new ArrayList<>();
         hosts.stream()
                 .flatMap(host -> IntStream.range(0, host.getHostCount()).mapToObj(i -> createHost(host)))
@@ -70,7 +69,7 @@ public class BasicSimulationImpl implements BasicSimulation {
         return new DatacenterSimple(cloudSimPlus, hostList);
     }
 
-    private Host createHost(com.example.cloudsimpluswebapp.models.Host host) {
+    private Host createHost(HostDTO host) {
         List<Pe> peList = new ArrayList<>();
         IntStream.range(0, host.getHostPes())
                 .mapToObj(i -> new PeSimple(host.getHostMips()))
@@ -81,11 +80,11 @@ public class BasicSimulationImpl implements BasicSimulation {
     /**
      * Creates a list of VMs.
      */
-   private List<Vm> createVms(List<com.example.cloudsimpluswebapp.models.Host> hosts) {
+   private List<Vm> createVms(List<HostDTO> hosts) {
        List<Vm> vmList = new ArrayList<>();
        hosts.stream()
                .flatMap(host -> IntStream.range(0, host.getHostCount())
-                       .mapToObj(i -> host.getVms().stream()
+                       .mapToObj(i -> host.getVmDTOS().stream()
                                .flatMap(vm -> IntStream.range(0, vm.getVmCount())
                                        .mapToObj(j -> {
                                            Vm createdVm = new VmSimple(host.getHostMips(), vm.getVmPes());
@@ -101,7 +100,7 @@ public class BasicSimulationImpl implements BasicSimulation {
     /**
      * Creates a list of Cloudlets.
      */
-    private List<Cloudlet> createCloudlets(List<com.example.cloudsimpluswebapp.models.Cloudlet> cloudlets) {
+    private List<Cloudlet> createCloudlets(List<CloudletDTO> cloudlets) {
         final var cloudletList = new ArrayList<Cloudlet>();
         //UtilizationModel defining the Cloudlets use only 50% of any resource all the time
         final var utilizationModel = new UtilizationModelDynamic(0.5);

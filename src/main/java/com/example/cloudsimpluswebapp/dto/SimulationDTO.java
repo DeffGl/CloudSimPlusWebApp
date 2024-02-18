@@ -1,6 +1,5 @@
 package com.example.cloudsimpluswebapp.dto;
 
-import com.example.cloudsimpluswebapp.models.enums.SimulationStatus;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -15,5 +14,5 @@ public class SimulationDTO {
     private Date dateOfCreation = new Date();
     private List<HostDTO> hostDTOS = new ArrayList<>();
     private List<CloudletDTO> cloudletDTOS = new ArrayList<>();
-    private SimulationStatus simulationStatus = SimulationStatus.FAILURE;
+    private List<SimulationResultDTO> simulationResultDTOS = new ArrayList<>();
 }

@@ -19,11 +19,12 @@ var form = new Vue({
                     'Content-Type': 'application/json'
                 }
             })
-                .then(function (response) {
+                .then((response) => {
                     // Обработка успешного ответа от сервера
                     console.log(response.data);
+                    this.simulationDTO = response.data; // Здесь this будет ссылаться на ваш объект класса или компонента
                 })
-                .catch(function (error) {
+                .catch((error) => {
                     // Обработка ошибки
                     console.error(error);
                 });

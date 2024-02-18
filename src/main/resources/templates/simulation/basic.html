@@ -110,6 +110,46 @@
 
         <input type="submit" value="Старт"/>
 
+        <table v-if="simulationDTO.simulationResultDTOS.length > 0">
+            <thead>
+            <tr>
+                <th>Cloudlet ID</th>
+                <th>Status</th>
+                <th>DC ID</th>
+                <th>Host ID</th>
+                <th>Host PEs</th>
+                <th>VM ID</th>
+                <th>VM PEs</th>
+                <th>Cloudlet Length (MI)</th>
+                <th>Finished Length (MI)</th>
+                <th>Cloudlet PEs</th>
+                <th>Start Time (Seconds)</th>
+                <th>Finish Time (Seconds)</th>
+                <th>Execution Time (Seconds)</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!--//TODO исправить столбцы таблицы-->
+            <tr v-for="(results, index) in simulationDTO.simulationResultDTOS">
+                <td><label>{{ results.cloudletId }}</label></td>
+                <td><label>{{ results.status }}</label></td>
+                <!--//TODO что-то с Id брокера не так-->
+                <td><label>{{ results.datacenterBrokerId }}</label></td>
+                <td><label>{{ results.hostId }}</label></td>
+                <td><label>Host PEs</label></td>
+                <td><label>{{ results.vmId }}</label></td>
+                <td><label>VM PEs</label></td>
+                <td><label>Cloudlet Length (MI)</label></td>
+                <td><label>Finished Length (MI)</label></td>
+                <td><label>Cloudlet PEs</label></td>
+                <td><label>{{ results.startTime }}</label></td>
+                <td><label>{{ results.finishTime }}</label></td>
+                <td><label>{{ results.executionTime }}</label></td>
+            </tr>
+            </tbody>
+        </table>
+
+
         <div th:if="${param.error}" style="color:red">
             Неправильные имя и пароль
         </div>
