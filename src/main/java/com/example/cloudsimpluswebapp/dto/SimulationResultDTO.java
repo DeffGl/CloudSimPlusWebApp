@@ -9,11 +9,18 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @AllArgsConstructor
 public class SimulationResultDTO {
+    //TODO Дублирование данных, будет время надо будет придумать как вытаскивать характеристики ресурсов из симуляции по их номерам
 
-    private long cloudletId;
-    private long hostId;
-    private long vmId;
-    private long datacenterBrokerId;
+    private long cloudletNumber;
+    private long hostNumber;
+    private long vmNumber;
+    private long datacenterBrokerNumber;
+
+    private long hostPes;
+    private long vmPes;
+    private long cloudletLength;
+    private long finishedLength;
+    private long cloudletPes;
 
     private String status;
     private double startTime;

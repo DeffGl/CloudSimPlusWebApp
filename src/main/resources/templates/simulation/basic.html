@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <title>Базовая симуляция</title>
     <link rel="stylesheet" type="text/css" href="/public/css/tables.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap">
+
 </head>
 <body>
 
@@ -16,7 +18,7 @@
             simulation Errors
         </div>
 
-        <table id="hostTable" v-show="showTableHost">
+        <table id="hostTable" v-show="showTableHost" class="table-container">
             <thead>
             <tr>
                 <th>Host Number</th>
@@ -41,7 +43,7 @@
                 <!-- Теперь добавляем столбец для виртуальных машин -->
                 <td>
                     <!-- Создаем вложенную таблицу для виртуальных машин -->
-                    <table id="vmTable" v-show="showTableVm">
+                    <table id="vmTable" v-show="shouldShowVmTable(host)">
                         <thead>
                         <tr>
                             <th>VM Number</th>
@@ -65,6 +67,7 @@
                             <!-- Кнопка удаления VM -->
                             <td>
                                 <button type="button" @click="removeVm(index, vmIndex)">Удалить VM</button>
+                                <button type="button" @click="addVmCopy(index, vmIndex)">Добавить копию VM</button>
                             </td>
                         </tr>
                         </tbody>
@@ -75,6 +78,7 @@
                 <!-- Кнопка удаления хоста -->
                 <td>
                     <button type="button" @click="removeHost(index)">Удалить хост</button>
+                    <button type="button" @click="addHostCopy(index)">Добавить копию хоста</button>
                 </td>
             </tr>
             </tbody>
@@ -83,7 +87,7 @@
 
         <button type="button" @click="addHost">Добавить хост</button>
 
-        <table id="cloudletTable" v-show="showTableCloudlet">
+        <table id="cloudletTable" v-show="showTableCloudlet" class="table-container">
             <thead>
             <tr>
                 <th>Cloudlet Number</th>
@@ -102,6 +106,7 @@
                 <td><input type="text" v-model="cloudlet.cloudletSize"/></td>
                 <td>
                     <button type="button" @click="removeCloudlet(index)">Удалить</button>
+                    <button type="button" @click="addCloudletCopy(index)">Добавить копию cloudlet</button>
                 </td> <!-- Delete button -->
             </tr>
             </tbody>
@@ -130,21 +135,20 @@
             </thead>
             <tbody>
             <!--//TODO исправить столбцы таблицы-->
-            <tr v-for="(results, index) in simulationDTO.simulationResultDTOS">
-                <td><label>{{ results.cloudletId }}</label></td>
-                <td><label>{{ results.status }}</label></td>
-                <!--//TODO что-то с Id брокера не так-->
-                <td><label>{{ results.datacenterBrokerId }}</label></td>
-                <td><label>{{ results.hostId }}</label></td>
-                <td><label>Host PEs</label></td>
-                <td><label>{{ results.vmId }}</label></td>
-                <td><label>VM PEs</label></td>
-                <td><label>Cloudlet Length (MI)</label></td>
-                <td><label>Finished Length (MI)</label></td>
-                <td><label>Cloudlet PEs</label></td>
-                <td><label>{{ results.startTime }}</label></td>
-                <td><label>{{ results.finishTime }}</label></td>
-                <td><label>{{ results.executionTime }}</label></td>
+            <tr v-for="(result, index) in simulationDTO.simulationResultDTOS">
+                <td><label>{{ result.cloudletNumber }}</label></td>
+                <td><label>{{ result.status }}</label></td>
+                <td><label>{{ result.datacenterBrokerNumber }}</label></td>
+                <td><label>{{ result.hostNumber }}</label></td>
+                <td><label>{{ result.hostPes }}</label></td>
+                <td><label>{{ result.vmNumber }}</label></td>
+                <td><label>{{ result.vmPes }}</label></td>
+                <td><label>{{ result.cloudletLength }}</label></td>
+                <td><label>{{ result.finishedLength }}</label></td>
+                <td><label>{{ result.cloudletPes }}</label></td>
+                <td><label>{{ result.startTime }}</label></td>
+                <td><label>{{ result.finishTime }}</label></td>
+                <td><label>{{ result.executionTime }}</label></td>
             </tr>
             </tbody>
         </table>

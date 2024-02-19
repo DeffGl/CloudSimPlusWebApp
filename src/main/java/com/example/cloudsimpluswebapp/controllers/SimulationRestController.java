@@ -30,6 +30,7 @@ public class SimulationRestController {
     public ResponseEntity<String> startSimulation(@RequestBody SimulationDTO simulationDTO) {
         String simulationResultJson = "";
         try {
+            log.info("TEST CHECK: " + simulationDTO);
             simulationDTO = simulationService.simulationStart(simulationDTO);
             simulationResultJson = objectMapper.writeValueAsString(simulationDTO);
             log.info("TEST CHECK: " + simulationResultJson);

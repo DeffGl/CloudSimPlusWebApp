@@ -57,7 +57,15 @@ var form = new Vue({
                 this.showTableHost = false;
             }
         },
-
+        // Метод для добавления копии хоста по индексу
+        addHostCopy: function(index) {
+            var hostToCopy = this.simulationDTO.hostDTOS[index];
+            var newHost = Object.assign({}, hostToCopy); // Создаем копию хоста
+            // Создаем новый массив vmDTOS для нового хоста
+            newHost.vmDTOS = hostToCopy.vmDTOS.map(vm => Object.assign({}, vm));
+            // Вставляем копию после текущего хоста
+            this.simulationDTO.hostDTOS.splice(index + 1, 0, newHost);
+        },
 
 
         addCloudlet: function () {
@@ -79,6 +87,15 @@ var form = new Vue({
             }
         },
 
+        // Метод для добавления копии cloudlet по индексу
+        addCloudletCopy: function(index) {
+            var cloudletToCopy = this.simulationDTO.cloudletDTOS[index];
+            var newCloudlet = Object.assign({}, cloudletToCopy); // Создаем копию cloudlet
+            // Вставляем копию после текущего cloudlet
+            this.simulationDTO.cloudletDTOS.splice(index + 1, 0, newCloudlet);
+        },
+
+
         addVm: function (index) {
             if (!this.showTableVm){
                 this.showTableVm = true
@@ -97,7 +114,19 @@ var form = new Vue({
             if (this.simulationDTO.hostDTOS[index].vmDTOS.length === 0) {
                 this.showTableVm = false;
             }
+        },
+        // Метод для добавления копии VM по индексу хоста и VM
+        addVmCopy: function(hostIndex, vmIndex) {
+            var vmToCopy = this.simulationDTO.hostDTOS[hostIndex].vmDTOS[vmIndex];
+            var newVm = Object.assign({}, vmToCopy); // Создаем копию VM
+            // Вставляем копию после текущей VM
+            this.simulationDTO.hostDTOS[hostIndex].vmDTOS.splice(vmIndex + 1, 0, newVm);
+        },
+        // Метод для определения, нужно ли показывать таблицу VM для указанного хоста
+        shouldShowVmTable: function (host) {
+            return host.vmDTOS.length > 0;
         }
+
     },
     mounted: function () {
         // После загрузки компонента добавим пустые объекты в списки

@@ -1,0 +1,79 @@
+body {
+    font-family: 'Nunito', sans-serif;
+    font-size: 16px;
+}
+
+#form {
+    margin: 20px;
+}
+
+.table-container {
+    background-color: #eefbfb;
+    border-radius: 16px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+#hostTable, #cloudletTable, #vmTable {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+#hostTable tbody tr,
+#cloudletTable tbody tr,
+#vmTable tbody tr {
+    background-color: white; /* Белый фон для строк с данными */
+}
+/*TODO надо доделать оформление таблицы*/
+#hostTable tbody tr td table thead
+{
+    background-color: #eefbfb;
+}
+
+#hostTable th, #hostTable td,
+#cloudletTable th, #cloudletTable td,
+#vmTable th, #vmTable td {
+    text-align: center;
+    padding: 8px;
+}
+
+#hostTable th,
+#cloudletTable th,
+#vmTable th {
+    text-align: center;
+}
+
+button {
+    padding: 5px 10px;
+    cursor: pointer;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+input[type="text"] {
+    width: 100px;
+    padding: 5px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+input[type="submit"] {
+    padding: 10px 20px;
+    cursor: pointer;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+}
+
+input[type="submit"]:hover {
+    background-color: #45a049;
+}
