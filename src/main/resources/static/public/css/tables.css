@@ -1,6 +1,7 @@
 body {
     font-family: 'Nunito', sans-serif;
     font-size: 16px;
+    color: #282828;
 }
 
 #form {
@@ -12,18 +13,19 @@ body {
     border-radius: 16px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     overflow: hidden;
-    margin-bottom: 20px;
 }
 
-#hostTable, #cloudletTable, #vmTable {
+#hostTable, #cloudletTable, #vmTable, #resultTable {
     border-collapse: collapse;
     width: 100%;
 }
 
 #hostTable tbody tr,
 #cloudletTable tbody tr,
-#vmTable tbody tr {
+#vmTable tbody tr,
+#resultTable tbody tr {
     background-color: white; /* Белый фон для строк с данными */
+    padding: 10px; /* задаем отступ */
 }
 /*TODO надо доделать оформление таблицы*/
 #hostTable tbody tr td table thead
@@ -33,18 +35,21 @@ body {
 
 #hostTable th, #hostTable td,
 #cloudletTable th, #cloudletTable td,
-#vmTable th, #vmTable td {
+#vmTable th, #vmTable td,
+#resultTable th, #resultTable td {
     text-align: center;
     padding: 8px;
 }
 
 #hostTable th,
 #cloudletTable th,
-#vmTable th {
+#vmTable th,
+#resultTable th {
     text-align: center;
 }
 
 button {
+    margin: 10px;
     padding: 5px 10px;
     cursor: pointer;
     background-color: #4CAF50;
@@ -66,6 +71,7 @@ input[type="text"] {
 }
 
 input[type="submit"] {
+    margin: 10px;
     padding: 10px 20px;
     cursor: pointer;
     background-color: #4CAF50;
@@ -76,4 +82,14 @@ input[type="submit"] {
 
 input[type="submit"]:hover {
     background-color: #45a049;
+}
+
+label {
+    display: block;
+
+}
+
+#nameSimulation {
+    width: 500px;
+    margin-bottom: 10px;
 }
