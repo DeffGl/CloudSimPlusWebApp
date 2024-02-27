@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Login page</title>
-    <link rel="stylesheet" type="text/css" href="/public/css/buttons.css">
+    <link rel="stylesheet" type="text/css" href="/public/css/login.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap">
 </head>
 <body>
 
@@ -21,9 +22,10 @@
     <div th:if="${param.error}" style="color:red">
         Неправильные имя и пароль
     </div>
+
+    <a th:href="@{/auth/registration}" class="button-link">Регистрация</a>
 </form>
 
-<a th:href="@{/auth/registration}" class="button-link">Регистрация</a>
 
 </body>
 </html>

@@ -38,4 +38,14 @@ public class SimulationController {
         model.addAttribute("simulationDTO", simulationDTO);
         return "simulation/basic";
     }
+
+    @GetMapping("/lifetime")
+    public String getCloudletAndVmLifeTimeSimulation(Model model) throws JsonProcessingException {
+        SimulationDTO simulationDTO = new SimulationDTO();
+        String simulationDTOJson = objectMapper.writeValueAsString(simulationDTO);
+        log.info(simulationDTOJson);
+        model.addAttribute("simulationDTOJson", simulationDTOJson);
+        model.addAttribute("simulationDTO", simulationDTO);
+        return "simulation/lifeTime";
+    }
 }

@@ -3,13 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <title>Главная страница</title>
+    <link rel="stylesheet" type="text/css" href="/public/css/main.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap">
 </head>
 <body>
+<div class="logout-button-container">
+    <form th:method="POST" th:action="@{/logout}">
+        <input class="logout-button" type="submit" value="Выйти"/>
+    </form>
+</div>
 
-<a th:href="@{/simulation/basic}">Симуляция 1</a>
-ПРИВЕТ!
-<form th:method="POST" th:action="@{/logout}">
-    <input type="submit" value="Выйти"/>
-</form>
+<a class="card-link" th:href="@{/simulation/basic}" th:text="#{basicSimulation}"></a>
+<a class="card-link" th:href="@{/simulation/lifetime}" th:text="#{lifeTimeSimulation}"></a>
+
 </body>
 </html>

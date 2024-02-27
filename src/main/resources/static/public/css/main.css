@@ -1,0 +1,42 @@
+body {
+    font-family: 'Nunito', sans-serif;
+    text-align: center;
+}
+
+.card-link {
+    font-size: 25px;
+    display: inline-block;
+    padding: 5vw; /* Паддинг относительно ширины экрана */
+    margin: 2.5vw; /* Отступ относительно ширины экрана */
+    border: 1px solid #ccc;
+    border-radius: 2.5vw; /* Радиус границы относительно ширины экрана */
+    text-decoration: none;
+    color: black;
+    transition: all 0.3s ease;
+}
+
+.card-link:hover {
+    background-color: #f0f0f0;
+}
+
+.logout-button-container {
+    text-align: right; /* Выравнивание содержимого вправо */
+}
+
+.logout-button {
+    font-size: 20px;
+    text-align: right; /* Выравнивание содержимого вправо */
+    font-family: 'Nunito', sans-serif;
+    display: inline-block;
+    padding: 10px; /* Паддинг относительно высоты и ширины экрана */
+    background-color: #ff6347;
+    color: #fff;
+    border: none;
+    border-radius: 5px; /* Радиус границы относительно ширины экрана */
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.logout-button:hover {
+    background-color: #d32f2f;
+}

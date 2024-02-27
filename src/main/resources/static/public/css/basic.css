@@ -93,3 +93,8 @@ label {
     width: 500px;
     margin-bottom: 10px;
 }
+
+.invalid-input {
+    border: 1px solid red;
+    background-color: #ffe6e6;
+}

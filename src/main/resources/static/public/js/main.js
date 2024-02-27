@@ -11,24 +11,84 @@ var form = new Vue({
             console.log(this.simulationDTO)
             var formData = JSON.stringify(this.simulationDTO);
             var csrfToken = document.querySelector('input[name="_csrf"]').value;
+            var form = document.getElementById('simulationForm');
+            var actionUrl = form.getAttribute('action');
 
-            // Отправка данных на сервер с помощью Axios
-            axios.post('/simulation/start', formData, {
-                headers: {
-                    'X-CSRF-TOKEN': csrfToken,
-                    'Content-Type': 'application/json'
-                }
-            })
-                .then((response) => {
-                    // Обработка успешного ответа от сервера
-                    console.log(response.data);
-                    this.simulationDTO = response.data; // Здесь this будет ссылаться на ваш объект класса или компонента
+            if (this.validateInputs()){
+                // Отправка данных на сервер с помощью Axios
+                axios.post(actionUrl, formData, {
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Content-Type': 'application/json'
+                    }
                 })
-                .catch((error) => {
-                    // Обработка ошибки
-                    console.error(error);
-                });
+                    .then((response) => {
+                        // Обработка успешного ответа от сервера
+                        console.log(response.data);
+                        this.simulationDTO = response.data; // Здесь this будет ссылаться на ваш объект класса или компонента
+                    })
+                    .catch((error) => {
+                        // Обработка ошибки
+                        console.error(error);
+                    });
+            }
         },
+
+        validateInputs: function () {
+            // Выполнение валидации
+            for (var i = 0; i < this.simulationDTO.hostDTOS.length; i++) {
+                var host = this.simulationDTO.hostDTOS[i];
+                var totalVmPes = 0;
+                var totalVmRam = 0;
+                var totalVmBw = 0;
+                var totalVmStorage = 0;
+                var totalVmCount = 0; // Добавляем переменную для хранения общего количества VM
+                // Суммирование параметров всех VM для текущего хоста
+                for (var j = 0; j < host.vmDTOS.length; j++) {
+                    var vm = host.vmDTOS[j];
+                    totalVmCount += vm.vmCount; // Учитываем количество VM
+                    totalVmPes += vm.vmPes * vm.vmCount; // Учитываем количество VM
+                    totalVmRam += vm.vmRam * vm.vmCount; // Учитываем количество VM
+                    totalVmBw += vm.vmBw * vm.vmCount; // Учитываем количество VM
+                    totalVmStorage += vm.vmStorage * vm.vmCount; // Учитываем количество VM
+                }
+
+                console.log(totalVmPes)
+                console.log(totalVmRam)
+                console.log(totalVmBw)
+                console.log(totalVmStorage)
+
+                console.log("")
+                console.log("")
+                console.log("")
+
+                console.log(host.hostPes)
+                console.log(host.hostRam)
+                console.log(host.hostBw)
+                console.log(host.hostStorage)
+                // Проверка, что сумма параметров VM не превышает параметры хоста
+                if (totalVmPes > host.hostPes) { // Учитываем количество хостов
+                    alert('Суммарное количество процессоров виртуальных машин не должно превышать количество процессоров хоста');
+                    return false; // Возвращаем false, если проверка не пройдена
+                }
+                if (totalVmRam > host.hostRam) { // Учитываем количество хостов
+                    alert('Суммарный объем RAM виртуальных машин не должен превышать объем RAM хоста');
+                    return false;
+                }
+                if (totalVmBw > host.hostBw) { // Учитываем количество хостов
+                    alert('Суммарная пропускная способность виртуальных машин не должна превышать пропускную способность хоста');
+                    return false;
+                }
+                if (totalVmStorage > host.hostStorage) { // Учитываем количество хостов
+                    alert('Суммарный объем хранилища виртуальных машин не должен превышать объем хранилища хоста');
+                    return false;
+                }
+
+            }
+            return true; // Возвращаем true, если все проверки пройдены успешно
+        },
+
+
 
         addHost: function () {
             if (!this.showTableHost){

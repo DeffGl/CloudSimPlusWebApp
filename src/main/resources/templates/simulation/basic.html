@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>Базовая симуляция</title>
-    <link rel="stylesheet" type="text/css" href="/public/css/tables.css">
+    <link rel="stylesheet" type="text/css" href="/public/css/basic.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap">
 
 </head>
 <body>
 
 <div id="form">
-    <form th:method="POST" th:action="@{/simulation/start}" th:object="${simulationDTO}" @submit.prevent="submitForm">
+    <form id="simulationForm" th:method="POST" th:action="@{/simulation/basic}" th:object="${simulationDTO}" @submit.prevent="submitForm">
         <div id="simulationDTOJson" th:data-simulation-dto="${simulationDTOJson}"></div>
 
         <label th:text="#{nameSimulationLabel}" for="nameSimulation"></label>
@@ -38,7 +38,7 @@
             <tr v-for="(host, index) in simulationDTO.hostDTOS">
                 <td>{{ index + 1 }}</td>
                 <td><input type="text" v-model="host.hostCount" /></td>
-                <td><input type="text" v-model="host.hostPes"/></td>
+                <td><input type="text" v-model="host.hostPes" :class="{ 'invalid-input': invalidPes }"/></td>
                 <td><input type="text" v-model="host.hostMips"/></td>
                 <td><input type="text" v-model="host.hostRam"/></td>
                 <td><input type="text" v-model="host.hostBw"/></td>

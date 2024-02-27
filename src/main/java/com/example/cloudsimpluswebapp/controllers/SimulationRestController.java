@@ -26,17 +26,23 @@ public class SimulationRestController {
         this.objectMapper = objectMapper;
     }
 
-    @PostMapping("/start")
-    public ResponseEntity<String> startSimulation(@RequestBody SimulationDTO simulationDTO) {
+    @PostMapping("/basic")
+    public ResponseEntity<String> startBasicSimulation(@RequestBody SimulationDTO simulationDTO) {
         String simulationResultJson = "";
         try {
             log.info("TEST CHECK: " + simulationDTO);
-            simulationDTO = simulationService.simulationStart(simulationDTO);
+            simulationDTO = simulationService.startBasicSimulation(simulationDTO);
             simulationResultJson = objectMapper.writeValueAsString(simulationDTO);
             log.info("TEST CHECK: " + simulationResultJson);
         } catch (Exception e) {
             e.printStackTrace();
         }
         return ResponseEntity.ok(simulationResultJson);
+    }
+
+    @PostMapping("/lifetime")
+    public ResponseEntity<String> startLifeTimeSimulation(@RequestBody SimulationDTO simulationDTO){
+        simulationService.startLifeTimeSimulation(simulationDTO);
+        return ResponseEntity.ok("");
     }
 }
