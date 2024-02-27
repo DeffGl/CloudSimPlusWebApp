@@ -30,4 +30,7 @@ public class Vm {
 
     @Column(name = "vm_storage")
     private long vmStorage;
+
+    @Column(name="vm_lifetime")
+    private double vmLifetime;
 }

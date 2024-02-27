@@ -3,6 +3,9 @@ package com.example.cloudsimpluswebapp.utils.mappers;
 import com.example.cloudsimpluswebapp.dto.SimulationResultDTO;
 import com.example.cloudsimpluswebapp.models.SimulationResult;
 import org.cloudsimplus.cloudlets.Cloudlet;
+import org.cloudsimplus.datacenters.Datacenter;
+import org.cloudsimplus.hosts.Host;
+import org.cloudsimplus.vms.Vm;
 import org.mapstruct.*;
 
 @Mapper(
@@ -15,20 +18,25 @@ public abstract class SimulationResultMapper {
     public abstract SimulationResultDTO map(SimulationResult simulationResult);
     public abstract void update(SimulationResultDTO simulationResultDTO, @MappingTarget SimulationResult simulationResult);
     public SimulationResultDTO map(Cloudlet finishedList){
+        Vm vm = finishedList.getVm();
+        Host host = vm.getHost();
+        Datacenter datacenter = finishedList.getLastTriedDatacenter();
         return new SimulationResultDTO(
                 finishedList.getId(),
-                finishedList.getVm().getHost().getId(),
-                finishedList.getVm().getId(),
-                finishedList.getLastTriedDatacenter().getId(),
-                finishedList.getVm().getHost().getPesNumber(),
-                finishedList.getVm().getPesNumber(),
+                host.getId(),
+                vm.getId(),
+                datacenter.getId(),
+                host.getPesNumber(),
+                vm.getPesNumber(),
                 finishedList.getLength(),
                 finishedList.getFinishedLengthSoFar(),
                 finishedList.getPesNumber(),
                 finishedList.getStatus().name(),
                 finishedList.getStartTime(),
                 finishedList.getFinishTime(),
-                finishedList.getTotalExecutionTime());
+                finishedList.getTotalExecutionTime(),
+                finishedList.getLifeTime(),
+                vm.getLifeTime());
     }
 
 }

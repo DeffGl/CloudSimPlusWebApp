@@ -26,4 +26,7 @@ public class SimulationResultDTO {
     private double startTime;
     private double finishTime;
     private double executionTime;
+
+    private double cloudletLifetime;
+    private double vmLifetime;
 }

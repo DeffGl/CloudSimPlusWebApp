@@ -15,4 +15,6 @@ public class SimulationDTO {
     private List<HostDTO> hostDTOS = new ArrayList<>();
     private List<CloudletDTO> cloudletDTOS = new ArrayList<>();
     private List<SimulationResultDTO> simulationResultDTOS = new ArrayList<>();
+    private List<DatacenterDTO> datacenterDTOS = new ArrayList<>();
+    private List<DatacenterBrokerDTO> datacenterBrokerDTOS = new ArrayList<>();
 }

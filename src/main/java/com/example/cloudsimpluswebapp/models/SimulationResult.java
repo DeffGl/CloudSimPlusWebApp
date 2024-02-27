@@ -27,4 +27,10 @@ public class SimulationResult {
 
     @Column(name = "execution_time")
     private double executionTime;
+
+    @Column(name= "cloudlet_lifetime")
+    private double cloudletLifetime;
+
+    @Column(name="vm_lifetime")
+    private double vmLifetime;
 }

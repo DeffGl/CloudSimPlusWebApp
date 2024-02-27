@@ -36,7 +36,16 @@ public class Simulation {
     private List<Cloudlet> cloudlets;
 
     @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "simulation_result_id")
+    @JoinColumn(name = "simulation_id")
     private List<SimulationResult> simulationResults;
+
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "simulation_id")
+    private List<Datacenter> datacenters;
+
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "simulation_id")
+    private List<DatacenterBroker> datacenterBrokers;
+
 
 }

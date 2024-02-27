@@ -27,4 +27,7 @@ public class Cloudlet {
 
     @Column(name="cloudlet_size")
     private long cloudletSize;
+
+    @Column(name="cloudlet_lifetime")
+    private double cloudletLifetime;
 }

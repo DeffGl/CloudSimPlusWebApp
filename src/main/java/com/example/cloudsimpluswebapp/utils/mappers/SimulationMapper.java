@@ -20,19 +20,25 @@ public abstract class SimulationMapper {
     @Mappings({
             @Mapping(target = "hosts", source = "hostDTOS"),
             @Mapping(target = "cloudlets", source = "cloudletDTOS"),
-            @Mapping(target = "simulationResults", source = "simulationResultDTOS")
+            @Mapping(target = "simulationResults", source = "simulationResultDTOS"),
+            @Mapping(target = "datacenters", source = "datacenterDTOS"),
+            @Mapping(target = "datacenterBrokers", source = "datacenterBrokerDTOS")
     })
     public abstract Simulation map(SimulationDTO simulationDTO);
     @Mappings({
             @Mapping(target = "hostDTOS", source = "hosts"),
             @Mapping(target = "cloudletDTOS", source = "cloudlets"),
-            @Mapping(target = "simulationResultDTOS", source = "simulationResults")
+            @Mapping(target = "simulationResultDTOS", source = "simulationResults"),
+            @Mapping(target = "datacenterDTOS", source = "datacenters"),
+            @Mapping(target = "datacenterBrokerDTOS", source = "datacenterBrokers")
     })
     public abstract SimulationDTO map(Simulation simulation);
     @Mappings({
             @Mapping(target = "hosts", source = "hostDTOS"),
             @Mapping(target = "cloudlets", source = "cloudletDTOS"),
-            @Mapping(target = "simulationResults", source = "simulationResultDTOS")
+            @Mapping(target = "simulationResults", source = "simulationResultDTOS"),
+            @Mapping(target = "datacenters", source = "datacenterDTOS"),
+            @Mapping(target = "datacenterBrokers", source = "datacenterBrokerDTOS")
     })
     public abstract void update(SimulationDTO simulationDTO, @MappingTarget Simulation simulation);
 

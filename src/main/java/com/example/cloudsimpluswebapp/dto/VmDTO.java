@@ -11,4 +11,5 @@ public class VmDTO {
     private long vmRam;
     private long vmBw;
     private long vmStorage;
+    private double vmLifetime;
 }

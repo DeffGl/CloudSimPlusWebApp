@@ -35,6 +35,7 @@ var form = new Vue({
         },
 
         validateInputs: function () {
+            //TODO Возможно доделать валидацию по времени выполнения lifetime, надо будет посмотреть
             // Выполнение валидации
             for (var i = 0; i < this.simulationDTO.hostDTOS.length; i++) {
                 var host = this.simulationDTO.hostDTOS[i];
@@ -102,6 +103,7 @@ var form = new Vue({
                 hostBw: '',
                 hostStorage: '',
                 vmDTOS: [{
+                    vmLifetime: '',
                     vmCount: '',
                     vmPes: '',
                     vmRam: '',
@@ -133,6 +135,7 @@ var form = new Vue({
                 this.showTableCloudlet = true
             }
             var newCloudlet = {
+                cloudletLifetime: '',
                 cloudletCount: '',
                 cloudletPes: '',
                 cloudletLength: '',
@@ -161,6 +164,7 @@ var form = new Vue({
                 this.showTableVm = true
             }
             var newVm = {
+                vmLifetime: '',
                 vmCount: '',
                 vmPes: '',
                 vmRam: '',
@@ -199,6 +203,7 @@ var form = new Vue({
             hostBw: 10000,
             hostStorage: 1000000,
             vmDTOS: [{
+                vmLifetime: 3,
                 vmCount: 2,
                 vmPes: 4,
                 vmRam: 512,
@@ -207,6 +212,7 @@ var form = new Vue({
             }]
         });
         this.simulationDTO.cloudletDTOS.push({
+            cloudletLifetime: 5,
             cloudletCount: 4,
             cloudletPes: 2,
             cloudletLength: 10000,

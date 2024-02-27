@@ -3,9 +3,8 @@ body {
     font-size: 16px;
     color: #282828;
 }
-
 h1{
-   text-align: center;
+    text-align: center;
 }
 
 #form {
@@ -97,4 +96,3 @@ label {
     width: 500px;
     margin-bottom: 10px;
 }
-
