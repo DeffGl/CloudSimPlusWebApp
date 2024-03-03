@@ -42,6 +42,7 @@ public abstract class SimulationMapper {
     })
     public abstract void update(SimulationDTO simulationDTO, @MappingTarget Simulation simulation);
 
+    //TODO Здесь проверить маппинг, не мапятся VM
     @AfterMapping
     protected void addVmDTOsToHostDTO(@MappingTarget HostDTO hostDTO, Host host) {
         hostDTO.setVmDTOS(host.getVms().stream()

@@ -38,7 +38,6 @@ public class AuthController {
     @PostMapping("/registration")
     public String performRegistration(@ModelAttribute("personCredentialDTO") @Validated PersonCredentialDTO personCredentialDTO, BindingResult bindingResult) {
         personCredentialsValidator.validate(personCredentialDTO, bindingResult);
-        System.out.println(personCredentialDTO);
 
         if (bindingResult.hasErrors()){
             return "auth/registration";

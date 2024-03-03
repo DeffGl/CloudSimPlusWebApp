@@ -28,23 +28,23 @@ public class Simulation {
     @DateTimeFormat(pattern = "dd/MM/yyyy")
     private Date dateOfCreation;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "simulation_id")
     private List<Host> hosts;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "simulation_id")
     private List<Cloudlet> cloudlets;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "simulation_id")
     private List<SimulationResult> simulationResults;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "simulation_id")
     private List<Datacenter> datacenters;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "simulation_id")
     private List<DatacenterBroker> datacenterBrokers;
 

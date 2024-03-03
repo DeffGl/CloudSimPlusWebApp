@@ -23,7 +23,7 @@ public class Person {
     @Column(name = "email")
     private String email;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "person_id")
     private List<Simulation> simulation;
 }
