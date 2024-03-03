@@ -7,4 +7,5 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class DatacenterDTO {
     private int datacenterCount;
+    private int schedulingInterval;
 }

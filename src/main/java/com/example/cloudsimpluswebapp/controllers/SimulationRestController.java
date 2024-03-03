@@ -42,7 +42,16 @@ public class SimulationRestController {
 
     @PostMapping("/lifetime")
     public ResponseEntity<String> startLifeTimeSimulation(@RequestBody SimulationDTO simulationDTO){
-        simulationService.startLifeTimeSimulation(simulationDTO);
-        return ResponseEntity.ok("");
+        String simulationResultJson = "";
+        try {
+            log.info("TEST CHECK: " + simulationDTO);
+            simulationDTO = simulationService.startLifeTimeSimulation(simulationDTO);
+            simulationResultJson = objectMapper.writeValueAsString(simulationDTO);
+            log.info("TEST CHECK: " + simulationResultJson);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.ok(simulationResultJson);
+
     }
 }

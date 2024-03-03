@@ -16,38 +16,26 @@ h1{
     border-radius: 16px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     overflow: hidden;
-}
-
-#hostTable, #cloudletTable, #vmTable, #resultTable {
     border-collapse: collapse;
     width: 100%;
+    margin: 10px;
 }
 
-#hostTable tbody tr,
-#cloudletTable tbody tr,
-#vmTable tbody tr,
-#resultTable tbody tr {
+.table-container tbody tr {
     background-color: white; /* Белый фон для строк с данными */
     padding: 10px; /* задаем отступ */
 }
-/*TODO надо доделать оформление таблицы*/
-#hostTable tbody tr td table thead
-{
+
+.table-container tbody tr td table thead {
     background-color: #eefbfb;
 }
 
-#hostTable th, #hostTable td,
-#cloudletTable th, #cloudletTable td,
-#vmTable th, #vmTable td,
-#resultTable th, #resultTable td {
+.table-container th, .table-container td {
     text-align: center;
     padding: 8px;
 }
 
-#hostTable th,
-#cloudletTable th,
-#vmTable th,
-#resultTable th {
+.table-container th {
     text-align: center;
 }
 
@@ -71,6 +59,7 @@ input[type="text"] {
     border-radius: 4px;
     border: 1px solid #ccc;
     box-sizing: border-box;
+    margin: 10px;
 }
 
 input[type="submit"] {
@@ -89,7 +78,7 @@ input[type="submit"]:hover {
 
 label {
     display: block;
-
+    margin: 10px;
 }
 
 #nameSimulation {

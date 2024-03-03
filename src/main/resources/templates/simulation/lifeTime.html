@@ -20,6 +20,31 @@
             simulation Errors
         </div>
 
+        <table id="datacenterTable" v-show="showTableDatacenter" class="table-container">
+            <thead>
+            <tr>
+                <th th:text="#{datacenterNumber}"></th>
+                <th th:text="#{datacenterCount}"></th>
+                <th th:text="#{datacenterSchedulingInterval}"></th>
+                <th th:text="#{actions}" style="display: none"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="(datacenter, index) in simulationDTO.datacenterDTOS">
+                <td>{{ index + 1 }}</td>
+                <td>{{ datacenter.datacenterCount }}</td>
+                <!--<td><input type="text" v-model="datacenter.datacenterCount" /></td>-->
+                <td><input type="text" v-model="datacenter.schedulingInterval" /></td>
+                <td>
+                    <button type="button" th:text="#{removeDatacenter}" style="display: none" @click="removeDatacenter(index)"></button>
+                    <button type="button" th:text="#{addDatacenterCopy}" style="display: none" @click="addDatacenterCopy(index)"></button>
+                </td> <!-- Delete button -->
+            </tr>
+            </tbody>
+        </table>
+
+        <button type="button" th:text="#{addDatacenter}" style="display: none" @click="addDatacenter"></button>
+
         <table id="hostTable" v-show="showTableHost" class="table-container">
             <thead>
             <tr>
@@ -38,7 +63,7 @@
             <tr v-for="(host, index) in simulationDTO.hostDTOS">
                 <td>{{ index + 1 }}</td>
                 <td><input type="text" v-model="host.hostCount" /></td>
-                <td><input type="text" v-model="host.hostPes" :class="{ 'invalid-input': invalidPes }"/></td>
+                <td><input type="text" v-model="host.hostPes"/></td>
                 <td><input type="text" v-model="host.hostMips"/></td>
                 <td><input type="text" v-model="host.hostRam"/></td>
                 <td><input type="text" v-model="host.hostBw"/></td>
@@ -71,26 +96,26 @@
                             <td><input type="text" v-model="vm.vmStorage"/></td>
                             <!-- Кнопка удаления VM -->
                             <td>
-                                <button type="button" @click="removeVm(index, vmIndex)">Удалить VM</button>
-                                <button type="button" @click="addVmCopy(index, vmIndex)">Добавить копию VM</button>
+                                <button type="button" th:text="#{removeVm}" @click="removeVm(index, vmIndex)">Удалить VM</button>
+                                <button type="button" th:text="#{addVmCopy}" @click="addVmCopy(index, vmIndex)">Добавить копию VM</button>
                             </td>
                         </tr>
                         </tbody>
                     </table>
                     <!-- Кнопка для добавления новой VM -->
-                    <button type="button" @click="addVm(index)">Добавить VM</button>
+                    <button type="button" th:text="#{addVm}" @click="addVm(index)">Добавить VM</button>
                 </td>
                 <!-- Кнопка удаления хоста -->
                 <td>
-                    <button type="button" @click="removeHost(index)">Удалить хост</button>
-                    <button type="button" @click="addHostCopy(index)">Добавить копию хоста</button>
+                    <button type="button" th:text="#{removeHost}" @click="removeHost(index)">Удалить хост</button>
+                    <button type="button" th:text="#{addHostCopy}" @click="addHostCopy(index)">Добавить копию хоста</button>
                 </td>
             </tr>
             </tbody>
         </table>
 
 
-        <button type="button" @click="addHost">Добавить хост</button>
+        <button type="button" th:text="#{addHost}" @click="addHost">Добавить хост</button>
 
         <table id="cloudletTable" v-show="showTableCloudlet" class="table-container">
             <thead>
@@ -113,19 +138,21 @@
                 <td><input type="text" v-model="cloudlet.cloudletLength"/></td>
                 <td><input type="text" v-model="cloudlet.cloudletSize"/></td>
                 <td>
-                    <button type="button" @click="removeCloudlet(index)">Удалить</button>
-                    <button type="button" @click="addCloudletCopy(index)">Добавить копию cloudlet</button>
+                    <button type="button" th:text="#{removeCloudlet}" @click="removeCloudlet(index)">Удалить</button>
+                    <button type="button" th:text="#{addCloudletCopy}" @click="addCloudletCopy(index)">Добавить копию cloudlet</button>
                 </td> <!-- Delete button -->
             </tr>
             </tbody>
         </table>
-        <button type="button" @click="addCloudlet">Добавить задачу</button>
+        <button type="button" th:text="#{addCloudlet}" @click="addCloudlet">Добавить задачу</button>
 
         <button type="submit" th:text="#{start}"></button>
 
         <table id="resultTable" v-if="simulationDTO.simulationResultDTOS.length > 0" class="table-container">
             <thead>
             <tr>
+                <th th:text="#{cloudletLifetime}"></th>
+                <th th:text="#{vmLifetime}"></th>
                 <th th:text="#{cloudletNumber}"></th>
                 <th th:text="#{status}"></th>
                 <th th:text="#{datacenterNumber}"></th>
@@ -142,8 +169,10 @@
             </tr>
             </thead>
             <tbody>
-            <!--//TODO исправить столбцы таблицы-->
+
             <tr v-for="(result, index) in simulationDTO.simulationResultDTOS">
+                <td><label>{{ result.cloudletLifetime}}</label></td>
+                <td><label>{{ result.vmLifetime }}</label></td>
                 <td><label>{{ result.cloudletNumber }}</label></td>
                 <td><label>{{ result.status }}</label></td>
                 <td><label>{{ result.datacenterBrokerNumber }}</label></td>

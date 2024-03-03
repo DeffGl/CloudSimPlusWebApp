@@ -23,7 +23,7 @@
         <table id="hostTable" v-show="showTableHost" class="table-container">
             <thead>
             <tr>
-                <th th:text="#{hostNumber}">Text</th>
+                <th th:text="#{hostNumber}"></th>
                 <th th:text="#{hostCount}"></th>
                 <th th:text="#{hostPes}"></th>
                 <th th:text="#{hostMips}"></th>
@@ -69,26 +69,26 @@
                             <td><input type="text" v-model="vm.vmStorage"/></td>
                             <!-- Кнопка удаления VM -->
                             <td>
-                                <button type="button" @click="removeVm(index, vmIndex)">Удалить VM</button>
-                                <button type="button" @click="addVmCopy(index, vmIndex)">Добавить копию VM</button>
+                                <button type="button" th:text="#{removeVm}" @click="removeVm(index, vmIndex)">Удалить VM</button>
+                                <button type="button" th:text="#{addVmCopy}" @click="addVmCopy(index, vmIndex)">Добавить копию VM</button>
                             </td>
                         </tr>
                         </tbody>
                     </table>
                     <!-- Кнопка для добавления новой VM -->
-                    <button type="button" @click="addVm(index)">Добавить VM</button>
+                    <button type="button" th:text="#{addVm}" @click="addVm(index)">Добавить VM</button>
                 </td>
                 <!-- Кнопка удаления хоста -->
                 <td>
-                    <button type="button" @click="removeHost(index)">Удалить хост</button>
-                    <button type="button" @click="addHostCopy(index)">Добавить копию хоста</button>
+                    <button type="button" th:text="#{removeHost}" @click="removeHost(index)">Удалить хост</button>
+                    <button type="button" th:text="#{addHostCopy}" @click="addHostCopy(index)">Добавить копию хоста</button>
                 </td>
             </tr>
             </tbody>
         </table>
 
 
-        <button type="button" @click="addHost">Добавить хост</button>
+        <button type="button" th:text="#{addHost}" @click="addHost">Добавить хост</button>
 
         <table id="cloudletTable" v-show="showTableCloudlet" class="table-container">
             <thead>
@@ -109,13 +109,13 @@
                 <td><input type="text" v-model="cloudlet.cloudletLength"/></td>
                 <td><input type="text" v-model="cloudlet.cloudletSize"/></td>
                 <td>
-                    <button type="button" @click="removeCloudlet(index)">Удалить</button>
-                    <button type="button" @click="addCloudletCopy(index)">Добавить копию cloudlet</button>
+                    <button type="button" th:text="#{removeCloudlet}" @click="removeCloudlet(index)">Удалить</button>
+                    <button type="button" th:text="#{addCloudletCopy}" @click="addCloudletCopy(index)">Добавить копию cloudlet</button>
                 </td> <!-- Delete button -->
             </tr>
             </tbody>
         </table>
-        <button type="button" @click="addCloudlet">Добавить задачу</button>
+        <button type="button" th:text="#{addCloudlet}" @click="addCloudlet">Добавить задачу</button>
 
         <button type="submit" th:text="#{start}"></button>
 

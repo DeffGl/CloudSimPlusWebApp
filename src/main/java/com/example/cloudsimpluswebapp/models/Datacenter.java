@@ -18,4 +18,7 @@ public class Datacenter {
 
     @Column(name = "datacenter_count")
     private int datacenterCount;
+
+    @Column(name="datacenter_scheduling_interval")
+    private int schedulingInterval;
 }

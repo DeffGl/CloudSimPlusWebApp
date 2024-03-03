@@ -4,7 +4,8 @@ var form = new Vue({
         simulationDTO: JSON.parse(document.getElementById('simulationDTOJson').getAttribute('data-simulation-dto')),
         showTableHost: true,
         showTableCloudlet: true,
-        showTableVm: true
+        showTableVm: true,
+        showTableDatacenter: true
     },
     methods: {
         submitForm: function () {
@@ -14,7 +15,7 @@ var form = new Vue({
             var form = document.getElementById('simulationForm');
             var actionUrl = form.getAttribute('action');
 
-            if (this.validateInputs()){
+            if (this.validateInputs()) {
                 // Отправка данных на сервер с помощью Axios
                 axios.post(actionUrl, formData, {
                     headers: {
@@ -90,9 +91,8 @@ var form = new Vue({
         },
 
 
-
         addHost: function () {
-            if (!this.showTableHost){
+            if (!this.showTableHost) {
                 this.showTableHost = true
             }
             var newHost = {
@@ -120,7 +120,7 @@ var form = new Vue({
             }
         },
         // Метод для добавления копии хоста по индексу
-        addHostCopy: function(index) {
+        addHostCopy: function (index) {
             var hostToCopy = this.simulationDTO.hostDTOS[index];
             var newHost = Object.assign({}, hostToCopy); // Создаем копию хоста
             // Создаем новый массив vmDTOS для нового хоста
@@ -129,9 +129,33 @@ var form = new Vue({
             this.simulationDTO.hostDTOS.splice(index + 1, 0, newHost);
         },
 
+        addDatacenter: function () {
+            if (!this.showTableDatacenter) {
+                this.showTableDatacenter = true;
+            }
+            var newDatacenter = {
+                datacenterCount: '',
+                schedulingInterval: ''
+            };
+            this.simulationDTO.datacenterDTOS.push(newDatacenter);
+        },
+        removeDatacenter: function (index) {
+            this.simulationDTO.datacenterDTOS.splice(index, 1);
+            if (this.simulationDTO.datacenterDTOS.length === 0) {
+                this.showTableDatacenter = false;
+            }
+        },
+        // Метод для добавления копии datacenter по индексу
+        addDatacenterCopy: function (index) {
+            var datacenterToCopy = this.simulationDTO.datacenterDTOS[index];
+            var newDatacenter = Object.assign({}, datacenterToCopy); // Создаем копию datacenter
+            // Вставляем копию после текущего datacenter
+            this.simulationDTO.datacenterDTOS.splice(index + 1, 0, newDatacenter);
+        },
+
 
         addCloudlet: function () {
-            if (!this.showTableCloudlet){
+            if (!this.showTableCloudlet) {
                 this.showTableCloudlet = true
             }
             var newCloudlet = {
@@ -151,7 +175,7 @@ var form = new Vue({
         },
 
         // Метод для добавления копии cloudlet по индексу
-        addCloudletCopy: function(index) {
+        addCloudletCopy: function (index) {
             var cloudletToCopy = this.simulationDTO.cloudletDTOS[index];
             var newCloudlet = Object.assign({}, cloudletToCopy); // Создаем копию cloudlet
             // Вставляем копию после текущего cloudlet
@@ -160,7 +184,7 @@ var form = new Vue({
 
 
         addVm: function (index) {
-            if (!this.showTableVm){
+            if (!this.showTableVm) {
                 this.showTableVm = true
             }
             var newVm = {
@@ -180,7 +204,7 @@ var form = new Vue({
             }
         },
         // Метод для добавления копии VM по индексу хоста и VM
-        addVmCopy: function(hostIndex, vmIndex) {
+        addVmCopy: function (hostIndex, vmIndex) {
             var vmToCopy = this.simulationDTO.hostDTOS[hostIndex].vmDTOS[vmIndex];
             var newVm = Object.assign({}, vmToCopy); // Создаем копию VM
             // Вставляем копию после текущей VM
@@ -195,28 +219,63 @@ var form = new Vue({
     mounted: function () {
         // После загрузки компонента добавим пустые объекты в списки
 
-        this.simulationDTO.hostDTOS.push({
-            hostCount: 2,
-            hostPes: 8,
-            hostMips: 1000,
-            hostRam: 2048,
-            hostBw: 10000,
-            hostStorage: 1000000,
-            vmDTOS: [{
-                vmLifetime: 3,
-                vmCount: 2,
-                vmPes: 4,
-                vmRam: 512,
-                vmBw: 1000,
-                vmStorage: 10000
-            }]
-        });
-        this.simulationDTO.cloudletDTOS.push({
-            cloudletLifetime: 5,
-            cloudletCount: 4,
-            cloudletPes: 2,
-            cloudletLength: 10000,
-            cloudletSize: 1024
-        });
+        switch (this.simulationDTO.simulationType) {
+            case "BASIC_SIMULATION":
+                this.simulationDTO.hostDTOS.push({
+                    hostCount: 2,
+                    hostPes: 8,
+                    hostMips: 1000,
+                    hostRam: 2048,
+                    hostBw: 10000,
+                    hostStorage: 1000000,
+                    vmDTOS: [{
+                        vmCount: 2,
+                        vmPes: 4,
+                        vmRam: 512,
+                        vmBw: 1000,
+                        vmStorage: 10000
+                    }]
+                });
+                this.simulationDTO.cloudletDTOS.push({
+                    cloudletCount: 4,
+                    cloudletPes: 2,
+                    cloudletLength: 10000,
+                    cloudletSize: 1024
+                });
+                break;
+            case "LIFETIME_SIMULATION":
+                this.simulationDTO.hostDTOS.push({
+                    hostCount: 3,
+                    hostPes: 16,
+                    hostMips: 1000,
+                    hostRam: 2048,
+                    hostBw: 10000,
+                    hostStorage: 1000000,
+                    vmDTOS: [{
+                        vmLifetime: 3,
+                        vmCount: 4,
+                        vmPes: 4,
+                        vmRam: 512,
+                        vmBw: 1000,
+                        vmStorage: 10000
+                    }]
+                });
+                this.simulationDTO.cloudletDTOS.push({
+                    cloudletLifetime: 5,
+                    cloudletCount: 4,
+                    cloudletPes: 2,
+                    cloudletLength: 10000,
+                    cloudletSize: 1024
+                });
+
+                this.simulationDTO.datacenterDTOS.push({
+                    datacenterCount: 1,
+                    schedulingInterval: 3
+                });
+                break;
+            default:
+
+                break;
+        }
     }
 });

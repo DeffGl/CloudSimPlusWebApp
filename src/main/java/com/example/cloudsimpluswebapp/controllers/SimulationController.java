@@ -1,6 +1,7 @@
 package com.example.cloudsimpluswebapp.controllers;
 
 import com.example.cloudsimpluswebapp.dto.SimulationDTO;
+import com.example.cloudsimpluswebapp.models.enums.SimulationType;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
@@ -32,6 +33,7 @@ public class SimulationController {
     @GetMapping("/basic")
     public String getBasicSimulationPage(Model model) throws JsonProcessingException {
         SimulationDTO simulationDTO = new SimulationDTO();
+        simulationDTO.setSimulationType(SimulationType.BASIC_SIMULATION);
         String simulationDTOJson = objectMapper.writeValueAsString(simulationDTO);
         log.info(simulationDTOJson);
         model.addAttribute("simulationDTOJson", simulationDTOJson);
@@ -42,6 +44,7 @@ public class SimulationController {
     @GetMapping("/lifetime")
     public String getCloudletAndVmLifeTimeSimulation(Model model) throws JsonProcessingException {
         SimulationDTO simulationDTO = new SimulationDTO();
+        simulationDTO.setSimulationType(SimulationType.LIFETIME_SIMULATION);
         String simulationDTOJson = objectMapper.writeValueAsString(simulationDTO);
         log.info(simulationDTOJson);
         model.addAttribute("simulationDTOJson", simulationDTOJson);

@@ -1,7 +1,11 @@
 package com.example.cloudsimpluswebapp.simulations.impl;
 
+import com.example.cloudsimpluswebapp.dto.CloudletDTO;
+import com.example.cloudsimpluswebapp.dto.DatacenterDTO;
+import com.example.cloudsimpluswebapp.dto.HostDTO;
 import com.example.cloudsimpluswebapp.dto.SimulationDTO;
 import com.example.cloudsimpluswebapp.simulations.CloudletAndVmLifeTimeSimulation;
+import org.cloudsimplus.allocationpolicies.VmAllocationPolicyBestFit;
 import org.cloudsimplus.brokers.DatacenterBroker;
 import org.cloudsimplus.brokers.DatacenterBrokerSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
@@ -33,65 +37,33 @@ import java.util.stream.IntStream;
 @Service
 public class CloudletAndVmLifeTimeSimulationImpl implements CloudletAndVmLifeTimeSimulation {
 
-    int HOSTS = 3;
-    int HOST_PES = 10;
-
-    int VMS = 4;
-    int VM_PES = 4;
-    int VM_MIPS = 1000;
-
-    int CLOUDLETS = 4;
-    int CLOUDLET_PES = 2;
-    int CLOUDLET_LENGTH = 10_000;
-
-    /**
-     * If the scheduling interval is not multiple of the VM/Cloudlet lifetime,
-     * Cloudlets may execute more than you desire.
-     * @see Datacenter#getSchedulingInterval()
-     */
-    int SCHEDULING_INTERVAL = 3;
-
-    /**
-     * Maximum time (in seconds) Cloudlets are allowed to execute.
-     * Set -1 to disable lifeTime and execute the Cloudlet entirely.
-     */
-    double CLOUDLET_LIFE_TIME = 5;
-
-    /**
-     * Maximum time (in seconds) some VMs are allowed to execute.
-     * @see Lifetimed#setLifeTime(double)
-     */
-    double VM_LIFE_TIME = 3;
-
     @Override
     public List<Cloudlet> startLifeTimeSimulation(SimulationDTO simulationDTO) {
 
-        CloudSimPlus simulation;
-        DatacenterBroker broker0;
-        List<Vm> vmList;
-        List<Cloudlet> cloudletList;
-        Datacenter datacenter0;
+        List<HostDTO> hosts = simulationDTO.getHostDTOS();
+        List<CloudletDTO> cloudlets = simulationDTO.getCloudletDTOS();
+        List<DatacenterDTO> datacenterDTOS = simulationDTO.getDatacenterDTOS();
 
-         /*Enables just some level of log messages.
-          Make sure to import org.cloudsimplus.util.Log;*/
-        //Log.setLevel(ch.qos.logback.classic.Level.WARN);
+        CloudSimPlus cloudSimPlus = new CloudSimPlus();
+        List<Host> hostList = createHosts(hosts);
+        List<Vm> vmList = createVms(hosts);
+        List<Cloudlet> cloudletList = createCloudlets(cloudlets);
 
-        final double startSecs = TimeUtil.currentTimeSecs();
-        System.out.printf("Simulation started at %s%n%n", LocalTime.now());
-        simulation = new CloudSimPlus();
-        datacenter0 = createDatacenter(simulation);
+        Datacenter datacenter0 = new DatacenterSimple(cloudSimPlus, hostList, new VmAllocationPolicyBestFit());
+        if (!datacenterDTOS.isEmpty()){
+            datacenter0.setSchedulingInterval(datacenterDTOS.get(0).getSchedulingInterval());
+        }
 
-        //Creates a broker that is a software acting on behalf of a cloud customer to manage his/her VMs and Cloudlets
-        broker0 = new DatacenterBrokerSimple(simulation);
+        DatacenterBroker broker0 = new DatacenterBrokerSimple(cloudSimPlus);
 
-        vmList = createVms();
-        setVmsLifeTime(vmList);
-
-        cloudletList = createCloudlets();
         broker0.submitVmList(vmList);
         broker0.submitCloudletList(cloudletList);
 
-        simulation.start();
+        final double startSecs = TimeUtil.currentTimeSecs();
+
+        System.out.printf("Simulation started at %s%n%n", LocalTime.now());
+
+        cloudSimPlus.start();
 
         final var cloudletFinishedList = broker0.getCloudletFinishedList();
         cloudletFinishedList.sort(Comparator.comparingLong(c -> c.getVm().getId()));
@@ -101,80 +73,60 @@ public class CloudletAndVmLifeTimeSimulationImpl implements CloudletAndVmLifeTim
                 .build();
         System.out.printf("Simulation finished at %s. Execution time: %.2f seconds%n", LocalTime.now(), TimeUtil.elapsedSeconds(startSecs));
 
-        return null;
+        return broker0.getCloudletFinishedList();
     }
 
-    /**
-     * Gets the lifetime as a String.
-     * If the lifetime is {@link Double#MAX_VALUE} (the default value),
-     * returns an empty string to indicate the attribute was not set.
-     *
-     * @param entity a Cloudlet of VM entity
-     * @return a String lifetime
-     */
+
     private String getLifeTimeStr(final Lifetimed entity) {
         return entity.getLifeTime() == Double.MAX_VALUE ? "" : "%.2f".formatted(entity.getLifeTime());
     }
 
-    /**
-     * Sets a lifetime for half of the VMs.
-     */
-    private void setVmsLifeTime(List<Vm> vmList) {
-        vmList.stream()
-                .filter(vm -> vm.getId() < VMS/2)
-                .forEach(vm -> vm.setLifeTime(VM_LIFE_TIME));
+    private List<Host> createHosts(List<HostDTO> hosts) {
+        List<Host> hostList = new ArrayList<>();
+        hosts.stream()
+                .flatMap(host -> IntStream.range(0, host.getHostCount()).mapToObj(i -> createHost(host)))
+                .forEach(hostList::add);
+        return hostList;
     }
 
-    private Datacenter createDatacenter(CloudSimPlus simulation) {
-        final var hostList = new ArrayList<Host>(HOSTS);
-        for(int i = 0; i < HOSTS; i++) {
-            final var host = createHost();
-            hostList.add(host);
-        }
-
-        final var datacenter = new DatacenterSimple(simulation, hostList);
-        datacenter.setSchedulingInterval(SCHEDULING_INTERVAL);
-        return datacenter;
+    private Host createHost(HostDTO host) {
+        List<Pe> peList = new ArrayList<>();
+        IntStream.range(0, host.getHostPes())
+                .mapToObj(i -> new PeSimple(host.getHostMips()))
+                .forEach(peList::add);
+        return new HostSimple(host.getHostRam(), host.getHostBw(), host.getHostStorage(), peList).setVmScheduler(new VmSchedulerTimeShared());
     }
 
-    private Host createHost() {
-        final var peList = new ArrayList<Pe>(HOST_PES);
-        //List of Host's CPUs (Processing Elements, PEs)
-        IntStream.range(0, HOST_PES).forEach(i -> peList.add(new PeSimple(1000)));
+    private List<Cloudlet> createCloudlets(List<CloudletDTO> cloudlets) {
+        final var cloudletList = new ArrayList<Cloudlet>();
 
-        final long ram = 2048; //in Megabytes
-        final long bw = 10000; //in Megabits/s
-        final long storage = 1000000; //in Megabytes
-        final var host = new HostSimple(ram, bw, storage, peList);
-        host.setVmScheduler(new VmSchedulerTimeShared());
-        return host;
-    }
-
-
-    private List<Cloudlet> createCloudlets() {
-        final var cloudletList = new ArrayList<Cloudlet>(CLOUDLETS);
-        for (int i = 0; i < CLOUDLETS; i++) {
-            final var cloudlet = new CloudletSimple(i, CLOUDLET_LENGTH, CLOUDLET_PES);
-            cloudlet
-                    .setFileSize(1024)
-                    .setOutputSize(1024)
-                    .setUtilizationModelCpu(new UtilizationModelFull())
-                    .setUtilizationModelBw(new UtilizationModelStochastic())
-                    .setUtilizationModelRam(new UtilizationModelStochastic())
-                    .setLifeTime(CLOUDLET_LIFE_TIME);
-            cloudletList.add(cloudlet);
-        }
-
+        cloudlets.stream()
+                .flatMap(cloudlet -> IntStream.range(0, cloudlet.getCloudletCount()).mapToObj(i->{
+                    Cloudlet createdCloudlet = new CloudletSimple(cloudlet.getCloudletLength(), cloudlet.getCloudletPes());
+                    createdCloudlet.setSizes(cloudlet.getCloudletSize());
+                    createdCloudlet.setUtilizationModelCpu(new UtilizationModelFull());
+                    createdCloudlet.setUtilizationModelBw(new UtilizationModelStochastic());
+                    createdCloudlet.setUtilizationModelRam(new UtilizationModelStochastic());
+                    createdCloudlet.setLifeTime(cloudlet.getCloudletLifetime());
+                    return createdCloudlet;
+                })).forEach(cloudletList::add);
         return cloudletList;
     }
 
-    private List<Vm> createVms() {
-        final var vmList = new ArrayList<Vm>(VMS);
-        for (int i = 0; i < VMS; i++) {
-            final var vm = new VmSimple(i, VM_MIPS, VM_PES);
-            vmList.add(vm);
-        }
-
+    private List<Vm> createVms(List<HostDTO> hosts) {
+        List<Vm> vmList = new ArrayList<>();
+        hosts.stream()
+                .flatMap(host -> IntStream.range(0, host.getHostCount())
+                        .mapToObj(i -> host.getVmDTOS().stream()
+                                .flatMap(vm -> IntStream.range(0, vm.getVmCount())
+                                        .mapToObj(j -> {
+                                            Vm createdVm = new VmSimple(host.getHostMips(), vm.getVmPes());
+                                            createdVm.setRam(vm.getVmRam()).setBw(vm.getVmBw()).setSize(vm.getVmStorage()).setLifeTime(vm.getVmLifetime());
+                                            return createdVm;
+                                        }))
+                        )
+                )
+                .forEach(vmStream -> vmStream.forEach(vmList::add));
         return vmList;
     }
 }

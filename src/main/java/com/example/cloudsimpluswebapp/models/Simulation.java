@@ -1,5 +1,6 @@
 package com.example.cloudsimpluswebapp.models;
 
+import com.example.cloudsimpluswebapp.models.enums.SimulationType;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -46,6 +47,10 @@ public class Simulation {
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "simulation_id")
     private List<DatacenterBroker> datacenterBrokers;
+
+    @Column(name = "simulation_type")
+    @Enumerated(EnumType.STRING)
+    private SimulationType simulationType;
 
 
 }

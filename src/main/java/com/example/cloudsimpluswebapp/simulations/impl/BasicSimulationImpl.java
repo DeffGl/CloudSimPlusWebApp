@@ -51,7 +51,7 @@ public class BasicSimulationImpl implements BasicSimulation {
 
         cloudSimPlus.start();
         new CloudletsTableBuilder(broker0.getCloudletFinishedList()).build();
-        broker0.getCloudletFinishedList().get(0);
+
         return broker0.getCloudletFinishedList();
     }
 

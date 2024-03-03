@@ -1,5 +1,6 @@
 package com.example.cloudsimpluswebapp.dto;
 
+import com.example.cloudsimpluswebapp.models.enums.SimulationType;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -17,4 +18,5 @@ public class SimulationDTO {
     private List<SimulationResultDTO> simulationResultDTOS = new ArrayList<>();
     private List<DatacenterDTO> datacenterDTOS = new ArrayList<>();
     private List<DatacenterBrokerDTO> datacenterBrokerDTOS = new ArrayList<>();
+    private SimulationType simulationType;
 }

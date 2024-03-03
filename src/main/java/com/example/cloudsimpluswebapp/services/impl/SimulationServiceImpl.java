@@ -47,7 +47,13 @@ public class SimulationServiceImpl implements SimulationService {
 
     @Override
     public SimulationDTO startLifeTimeSimulation(SimulationDTO simulationDTO) {
-        cloudletAndVmLifeTimeSimulation.startLifeTimeSimulation(simulationDTO);
+        try {
+            List<Cloudlet> resultList = cloudletAndVmLifeTimeSimulation.startLifeTimeSimulation(simulationDTO);
+            simulationDTO.setSimulationResultDTOS(resultList.stream().map(simulationResultMapper::map).toList());
+            return simulationDTO;
+        } catch (Exception e){
+            e.printStackTrace();
+        }
         return null;
     }
 }
