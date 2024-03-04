@@ -52,5 +52,8 @@ public class Simulation {
     @Enumerated(EnumType.STRING)
     private SimulationType simulationType;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "person_id")
+    private Person person;
 
 }

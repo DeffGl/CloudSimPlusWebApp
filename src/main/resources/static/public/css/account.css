@@ -1,0 +1,40 @@
+body {
+    font-family: 'Nunito', sans-serif;
+    font-size: 16px;
+    color: #282828;
+}
+h1{
+    text-align: center;
+}
+
+#form {
+    margin: 20px;
+}
+
+.table-container {
+    background-color: #eefbfb;
+    border-radius: 16px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    border-collapse: collapse;
+    width: 100%;
+    margin: 10px;
+}
+
+.table-container tbody tr {
+    background-color: white; /* Белый фон для строк с данными */
+    padding: 10px; /* задаем отступ */
+}
+
+.table-container tbody tr td table thead {
+    background-color: #eefbfb;
+}
+
+.table-container th, .table-container td {
+    text-align: center;
+    padding: 8px;
+}
+
+.table-container th {
+    text-align: center;
+}

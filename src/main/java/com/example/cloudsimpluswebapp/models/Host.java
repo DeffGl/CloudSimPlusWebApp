@@ -34,8 +34,8 @@ public class Host {
 
     @Column(name = "host_storage")
     private long hostStorage;
-//TODO Нужно реализовать корректное отображение виртуальных машин и работу с ними на фронте
-    @OneToMany(fetch = FetchType.LAZY)
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "host_id")
     private List<Vm> vms;
 }
