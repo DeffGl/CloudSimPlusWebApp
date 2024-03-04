@@ -6,6 +6,7 @@ var form = new Vue({
         showTableCloudlet: true,
         showTableVm: true,
         showTableDatacenter: true
+        //TODO Доделать тут формирование таблицы в ЛК
     },
     methods: {
         submitForm: function () {
