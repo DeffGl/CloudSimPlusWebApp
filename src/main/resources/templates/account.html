@@ -7,39 +7,58 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap">
 </head>
 <body>
-<div id="simulationDTOJson" th:data-simulation-dto="${simulationDTOJson}"></div>
 <div id="form">
-
-    <table id="simulationTable" class="table-container">
+    <div id="simulationDTOJson" th:data-simulation-dto="${simulationDTOJson}"></div>
+    <h1>Список Simulation DTOs</h1>
+    <table class="table-container">
         <thead>
         <tr>
             <th th:text="#{simulationNumber}"></th>
             <th th:text="#{simulationName}"></th>
-            <th th:text="#{datacenterCount}"></th>
-            <!--<th th:text="#{datacenterBrokerCount}"></th>-->
-            <th th:text="#{hostCount}"></th>
-            <th th:text="#{vmCount}"></th>
-            <th th:text="#{cloudletCount}"></th>
             <th th:text="#{dateOfCreation}"></th>
+            <th th:text="#{simulationType}"></th>
             <th th:text="#{actions}"></th>
         </tr>
         </thead>
         <tbody>
+        <!-- Используйте Thymeleaf для итерации по списку и отображения значений -->
         <tr v-for="(simulation, index) in simulationDTO">
             <td>{{ index + 1 }}</td>
-            <td>{{ simulation.nameSimulation == null ? "Без названия" : simulation.nameSimulation}}</td>
             <td>{{ simulation.nameSimulation }}</td>
-            <td>{{ simulation.hostDTO }}</td>
-            <td>{{ simulation.nameSimulation }}</td>
-            <td>{{ simulation.nameSimulation }}</td>
-            <td>{{ simulation.nameSimulation }}</td>
+            <td>{{ simulation.dateOfCreation }}</td>
+            <td>{{ simulation.simulationType }}</td>
             <td>
-                <button type="button" th:text="#{repeatSimulation}"></button>
+                <!-- Добавляем кнопку для отправки DTO на новый адрес -->
+                <form @submit.prevent="repeatSimulation(simulation)">
+                    <button type="submit">Повторить симуляцию</button>
+                </form>
             </td>
         </tr>
         </tbody>
     </table>
 </div>
+
+<!--<table id="simulationTable" class="table-container">
+    <thead>
+    <tr>
+        <th th:text="#{simulationNumber}"></th>
+        <th th:text="#{simulationName}"></th>
+        <th th:text="#{dateOfCreation}"></th>
+        <th th:text="#{actions}"></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr v-for="(simulation, index) in simulationDTO">
+        <td>{{ index + 1 }}</td>
+        <td>{{ simulation.nameSimulation == null ? "Без названия" : simulation.nameSimulation}}</td>
+        <td>{{ simulation.dateOfCreation }}</td>
+        <td>
+            <button type="button" th:text="#{repeatSimulation}"></button>
+        </td>
+    </tr>
+    </tbody>
+</table>-->
+
 <script src="https://cdn.jsdelivr.net/npm/vue@2.7.8/dist/vue.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script src="/public/js/main.js"></script>

@@ -6,7 +6,6 @@ var form = new Vue({
         showTableCloudlet: true,
         showTableVm: true,
         showTableDatacenter: true
-        //TODO Доделать тут формирование таблицы в ЛК
     },
     methods: {
         submitForm: function () {
@@ -214,13 +213,19 @@ var form = new Vue({
         // Метод для определения, нужно ли показывать таблицу VM для указанного хоста
         shouldShowVmTable: function (host) {
             return host.vmDTOS.length > 0;
+        },
+        repeatSimulation: function (simulation){
+            var actionUrl = simulation.actionUrl + "?simulationId=" + simulation.simulationId;
+            console.log(simulation);
+            console.log(actionUrl);
+            window.location.href = actionUrl;
         }
 
     },
     mounted: function () {
         // После загрузки компонента добавим пустые объекты в списки
 
-        switch (this.simulationDTO.simulationType) {
+       /* switch (this.simulationDTO.simulationType) {
             case "BASIC_SIMULATION":
                 this.simulationDTO.hostDTOS.push({
                     hostCount: 2,
@@ -277,6 +282,6 @@ var form = new Vue({
             default:
 
                 break;
-        }
+        }*/
     }
 });

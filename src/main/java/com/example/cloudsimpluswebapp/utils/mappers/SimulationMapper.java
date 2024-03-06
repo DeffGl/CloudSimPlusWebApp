@@ -26,6 +26,7 @@ public abstract class SimulationMapper {
     })
     public abstract Simulation map(SimulationDTO simulationDTO);
     @Mappings({
+            @Mapping(target = "simulationId", source = "id"),
             @Mapping(target = "hostDTOS", source = "hosts"),
             @Mapping(target = "cloudletDTOS", source = "cloudlets"),
             @Mapping(target = "simulationResultDTOS", source = "simulationResults"),

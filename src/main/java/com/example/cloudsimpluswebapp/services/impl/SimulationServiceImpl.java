@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class SimulationServiceImpl implements SimulationService {
@@ -65,6 +66,11 @@ public class SimulationServiceImpl implements SimulationService {
     @Override
     public List<SimulationDTO> getSimulationsByPerson() {
         return simulationRepository.getSimulationsByPerson(currentPersonResolver.getCurrentPerson()).stream().map(simulationMapper::map).toList();
+    }
+
+    @Override
+    public SimulationDTO getSimulation(UUID simulationId) {
+        return simulationMapper.map(simulationRepository.findById(simulationId).get());
     }
 
     private void throwException(Exception e, SimulationDTO simulationDTO) throws SimulationException {
