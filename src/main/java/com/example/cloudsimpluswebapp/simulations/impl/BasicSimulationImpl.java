@@ -34,7 +34,6 @@ public class BasicSimulationImpl implements BasicSimulation {
     private static final Logger log = LoggerFactory.getLogger(BasicSimulationImpl.class);
     @Override
     public List<Cloudlet> startBasicSimulation(SimulationDTO simulationDTO) {
-        //TODO Привести в порядок метод симуляции
         List<HostDTO> hosts = simulationDTO.getHostDTOS();
         List<CloudletDTO> cloudlets = simulationDTO.getCloudletDTOS();
 
@@ -63,11 +62,6 @@ public class BasicSimulationImpl implements BasicSimulation {
         return hostList;
     }
 
-  /*  private Datacenter createDatacenter(List<Host> hosts, CloudSimPlus cloudSimPlus) {
-        //Uses a VmAllocationPolicySimple by default to allocate VMs
-        return new DatacenterSimple(cloudSimPlus, hostList, new VmAllocationPolicyBestFit());
-    }*/
-
     private Host createHost(HostDTO host) {
         List<Pe> peList = new ArrayList<>();
         IntStream.range(0, host.getHostPes())
@@ -76,9 +70,6 @@ public class BasicSimulationImpl implements BasicSimulation {
         return new HostSimple(host.getHostRam(), host.getHostBw(), host.getHostStorage(), peList).setVmScheduler(new VmSchedulerSpaceShared());
     }
 
-    /**
-     * Creates a list of VMs.
-     */
    private List<Vm> createVms(List<HostDTO> hosts) {
        List<Vm> vmList = new ArrayList<>();
        hosts.stream()
@@ -110,13 +101,8 @@ public class BasicSimulationImpl implements BasicSimulation {
         return vmList;
     }
 
-
-    /**
-     * Creates a list of Cloudlets.
-     */
     private List<Cloudlet> createCloudlets(List<CloudletDTO> cloudlets) {
         final var cloudletList = new ArrayList<Cloudlet>();
-        //UtilizationModel defining the Cloudlets use only 50% of any resource all the time
         final var utilizationModel = new UtilizationModelDynamic(0.5);
 
 
@@ -128,6 +114,4 @@ public class BasicSimulationImpl implements BasicSimulation {
                 })).forEach(cloudletList::add);
         return cloudletList;
     }
-
-
 }

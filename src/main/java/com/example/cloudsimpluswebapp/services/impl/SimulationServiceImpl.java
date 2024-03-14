@@ -65,12 +65,19 @@ public class SimulationServiceImpl implements SimulationService {
 
     @Override
     public List<SimulationDTO> getSimulationsByPerson() {
-        return simulationRepository.getSimulationsByPerson(currentPersonResolver.getCurrentPerson()).stream().map(simulationMapper::map).toList();
+        return simulationRepository
+                .getSimulationsByPerson(currentPersonResolver.getCurrentPerson())
+                .stream()
+                .map(simulationMapper::map)
+                .map(simulationDTO -> simulationDTO
+                        .setActionUrl(simulationDTO.getSimulationType()
+                                .getUrl()))
+                .toList();
     }
 
     @Override
     public SimulationDTO getSimulation(UUID simulationId) {
-        return simulationMapper.map(simulationRepository.findById(simulationId).get());
+        return simulationMapper.map(simulationRepository.findById(simulationId).orElseThrow());
     }
 
     private void throwException(Exception e, SimulationDTO simulationDTO) throws SimulationException {

@@ -1,0 +1,30 @@
+.table-container {
+    background-color: #eefbfb;
+    border-radius: 16px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.table-container table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.table-container tbody tr {
+    background-color: white;
+    padding: 10px;
+}
+
+.table-container tbody tr td table thead {
+    background-color: #eefbfb;
+}
+
+.table-container th,
+.table-container td {
+    text-align: center;
+    padding: 8px;
+}
+
+.table-container th {
+    text-align: center;
+}

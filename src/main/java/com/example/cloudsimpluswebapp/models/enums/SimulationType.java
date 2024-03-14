@@ -4,14 +4,12 @@ import lombok.Getter;
 
 @Getter
 public enum SimulationType {
-    BASIC_SIMULATION("/simulation/basic", "BASIC_SIMULATION"),
-    LIFETIME_SIMULATION("/simulation/lifetime", "LIFETIME_SIMULATION");
+    BASIC_SIMULATION("/simulation/basic"),
+    LIFETIME_SIMULATION("/simulation/lifetime");
 
     private final String url;
-    private final String displayName;
 
-    SimulationType(String url, String displayName) {
+    SimulationType(String url) {
         this.url = url;
-        this.displayName = displayName;
     }
 }

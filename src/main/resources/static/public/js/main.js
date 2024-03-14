@@ -16,7 +16,6 @@ var form = new Vue({
             var actionUrl = form.getAttribute('action');
 
             if (this.validateInputs()) {
-                // Отправка данных на сервер с помощью Axios
                 axios.post(actionUrl, formData, {
                     headers: {
                         'X-CSRF-TOKEN': csrfToken,
@@ -24,12 +23,10 @@ var form = new Vue({
                     }
                 })
                     .then((response) => {
-                        // Обработка успешного ответа от сервера
                         console.log(response.data);
-                        this.simulationDTO = response.data; // Здесь this будет ссылаться на ваш объект класса или компонента
+                        this.simulationDTO = response.data;
                     })
                     .catch((error) => {
-                        // Обработка ошибки
                         console.error(error);
                     });
             }
@@ -44,8 +41,8 @@ var form = new Vue({
                 var totalVmRam = 0;
                 var totalVmBw = 0;
                 var totalVmStorage = 0;
-                var totalVmCount = 0; // Добавляем переменную для хранения общего количества VM
-                // Суммирование параметров всех VM для текущего хоста
+                var totalVmCount = 0;
+
                 for (var j = 0; j < host.vmDTOS.length; j++) {
                     var vm = host.vmDTOS[j];
                     totalVmCount += vm.vmCount; // Учитываем количество VM
@@ -55,39 +52,26 @@ var form = new Vue({
                     totalVmStorage += vm.vmStorage * vm.vmCount; // Учитываем количество VM
                 }
 
-                console.log(totalVmPes)
-                console.log(totalVmRam)
-                console.log(totalVmBw)
-                console.log(totalVmStorage)
 
-                console.log("")
-                console.log("")
-                console.log("")
-
-                console.log(host.hostPes)
-                console.log(host.hostRam)
-                console.log(host.hostBw)
-                console.log(host.hostStorage)
-                // Проверка, что сумма параметров VM не превышает параметры хоста
-                if (totalVmPes > host.hostPes) { // Учитываем количество хостов
+                if (totalVmPes > host.hostPes) {
                     alert('Суммарное количество процессоров виртуальных машин не должно превышать количество процессоров хоста');
-                    return false; // Возвращаем false, если проверка не пройдена
+                    return false;
                 }
-                if (totalVmRam > host.hostRam) { // Учитываем количество хостов
+                if (totalVmRam > host.hostRam) {
                     alert('Суммарный объем RAM виртуальных машин не должен превышать объем RAM хоста');
                     return false;
                 }
-                if (totalVmBw > host.hostBw) { // Учитываем количество хостов
+                if (totalVmBw > host.hostBw) {
                     alert('Суммарная пропускная способность виртуальных машин не должна превышать пропускную способность хоста');
                     return false;
                 }
-                if (totalVmStorage > host.hostStorage) { // Учитываем количество хостов
+                if (totalVmStorage > host.hostStorage) {
                     alert('Суммарный объем хранилища виртуальных машин не должен превышать объем хранилища хоста');
                     return false;
                 }
 
             }
-            return true; // Возвращаем true, если все проверки пройдены успешно
+            return true;
         },
 
 
@@ -119,13 +103,12 @@ var form = new Vue({
                 this.showTableHost = false;
             }
         },
-        // Метод для добавления копии хоста по индексу
         addHostCopy: function (index) {
             var hostToCopy = this.simulationDTO.hostDTOS[index];
             var newHost = Object.assign({}, hostToCopy); // Создаем копию хоста
-            // Создаем новый массив vmDTOS для нового хоста
+
             newHost.vmDTOS = hostToCopy.vmDTOS.map(vm => Object.assign({}, vm));
-            // Вставляем копию после текущего хоста
+
             this.simulationDTO.hostDTOS.splice(index + 1, 0, newHost);
         },
 
@@ -145,11 +128,10 @@ var form = new Vue({
                 this.showTableDatacenter = false;
             }
         },
-        // Метод для добавления копии datacenter по индексу
         addDatacenterCopy: function (index) {
             var datacenterToCopy = this.simulationDTO.datacenterDTOS[index];
-            var newDatacenter = Object.assign({}, datacenterToCopy); // Создаем копию datacenter
-            // Вставляем копию после текущего datacenter
+            var newDatacenter = Object.assign({}, datacenterToCopy);
+
             this.simulationDTO.datacenterDTOS.splice(index + 1, 0, newDatacenter);
         },
 
@@ -173,12 +155,10 @@ var form = new Vue({
                 this.showTableCloudlet = false;
             }
         },
-
-        // Метод для добавления копии cloudlet по индексу
         addCloudletCopy: function (index) {
             var cloudletToCopy = this.simulationDTO.cloudletDTOS[index];
-            var newCloudlet = Object.assign({}, cloudletToCopy); // Создаем копию cloudlet
-            // Вставляем копию после текущего cloudlet
+            var newCloudlet = Object.assign({}, cloudletToCopy);
+
             this.simulationDTO.cloudletDTOS.splice(index + 1, 0, newCloudlet);
         },
 
@@ -203,17 +183,16 @@ var form = new Vue({
                 this.showTableVm = false;
             }
         },
-        // Метод для добавления копии VM по индексу хоста и VM
         addVmCopy: function (hostIndex, vmIndex) {
             var vmToCopy = this.simulationDTO.hostDTOS[hostIndex].vmDTOS[vmIndex];
             var newVm = Object.assign({}, vmToCopy); // Создаем копию VM
-            // Вставляем копию после текущей VM
+
             this.simulationDTO.hostDTOS[hostIndex].vmDTOS.splice(vmIndex + 1, 0, newVm);
         },
-        // Метод для определения, нужно ли показывать таблицу VM для указанного хоста
         shouldShowVmTable: function (host) {
             return host.vmDTOS.length > 0;
         },
+
         repeatSimulation: function (simulation){
             var actionUrl = simulation.actionUrl + "?simulationId=" + simulation.simulationId;
             console.log(simulation);
@@ -223,9 +202,8 @@ var form = new Vue({
 
     },
     mounted: function () {
-        // После загрузки компонента добавим пустые объекты в списки
 
-       /* switch (this.simulationDTO.simulationType) {
+        /*switch (this.simulationDTO.simulationType) {
             case "BASIC_SIMULATION":
                 this.simulationDTO.hostDTOS.push({
                     hostCount: 2,

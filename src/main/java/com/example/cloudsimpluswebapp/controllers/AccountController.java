@@ -1,7 +1,6 @@
 package com.example.cloudsimpluswebapp.controllers;
 
 import com.example.cloudsimpluswebapp.dto.SimulationDTO;
-import com.example.cloudsimpluswebapp.models.enums.SimulationType;
 import com.example.cloudsimpluswebapp.services.SimulationService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,19 +32,7 @@ public class AccountController {
 
     @GetMapping
     public String getAccountPage(Model model) throws JsonProcessingException {
-        List<SimulationDTO> simulationDTOS = simulationService.getSimulationsByPerson().stream().map(simulationDTO -> {
-            switch (simulationDTO.getSimulationType()) {
-                case BASIC_SIMULATION -> {
-                    simulationDTO.setActionUrl(SimulationType.BASIC_SIMULATION.getUrl());
-                }
-                case LIFETIME_SIMULATION -> {
-                    simulationDTO.setActionUrl(SimulationType.LIFETIME_SIMULATION.getUrl());
-                }
-            }
-            return simulationDTO;
-        }).toList();
-        log.info(simulationDTOS.toString());
-        log.info(objectMapper.writeValueAsString(simulationDTOS));
+        List<SimulationDTO> simulationDTOS = simulationService.getSimulationsByPerson();
         model.addAttribute("simulationDTOJson", objectMapper.writeValueAsString(simulationDTOS));
         model.addAttribute("simulationDTOS", simulationDTOS);
         return "/account";

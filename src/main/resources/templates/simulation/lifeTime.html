@@ -68,9 +68,9 @@
                 <td><input type="text" v-model="host.hostRam"/></td>
                 <td><input type="text" v-model="host.hostBw"/></td>
                 <td><input type="text" v-model="host.hostStorage"/></td>
-                <!-- Теперь добавляем столбец для виртуальных машин -->
+
                 <td>
-                    <!-- Создаем вложенную таблицу для виртуальных машин -->
+
                     <table id="vmTable" v-show="shouldShowVmTable(host)">
                         <thead>
                         <tr>
@@ -85,7 +85,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <!-- Теперь перебираем виртуальные машины этого хоста -->
+
                         <tr v-for="(vm, vmIndex) in host.vmDTOS">
                             <td>{{ vmIndex + 1 }}</td>
                             <td><input type="text" v-model="vm.vmLifetime" /></td>
@@ -94,7 +94,7 @@
                             <td><input type="text" v-model="vm.vmRam"/></td>
                             <td><input type="text" v-model="vm.vmBw"/></td>
                             <td><input type="text" v-model="vm.vmStorage"/></td>
-                            <!-- Кнопка удаления VM -->
+
                             <td>
                                 <button type="button" th:text="#{removeVm}" @click="removeVm(index, vmIndex)">Удалить VM</button>
                                 <button type="button" th:text="#{addVmCopy}" @click="addVmCopy(index, vmIndex)">Добавить копию VM</button>
@@ -102,10 +102,10 @@
                         </tr>
                         </tbody>
                     </table>
-                    <!-- Кнопка для добавления новой VM -->
+
                     <button type="button" th:text="#{addVm}" @click="addVm(index)">Добавить VM</button>
                 </td>
-                <!-- Кнопка удаления хоста -->
+
                 <td>
                     <button type="button" th:text="#{removeHost}" @click="removeHost(index)">Удалить хост</button>
                     <button type="button" th:text="#{addHostCopy}" @click="addHostCopy(index)">Добавить копию хоста</button>
@@ -140,7 +140,7 @@
                 <td>
                     <button type="button" th:text="#{removeCloudlet}" @click="removeCloudlet(index)">Удалить</button>
                     <button type="button" th:text="#{addCloudletCopy}" @click="addCloudletCopy(index)">Добавить копию cloudlet</button>
-                </td> <!-- Delete button -->
+                </td>
             </tr>
             </tbody>
         </table>

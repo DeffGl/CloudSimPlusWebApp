@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -37,16 +36,11 @@ public class SimulationController {
 
     @GetMapping("/basic")
     public String getBasicSimulationPage(Model model, @RequestParam(name = "simulationId", required = false) UUID simulationId) throws JsonProcessingException {
-        SimulationDTO simulationDTO = null;
-        if (simulationId !=null){
-            simulationDTO = simulationService.getSimulation(simulationId);
-        }
-        log.info("TEST CHECK FIRTS" + simulationDTO);
+        SimulationDTO simulationDTO;
+        simulationDTO = (simulationId != null)
+                ? simulationService.getSimulation(simulationId)
+                : new SimulationDTO().setSimulationType(SimulationType.BASIC_SIMULATION);
 
-        if (simulationDTO == null){
-            simulationDTO = new SimulationDTO().setSimulationType(SimulationType.BASIC_SIMULATION);
-        }
-        log.info("TEST CHECK" + simulationDTO);
         model.addAttribute("simulationDTOJson", objectMapper.writeValueAsString(simulationDTO));
         model.addAttribute("simulationDTO", simulationDTO);
         return "simulation/basic";
@@ -54,15 +48,11 @@ public class SimulationController {
 
     @GetMapping("/lifetime")
     public String getCloudletAndVmLifeTimeSimulation(Model model, @RequestParam(name = "simulationId", required = false) UUID simulationId) throws JsonProcessingException {
-        SimulationDTO simulationDTO = null;
-        if (simulationId !=null){
-            simulationDTO = simulationService.getSimulation(simulationId);
-        }
-        log.info("TEST CHECK FIRTS" + simulationDTO);
+        SimulationDTO simulationDTO;
+        simulationDTO = (simulationId != null)
+                ? simulationService.getSimulation(simulationId)
+                : new SimulationDTO().setSimulationType(SimulationType.LIFETIME_SIMULATION);
 
-        if (simulationDTO == null){
-            simulationDTO = new SimulationDTO().setSimulationType(SimulationType.LIFETIME_SIMULATION);
-        }
         model.addAttribute("simulationDTOJson", objectMapper.writeValueAsString(simulationDTO));
         model.addAttribute("simulationDTO", simulationDTO);
         return "simulation/lifeTime";

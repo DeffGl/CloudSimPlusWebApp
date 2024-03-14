@@ -48,8 +48,8 @@ public class CloudletAndVmLifeTimeSimulationImpl implements CloudletAndVmLifeTim
         List<Host> hostList = createHosts(hosts);
         List<Vm> vmList = createVms(hosts);
         List<Cloudlet> cloudletList = createCloudlets(cloudlets);
-
         Datacenter datacenter0 = new DatacenterSimple(cloudSimPlus, hostList, new VmAllocationPolicyBestFit());
+
         if (!datacenterDTOS.isEmpty()){
             datacenter0.setSchedulingInterval(datacenterDTOS.get(0).getSchedulingInterval());
         }

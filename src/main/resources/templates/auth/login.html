@@ -16,12 +16,11 @@
     <br/>
     <label for="password">Введите пароль:</label>
     <input type="password" name="password" id="password">
+    <div th:if="${param.error}" style="color:red">
+        Введен неверный логин или пароль
+    </div>
     <br/>
     <input type="submit" value="Войти">
-
-    <div th:if="${param.error}" style="color:red">
-        Неправильные имя и пароль
-    </div>
 
     <a th:href="@{/auth/registration}" class="button-link">Регистрация</a>
 </form>

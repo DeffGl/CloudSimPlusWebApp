@@ -21,14 +21,14 @@
         </tr>
         </thead>
         <tbody>
-        <!-- Используйте Thymeleaf для итерации по списку и отображения значений -->
+
         <tr v-for="(simulation, index) in simulationDTO">
             <td>{{ index + 1 }}</td>
-            <td>{{ simulation.nameSimulation }}</td>
+            <td>{{ (simulation.nameSimulation == null || simulation.nameSimulation == '') ? 'Без названия' : simulation.nameSimulation }}</td>
             <td>{{ simulation.dateOfCreation }}</td>
             <td>{{ simulation.simulationType }}</td>
             <td>
-                <!-- Добавляем кнопку для отправки DTO на новый адрес -->
+
                 <form @submit.prevent="repeatSimulation(simulation)">
                     <button type="submit">Повторить симуляцию</button>
                 </form>
@@ -37,27 +37,6 @@
         </tbody>
     </table>
 </div>
-
-<!--<table id="simulationTable" class="table-container">
-    <thead>
-    <tr>
-        <th th:text="#{simulationNumber}"></th>
-        <th th:text="#{simulationName}"></th>
-        <th th:text="#{dateOfCreation}"></th>
-        <th th:text="#{actions}"></th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr v-for="(simulation, index) in simulationDTO">
-        <td>{{ index + 1 }}</td>
-        <td>{{ simulation.nameSimulation == null ? "Без названия" : simulation.nameSimulation}}</td>
-        <td>{{ simulation.dateOfCreation }}</td>
-        <td>
-            <button type="button" th:text="#{repeatSimulation}"></button>
-        </td>
-    </tr>
-    </tbody>
-</table>-->
 
 <script src="https://cdn.jsdelivr.net/npm/vue@2.7.8/dist/vue.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
