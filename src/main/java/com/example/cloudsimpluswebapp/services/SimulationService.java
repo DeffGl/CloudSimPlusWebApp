@@ -11,6 +11,8 @@ public interface SimulationService {
 
     SimulationDTO startLifeTimeSimulation(SimulationDTO simulationDTO) throws SimulationException;
 
+    SimulationDTO startCloudletCancellationSimulation(SimulationDTO simulationDTO) throws SimulationException;
+
     List<SimulationDTO> getSimulationsByPerson();
 
     SimulationDTO getSimulation(UUID simulationId);

@@ -6,6 +6,7 @@ import com.example.cloudsimpluswebapp.security.CurrentPersonResolver;
 import com.example.cloudsimpluswebapp.services.SimulationService;
 import com.example.cloudsimpluswebapp.simulations.BasicSimulation;
 import com.example.cloudsimpluswebapp.simulations.CloudletAndVmLifeTimeSimulation;
+import com.example.cloudsimpluswebapp.simulations.CloudletCancellationSimulation;
 import com.example.cloudsimpluswebapp.utils.exceptions.SimulationException;
 import com.example.cloudsimpluswebapp.utils.mappers.SimulationMapper;
 import com.example.cloudsimpluswebapp.utils.mappers.SimulationResultMapper;
@@ -28,15 +29,17 @@ public class SimulationServiceImpl implements SimulationService {
     private final SimulationResultMapper simulationResultMapper;
     private final SimulationMapper simulationMapper;
     private final CurrentPersonResolver currentPersonResolver;
+    private final CloudletCancellationSimulation cloudletCancellationSimulation;
 
     @Autowired
-    public SimulationServiceImpl(SimulationRepository simulationRepository, BasicSimulation basicSimulation, SimulationResultMapper simulationResultMapper, SimulationMapper simulationMapper, CloudletAndVmLifeTimeSimulation cloudletAndVmLifeTimeSimulation, CurrentPersonResolver currentPersonResolver) {
+    public SimulationServiceImpl(SimulationRepository simulationRepository, BasicSimulation basicSimulation, SimulationResultMapper simulationResultMapper, SimulationMapper simulationMapper, CloudletAndVmLifeTimeSimulation cloudletAndVmLifeTimeSimulation, CurrentPersonResolver currentPersonResolver, CloudletCancellationSimulation cloudletCancellationSimulation) {
         this.simulationRepository = simulationRepository;
         this.basicSimulation = basicSimulation;
         this.simulationResultMapper = simulationResultMapper;
         this.simulationMapper = simulationMapper;
         this.cloudletAndVmLifeTimeSimulation = cloudletAndVmLifeTimeSimulation;
         this.currentPersonResolver = currentPersonResolver;
+        this.cloudletCancellationSimulation = cloudletCancellationSimulation;
     }
 
     @Override
@@ -57,6 +60,20 @@ public class SimulationServiceImpl implements SimulationService {
     public SimulationDTO startLifeTimeSimulation(SimulationDTO simulationDTO) throws SimulationException {
         try {
             List<Cloudlet> resultList = cloudletAndVmLifeTimeSimulation.startLifeTimeSimulation(simulationDTO);
+            simulationDTO.setSimulationResultDTOS(resultList.stream().map(simulationResultMapper::map).toList());
+            if (simulationDTO.isSaveResults()){
+                simulationRepository.save(simulationMapper.map(simulationDTO).setPerson(currentPersonResolver.getCurrentPerson()));
+            }
+        } catch (Exception e){
+            throwException(e, simulationDTO);
+        }
+        return simulationDTO;
+    }
+
+    @Override
+    public SimulationDTO startCloudletCancellationSimulation(SimulationDTO simulationDTO) throws SimulationException {
+        try{
+            List<Cloudlet> resultList = cloudletCancellationSimulation.startLifeTimeSimulation(simulationDTO);
             simulationDTO.setSimulationResultDTOS(resultList.stream().map(simulationResultMapper::map).toList());
             if (simulationDTO.isSaveResults()){
                 simulationRepository.save(simulationMapper.map(simulationDTO).setPerson(currentPersonResolver.getCurrentPerson()));

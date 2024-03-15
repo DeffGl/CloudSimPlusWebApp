@@ -36,25 +36,33 @@ public class SimulationController {
 
     @GetMapping("/basic")
     public String getBasicSimulationPage(Model model, @RequestParam(name = "simulationId", required = false) UUID simulationId) throws JsonProcessingException {
-        SimulationDTO simulationDTO;
-        simulationDTO = (simulationId != null)
-                ? simulationService.getSimulation(simulationId)
-                : new SimulationDTO().setSimulationType(SimulationType.BASIC_SIMULATION);
-
+        SimulationDTO simulationDTO = getSimulationDTO(simulationId, SimulationType.BASIC_SIMULATION);
         model.addAttribute("simulationDTOJson", objectMapper.writeValueAsString(simulationDTO));
         model.addAttribute("simulationDTO", simulationDTO);
         return "simulation/basic";
     }
 
     @GetMapping("/lifetime")
-    public String getCloudletAndVmLifeTimeSimulation(Model model, @RequestParam(name = "simulationId", required = false) UUID simulationId) throws JsonProcessingException {
-        SimulationDTO simulationDTO;
-        simulationDTO = (simulationId != null)
-                ? simulationService.getSimulation(simulationId)
-                : new SimulationDTO().setSimulationType(SimulationType.LIFETIME_SIMULATION);
-
+    public String getCloudletAndVmLifeTimeSimulationPage(Model model, @RequestParam(name = "simulationId", required = false) UUID simulationId) throws JsonProcessingException {
+        SimulationDTO simulationDTO = getSimulationDTO(simulationId, SimulationType.LIFETIME_SIMULATION);
         model.addAttribute("simulationDTOJson", objectMapper.writeValueAsString(simulationDTO));
         model.addAttribute("simulationDTO", simulationDTO);
         return "simulation/lifeTime";
+    }
+
+    @GetMapping("/cancel")
+    public String getCloudletCancellationSimulationPage(Model model, @RequestParam(name = "simulationId", required = false) UUID simulationId) throws JsonProcessingException {
+        SimulationDTO simulationDTO = getSimulationDTO(simulationId, SimulationType.CANCEL_SIMULATION);
+        model.addAttribute("simulationDTOJson", objectMapper.writeValueAsString(simulationDTO));
+        model.addAttribute("simulationDTO", simulationDTO);
+        return "simulation/cancel";
+    }
+
+    private SimulationDTO getSimulationDTO(UUID simulationId, SimulationType simulationType){
+        SimulationDTO simulationDTO;
+        simulationDTO = (simulationId != null)
+                ? simulationService.getSimulation(simulationId)
+                : new SimulationDTO().setSimulationType(simulationType);
+        return simulationDTO;
     }
 }
