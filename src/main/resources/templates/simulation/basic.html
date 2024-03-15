@@ -19,6 +19,10 @@
         <div style="color:red" th:if="${#fields.hasErrors('nameSimulation')}" th:errors="*{nameSimulation}">Name
             simulation Errors
         </div>
+        <div class="checkbox-container">
+            <label th:text="#{saveResult}" for="saveResults"></label>
+            <input id="saveResults" type="checkbox" v-model="simulationDTO.saveResults">
+        </div>
 
         <table id="hostTable" v-show="showTableHost" class="table-container">
             <thead>

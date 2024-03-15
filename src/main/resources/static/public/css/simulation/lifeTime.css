@@ -85,3 +85,14 @@ label {
     width: 500px;
     margin-bottom: 10px;
 }
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.checkbox-container input[type="checkbox"] {
+    margin-left: 1px;
+    transform: scale(1.5);
+}

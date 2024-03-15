@@ -202,8 +202,7 @@ var form = new Vue({
 
     },
     mounted: function () {
-
-        /*switch (this.simulationDTO.simulationType) {
+        switch (this.simulationDTO.simulationType) {
             case "BASIC_SIMULATION":
                 this.simulationDTO.hostDTOS.push({
                     hostCount: 2,
@@ -260,6 +259,6 @@ var form = new Vue({
             default:
 
                 break;
-        }*/
+        }
     }
 });

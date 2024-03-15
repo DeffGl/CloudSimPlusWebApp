@@ -20,6 +20,11 @@
             simulation Errors
         </div>
 
+        <div class="checkbox-container">
+            <label th:text="#{saveResult}" for="saveResults"></label>
+            <input id="saveResults" type="checkbox" v-model="simulationDTO.saveResults">
+        </div>
+
         <table id="datacenterTable" v-show="showTableDatacenter" class="table-container">
             <thead>
             <tr>

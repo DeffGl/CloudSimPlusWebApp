@@ -22,4 +22,6 @@ public class SimulationDTO {
     private List<DatacenterBrokerDTO> datacenterBrokerDTOS = new ArrayList<>();
     private SimulationType simulationType;
     private String actionUrl;
+
+    private boolean saveResults = false;
 }

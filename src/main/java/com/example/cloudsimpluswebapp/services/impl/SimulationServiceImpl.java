@@ -44,7 +44,9 @@ public class SimulationServiceImpl implements SimulationService {
         try {
             List<Cloudlet> resultList = basicSimulation.startBasicSimulation(simulationDTO);
             simulationDTO.setSimulationResultDTOS(resultList.stream().map(simulationResultMapper::map).toList());
-            simulationRepository.save(simulationMapper.map(simulationDTO).setPerson(currentPersonResolver.getCurrentPerson()));
+            if (simulationDTO.isSaveResults()){
+                simulationRepository.save(simulationMapper.map(simulationDTO).setPerson(currentPersonResolver.getCurrentPerson()));
+            }
         } catch (Exception e){
             throwException(e, simulationDTO);
         }
@@ -56,7 +58,9 @@ public class SimulationServiceImpl implements SimulationService {
         try {
             List<Cloudlet> resultList = cloudletAndVmLifeTimeSimulation.startLifeTimeSimulation(simulationDTO);
             simulationDTO.setSimulationResultDTOS(resultList.stream().map(simulationResultMapper::map).toList());
-            simulationRepository.save(simulationMapper.map(simulationDTO).setPerson(currentPersonResolver.getCurrentPerson()));
+            if (simulationDTO.isSaveResults()){
+                simulationRepository.save(simulationMapper.map(simulationDTO).setPerson(currentPersonResolver.getCurrentPerson()));
+            }
         } catch (Exception e){
             throwException(e, simulationDTO);
         }
