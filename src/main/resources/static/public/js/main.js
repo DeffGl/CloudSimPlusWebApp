@@ -141,6 +141,7 @@ var form = new Vue({
                 this.showTableCloudlet = true
             }
             var newCloudlet = {
+                cloudletMaxExecutionTime: '',
                 cloudletLifetime: '',
                 cloudletCount: '',
                 cloudletPes: '',
@@ -245,6 +246,35 @@ var form = new Vue({
                 });
                 this.simulationDTO.cloudletDTOS.push({
                     cloudletLifetime: 5,
+                    cloudletCount: 4,
+                    cloudletPes: 2,
+                    cloudletLength: 10000,
+                    cloudletSize: 1024
+                });
+
+                this.simulationDTO.datacenterDTOS.push({
+                    datacenterCount: 1,
+                    schedulingInterval: 3
+                });
+                break;
+            case "CANCEL_SIMULATION":
+                this.simulationDTO.hostDTOS.push({
+                    hostCount: 3,
+                    hostPes: 16,
+                    hostMips: 1000,
+                    hostRam: 2048,
+                    hostBw: 10000,
+                    hostStorage: 1000000,
+                    vmDTOS: [{
+                        vmCount: 4,
+                        vmPes: 4,
+                        vmRam: 512,
+                        vmBw: 1000,
+                        vmStorage: 10000
+                    }]
+                });
+                this.simulationDTO.cloudletDTOS.push({
+                    cloudletMaxExecutionTime: 10,
                     cloudletCount: 4,
                     cloudletPes: 2,
                     cloudletLength: 10000,

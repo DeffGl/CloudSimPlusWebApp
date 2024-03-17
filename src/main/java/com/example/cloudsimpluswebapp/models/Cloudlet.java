@@ -30,4 +30,7 @@ public class Cloudlet {
 
     @Column(name="cloudlet_lifetime")
     private double cloudletLifetime;
+
+    @Column(name="cloudlet_max_execution_time")
+    private double cloudletMaxExecutionTime;
 }

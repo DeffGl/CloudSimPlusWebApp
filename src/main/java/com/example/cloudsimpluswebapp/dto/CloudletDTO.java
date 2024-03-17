@@ -12,4 +12,5 @@ public class CloudletDTO {
     private int cloudletLength;
     private long cloudletSize;
     private double cloudletLifetime;
+    private double cloudletMaxExecutionTime;
 }

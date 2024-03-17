@@ -45,6 +45,7 @@ public class SimulationRestController {
     @PostMapping("/cancel")
     public ResponseEntity<String> startCloudletCancellationSimulation(@RequestBody SimulationDTO simulationDTO) throws SimulationException, JsonProcessingException {
         simulationDTO = simulationService.startCloudletCancellationSimulation(simulationDTO);
+        log.info(simulationDTO.toString());
         String simulationResultJson = objectMapper.writeValueAsString(simulationDTO);
         return ResponseEntity.ok(simulationResultJson);
     }

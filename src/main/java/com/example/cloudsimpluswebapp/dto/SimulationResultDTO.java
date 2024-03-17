@@ -25,6 +25,7 @@ public class SimulationResultDTO {
     private String status;
     private double startTime;
     private double finishTime;
+    private double cloudletMaxExecutionTime;
     private double executionTime;
 
     private double cloudletLifetime;

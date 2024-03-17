@@ -1,5 +1,6 @@
 package com.example.cloudsimpluswebapp.utils.mappers;
 
+import com.example.cloudsimpluswebapp.dto.CloudletDTO;
 import com.example.cloudsimpluswebapp.dto.SimulationResultDTO;
 import com.example.cloudsimpluswebapp.models.SimulationResult;
 import org.cloudsimplus.cloudlets.Cloudlet;
@@ -17,25 +18,26 @@ public abstract class SimulationResultMapper {
     public abstract SimulationResult map(SimulationResultDTO simulationResultDTO);
     public abstract SimulationResultDTO map(SimulationResult simulationResult);
     public abstract void update(SimulationResultDTO simulationResultDTO, @MappingTarget SimulationResult simulationResult);
-    public SimulationResultDTO map(Cloudlet finishedList){
-        Vm vm = finishedList.getVm();
+    public SimulationResultDTO map(Cloudlet result, CloudletDTO cloudletDTO){
+        Vm vm = result.getVm();
         Host host = vm.getHost();
-        Datacenter datacenter = finishedList.getLastTriedDatacenter();
+        Datacenter datacenter = result.getLastTriedDatacenter();
         return new SimulationResultDTO(
-                finishedList.getId(),
+                result.getId(),
                 host.getId(),
                 vm.getId(),
                 datacenter.getId(),
                 host.getPesNumber(),
                 vm.getPesNumber(),
-                finishedList.getLength(),
-                finishedList.getFinishedLengthSoFar(),
-                finishedList.getPesNumber(),
-                finishedList.getStatus().name(),
-                finishedList.getStartTime(),
-                finishedList.getFinishTime(),
-                finishedList.getTotalExecutionTime(),
-                finishedList.getLifeTime(),
+                result.getLength(),
+                result.getFinishedLengthSoFar(),
+                result.getPesNumber(),
+                result.getStatus().name(),
+                result.getStartTime(),
+                result.getFinishTime(),
+                cloudletDTO.getCloudletMaxExecutionTime(),
+                result.getTotalExecutionTime(),
+                result.getLifeTime(),
                 vm.getLifeTime());
     }
 

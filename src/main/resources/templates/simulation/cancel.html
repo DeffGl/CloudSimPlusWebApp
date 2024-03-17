@@ -2,9 +2,203 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title th:text="#{cancelSimulation}" ></title>
+    <link rel="stylesheet" type="text/css" href="/public/css/simulation/cancel.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap">
 </head>
-<body>
 
+<body>
+<h1 th:text="#{cancelSimulation}"></h1>
+<div id="form">
+    <form id="simulationForm" th:method="POST" th:action="@{/simulation/cancel}" th:object="${simulationDTO}" @submit.prevent="submitForm">
+        <div id="simulationDTOJson" th:data-simulation-dto="${simulationDTOJson}"></div>
+
+        <label th:text="#{nameSimulationLabel}" for="nameSimulation"></label>
+        <input type="text" th:field="*{nameSimulation}" id="nameSimulation">
+
+        <div style="color:red" th:if="${#fields.hasErrors('nameSimulation')}" th:errors="*{nameSimulation}">Name
+            simulation Errors
+        </div>
+
+        <div class="checkbox-container">
+            <label th:text="#{saveResult}" for="saveResults"></label>
+            <input id="saveResults" type="checkbox" v-model="simulationDTO.saveResults">
+        </div>
+
+        <table id="datacenterTable" v-show="showTableDatacenter" class="table-container">
+            <thead>
+            <tr>
+                <th th:text="#{datacenterNumber}"></th>
+                <th th:text="#{datacenterCount}"></th>
+                <th th:text="#{datacenterSchedulingInterval}"></th>
+                <th th:text="#{actions}" style="display: none"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="(datacenter, index) in simulationDTO.datacenterDTOS">
+                <td>{{ index + 1 }}</td>
+                <td>{{ datacenter.datacenterCount }}</td>
+                <!--<td><input type="text" v-model="datacenter.datacenterCount" /></td>-->
+                <td><input type="text" v-model="datacenter.schedulingInterval" /></td>
+                <td>
+                    <button type="button" th:text="#{removeDatacenter}" style="display: none" @click="removeDatacenter(index)"></button>
+                    <button type="button" th:text="#{addDatacenterCopy}" style="display: none" @click="addDatacenterCopy(index)"></button>
+                </td> <!-- Delete button -->
+            </tr>
+            </tbody>
+        </table>
+
+        <button type="button" th:text="#{addDatacenter}" style="display: none" @click="addDatacenter"></button>
+
+        <table id="hostTable" v-show="showTableHost" class="table-container">
+            <thead>
+            <tr>
+                <th th:text="#{hostNumber}"></th>
+                <th th:text="#{hostCount}"></th>
+                <th th:text="#{hostPes}"></th>
+                <th th:text="#{hostMips}"></th>
+                <th th:text="#{hostRam}"></th>
+                <th th:text="#{hostBw}"></th>
+                <th th:text="#{hostStorage}"></th>
+                <th th:text="#{virtualMachines}"></th>
+                <th th:text="#{actions}"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="(host, index) in simulationDTO.hostDTOS">
+                <td>{{ index + 1 }}</td>
+                <td><input type="text" v-model="host.hostCount" /></td>
+                <td><input type="text" v-model="host.hostPes"/></td>
+                <td><input type="text" v-model="host.hostMips"/></td>
+                <td><input type="text" v-model="host.hostRam"/></td>
+                <td><input type="text" v-model="host.hostBw"/></td>
+                <td><input type="text" v-model="host.hostStorage"/></td>
+
+                <td>
+
+                    <table id="vmTable" v-show="shouldShowVmTable(host)">
+                        <thead>
+                        <tr>
+                            <th th:text="#{vmNumber}"></th>
+                            <th th:text="#{vmCount}"></th>
+                            <th th:text="#{vmPes}"></th>
+                            <th th:text="#{vmRam}"></th>
+                            <th th:text="#{vmBw}"></th>
+                            <th th:text="#{vmStorage}"></th>
+                            <th th:text="#{actions}"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        <tr v-for="(vm, vmIndex) in host.vmDTOS">
+                            <td>{{ vmIndex + 1 }}</td>
+                            <td><input type="text" v-model="vm.vmCount" /></td>
+                            <td><input type="text" v-model="vm.vmPes"/></td>
+                            <td><input type="text" v-model="vm.vmRam"/></td>
+                            <td><input type="text" v-model="vm.vmBw"/></td>
+                            <td><input type="text" v-model="vm.vmStorage"/></td>
+
+                            <td>
+                                <button type="button" th:text="#{removeVm}" @click="removeVm(index, vmIndex)">Удалить VM</button>
+                                <button type="button" th:text="#{addVmCopy}" @click="addVmCopy(index, vmIndex)">Добавить копию VM</button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    <button type="button" th:text="#{addVm}" @click="addVm(index)">Добавить VM</button>
+                </td>
+
+                <td>
+                    <button type="button" th:text="#{removeHost}" @click="removeHost(index)">Удалить хост</button>
+                    <button type="button" th:text="#{addHostCopy}" @click="addHostCopy(index)">Добавить копию хоста</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+
+        <button type="button" th:text="#{addHost}" @click="addHost">Добавить хост</button>
+
+        <table id="cloudletTable" v-show="showTableCloudlet" class="table-container">
+            <thead>
+            <tr>
+                <th th:text="#{cloudletNumber}"></th>
+                <th th:text="#{cloudletMaxExecutionTime}"></th>
+                <th th:text="#{cloudletCount}"></th>
+                <th th:text="#{cloudletPes}"></th>
+                <th th:text="#{cloudletLength}"></th>
+                <th th:text="#{cloudletSize}"></th>
+                <th th:text="#{actions}"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="(cloudlet, index) in simulationDTO.cloudletDTOS">
+                <td>{{ index + 1 }}</td>
+                <td><input type="text" v-model="cloudlet.cloudletMaxExecutionTime" /></td>
+                <td><input type="text" v-model="cloudlet.cloudletCount" /></td>
+                <td><input type="text" v-model="cloudlet.cloudletPes"/></td>
+                <td><input type="text" v-model="cloudlet.cloudletLength"/></td>
+                <td><input type="text" v-model="cloudlet.cloudletSize"/></td>
+                <td>
+                    <button type="button" th:text="#{removeCloudlet}" @click="removeCloudlet(index)">Удалить</button>
+                    <button type="button" th:text="#{addCloudletCopy}" @click="addCloudletCopy(index)">Добавить копию cloudlet</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <button type="button" th:text="#{addCloudlet}" @click="addCloudlet">Добавить задачу</button>
+
+        <button type="submit" th:text="#{start}"></button>
+
+        <table id="resultTable" v-if="simulationDTO.simulationResultDTOS.length > 0" class="table-container">
+            <thead>
+            <tr>
+                <th th:text="#{cloudletMaxExecutionTime}"></th>
+                <th th:text="#{cloudletNumber}"></th>
+                <th th:text="#{status}"></th>
+                <th th:text="#{datacenterNumber}"></th>
+                <th th:text="#{hostNumber}"></th>
+                <th th:text="#{hostPes}"></th>
+                <th th:text="#{vmNumber}"></th>
+                <th th:text="#{vmPes}"></th>
+                <th th:text="#{cloudletLength}"></th>
+                <th th:text="#{finishedLength}"></th>
+                <th th:text="#{cloudletPes}"></th>
+                <th th:text="#{startTime}"></th>
+                <th th:text="#{finishTime}"></th>
+                <th th:text="#{executionTime}"></th>
+            </tr>
+            </thead>
+            <tbody>
+
+            <tr v-for="(result, index) in simulationDTO.simulationResultDTOS">
+                <td><label>{{ result.cloudletMaxExecutionTime}}</label></td>
+                <td><label>{{ result.cloudletNumber }}</label></td>
+                <td><label>{{ result.status }}</label></td>
+                <td><label>{{ result.datacenterBrokerNumber }}</label></td>
+                <td><label>{{ result.hostNumber }}</label></td>
+                <td><label>{{ result.hostPes }}</label></td>
+                <td><label>{{ result.vmNumber }}</label></td>
+                <td><label>{{ result.vmPes }}</label></td>
+                <td><label>{{ result.cloudletLength }}</label></td>
+                <td><label>{{ result.finishedLength }}</label></td>
+                <td><label>{{ result.cloudletPes }}</label></td>
+                <td><label>{{ result.startTime }}</label></td>
+                <td><label>{{ result.finishTime }}</label></td>
+                <td><label>{{ result.executionTime }}</label></td>
+            </tr>
+            </tbody>
+        </table>
+
+
+        <div th:if="${param.error}" style="color:red">
+            Неправильные имя и пароль
+        </div>
+    </form>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.7.8/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="/public/js/main.js"></script>
 </body>
 </html>

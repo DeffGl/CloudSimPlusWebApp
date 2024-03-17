@@ -1,6 +1,8 @@
 package com.example.cloudsimpluswebapp.services.impl;
 
+import com.example.cloudsimpluswebapp.dto.CloudletDTO;
 import com.example.cloudsimpluswebapp.dto.SimulationDTO;
+import com.example.cloudsimpluswebapp.dto.SimulationResultDTO;
 import com.example.cloudsimpluswebapp.repositories.SimulationRepository;
 import com.example.cloudsimpluswebapp.security.CurrentPersonResolver;
 import com.example.cloudsimpluswebapp.services.SimulationService;
@@ -16,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -45,8 +48,13 @@ public class SimulationServiceImpl implements SimulationService {
     @Override
     public SimulationDTO startBasicSimulation(SimulationDTO simulationDTO) throws SimulationException {
         try {
-            List<Cloudlet> resultList = basicSimulation.startBasicSimulation(simulationDTO);
-            simulationDTO.setSimulationResultDTOS(resultList.stream().map(simulationResultMapper::map).toList());
+            simulationDTO.setSimulationResultDTOS(
+                    getSimulationResultListDTO(
+                            basicSimulation.startBasicSimulation(simulationDTO),
+                            simulationDTO.getCloudletDTOS()
+                    )
+            );
+
             if (simulationDTO.isSaveResults()){
                 simulationRepository.save(simulationMapper.map(simulationDTO).setPerson(currentPersonResolver.getCurrentPerson()));
             }
@@ -59,8 +67,13 @@ public class SimulationServiceImpl implements SimulationService {
     @Override
     public SimulationDTO startLifeTimeSimulation(SimulationDTO simulationDTO) throws SimulationException {
         try {
-            List<Cloudlet> resultList = cloudletAndVmLifeTimeSimulation.startLifeTimeSimulation(simulationDTO);
-            simulationDTO.setSimulationResultDTOS(resultList.stream().map(simulationResultMapper::map).toList());
+            simulationDTO.setSimulationResultDTOS(
+                    getSimulationResultListDTO(
+                            cloudletAndVmLifeTimeSimulation.startLifeTimeSimulation(simulationDTO),
+                            simulationDTO.getCloudletDTOS()
+                    )
+            );
+
             if (simulationDTO.isSaveResults()){
                 simulationRepository.save(simulationMapper.map(simulationDTO).setPerson(currentPersonResolver.getCurrentPerson()));
             }
@@ -72,9 +85,15 @@ public class SimulationServiceImpl implements SimulationService {
 
     @Override
     public SimulationDTO startCloudletCancellationSimulation(SimulationDTO simulationDTO) throws SimulationException {
+        //TODO Нужно доделать обработку ошибку после отмены решения задачи
         try{
-            List<Cloudlet> resultList = cloudletCancellationSimulation.startLifeTimeSimulation(simulationDTO);
-            simulationDTO.setSimulationResultDTOS(resultList.stream().map(simulationResultMapper::map).toList());
+            simulationDTO.setSimulationResultDTOS(
+                    getSimulationResultListDTO(
+                            cloudletCancellationSimulation.startCloudletCancellationSimulation(simulationDTO),
+                            simulationDTO.getCloudletDTOS()
+                    )
+            );
+
             if (simulationDTO.isSaveResults()){
                 simulationRepository.save(simulationMapper.map(simulationDTO).setPerson(currentPersonResolver.getCurrentPerson()));
             }
@@ -99,6 +118,28 @@ public class SimulationServiceImpl implements SimulationService {
     @Override
     public SimulationDTO getSimulation(UUID simulationId) {
         return simulationMapper.map(simulationRepository.findById(simulationId).orElseThrow());
+    }
+
+    private List<SimulationResultDTO> getSimulationResultListDTO(List<Cloudlet> resultList, List<CloudletDTO> cloudletDTOS){
+        List<SimulationResultDTO> simulationResultDTOS = new ArrayList<>();
+        for (int i = 0, j = 0; i<cloudletDTOS.size(); i++){
+            for (int k = 0; k<cloudletDTOS.get(i).getCloudletCount(); k++, j++){
+                simulationResultDTOS.add(simulationResultMapper.map(resultList.get(j), cloudletDTOS.get(i)));
+            }
+        }
+        //TODO придумать как реализовать цикл выше в потоках
+/*        cloudletDTOS.stream()
+                .flatMap(cloudletDTO -> {
+                    int j = 0;
+                    SimulationResultDTO simulationResultDTO;
+                    IntStream.range(0, cloudletDTO.getCloudletCount()).mapToObj(k -> {
+                        int f = j;
+                        simulationResultDTOS.add(simulationResultMapper.map(resultList.get(j++), cloudletDTO));
+                    });
+                    return simulationResultDTO;
+                })
+                .forEach(simulationResultDTOS::add);*/
+        return simulationResultDTOS;
     }
 
     private void throwException(Exception e, SimulationDTO simulationDTO) throws SimulationException {

@@ -6,5 +6,5 @@ import org.cloudsimplus.cloudlets.Cloudlet;
 import java.util.List;
 
 public interface CloudletCancellationSimulation {
-    List<Cloudlet> startLifeTimeSimulation(SimulationDTO simulationDTO);
+    List<Cloudlet> startCloudletCancellationSimulation(SimulationDTO simulationDTO);
 }
