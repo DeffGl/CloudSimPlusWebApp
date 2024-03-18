@@ -1,9 +1,6 @@
 package com.example.cloudsimpluswebapp.simulations.impl;
 
-import com.example.cloudsimpluswebapp.dto.CloudletDTO;
-import com.example.cloudsimpluswebapp.dto.DatacenterDTO;
-import com.example.cloudsimpluswebapp.dto.HostDTO;
-import com.example.cloudsimpluswebapp.dto.SimulationDTO;
+import com.example.cloudsimpluswebapp.dto.*;
 import com.example.cloudsimpluswebapp.simulations.CloudletCancellationSimulation;
 import org.cloudsimplus.allocationpolicies.VmAllocationPolicyBestFit;
 import org.cloudsimplus.brokers.DatacenterBroker;
@@ -27,6 +24,8 @@ import org.cloudsimplus.utilizationmodels.UtilizationModelDynamic;
 import org.cloudsimplus.utilizationmodels.UtilizationModelFull;
 import org.cloudsimplus.vms.Vm;
 import org.cloudsimplus.vms.VmSimple;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -35,6 +34,8 @@ import java.util.stream.IntStream;
 
 @Service
 public class CloudletCancellationSimulationImpl implements CloudletCancellationSimulation {
+
+    private static final Logger log = LoggerFactory.getLogger(CloudletCancellationSimulationImpl.class);
 
     @Override
     public List<Cloudlet> startCloudletCancellationSimulation(SimulationDTO simulationDTO) {
@@ -49,7 +50,7 @@ public class CloudletCancellationSimulationImpl implements CloudletCancellationS
         List<Cloudlet> cloudletList = createCloudlets(cloudlets);
         Datacenter datacenter0 = new DatacenterSimple(cloudSimPlus, hostList, new VmAllocationPolicyBestFit());
 
-        if (!datacenterDTOS.isEmpty()){
+        if (!datacenterDTOS.isEmpty()) {
             datacenter0.setSchedulingInterval(datacenterDTOS.get(0).getSchedulingInterval());
         }
 
@@ -64,22 +65,46 @@ public class CloudletCancellationSimulationImpl implements CloudletCancellationS
          * See {@link #SCHEDULING_INTERVAL} for more details.
          */
 
+        List<Cloudlet> finishedList = new ArrayList<>();
+
+        for (int i = 0, j = 0; i < cloudlets.size(); i++) {
+            for (int k = 0; k < cloudlets.get(i).getCloudletCount(); k++, j++) {
+                final int l = i;
+                cloudletList.get(j)
+                        .addOnUpdateProcessingListener(
+                                cloudletVmEventInfo -> {
+                                    cancelCloudletIfHalfExecuted(cloudletVmEventInfo, finishedList, cloudlets.get(l).getCloudletMaxExecutionTime());
+                                }
+                        );
+            }
+        }
+
         broker0.submitVmList(vmList);
         broker0.submitCloudletList(cloudletList);
 
         cloudSimPlus.start();
-
         final var cloudletFinishedList = broker0.getCloudletFinishedList();
-        new CloudletsTableBuilder(cloudletFinishedList).build();
+        if (cloudletFinishedList != null) {
+            // Создаем поток и фильтруем уникальные элементы по их идентификаторам
+            List<Cloudlet> uniqueCloudlets = cloudletFinishedList.stream()
+                    .filter(cloudlet -> finishedList.stream().noneMatch(finishedCloudlet -> finishedCloudlet.getId() == cloudlet.getId()))
+                    .toList();
 
-        return broker0.getCloudletFinishedList();
+            // Добавляем уникальные элементы в результативный список
+            finishedList.addAll(uniqueCloudlets);
+        }
+        new CloudletsTableBuilder(finishedList).build();
+
+        return finishedList;
     }
 
     /**
      * Cancel a Cloudlet if it has already executed 50% of its total MIPS length.
+     *
      * @param e the event information about Cloudlet processing
      */
-    public void cancelCloudletIfHalfExecuted(final CloudletVmEventInfo e, double maxExecutionTime) {
+    public void cancelCloudletIfHalfExecuted(final CloudletVmEventInfo e, List<Cloudlet> finishedList, double cloudletMaxExecutionTime) {
+
 
         final double currentTime = e.getTime();
         final Cloudlet cloudlet = e.getCloudlet();
@@ -91,13 +116,13 @@ public class CloudletCancellationSimulationImpl implements CloudletCancellationS
         final double executionTime = currentTime - startTime;
 
         // Проверяем, превысила ли задача максимальное время выполнения
-        if (executionTime >= maxExecutionTime) {
+        if (executionTime >= cloudletMaxExecutionTime) {
             System.out.printf(
                     "%n# %.2f: Cancelling %s execution as it has exceeded the maximum execution time.%n",
                     currentTime, cloudlet);
-            cloudlet.getVm().getCloudletScheduler().cloudletCancel(cloudlet);
+            cloudlet.setStatus(Cloudlet.Status.CANCELED);
+            finishedList.add(cloudlet.getVm().getCloudletScheduler().cloudletCancel(cloudlet));
         }
-
     }
 
     private String getLifeTimeStr(final Lifetimed entity) {
@@ -124,13 +149,12 @@ public class CloudletCancellationSimulationImpl implements CloudletCancellationS
         final var cloudletList = new ArrayList<Cloudlet>();
 
         cloudlets.stream()
-                .flatMap(cloudlet -> IntStream.range(0, cloudlet.getCloudletCount()).mapToObj(i->{
+                .flatMap(cloudlet -> IntStream.range(0, cloudlet.getCloudletCount()).mapToObj(i -> {
                     Cloudlet createdCloudlet = new CloudletSimple(cloudlet.getCloudletLength(), cloudlet.getCloudletPes());
                     createdCloudlet.setSizes(cloudlet.getCloudletSize());
                     createdCloudlet.setUtilizationModelCpu(new UtilizationModelFull());
                     createdCloudlet.setUtilizationModelBw(new UtilizationModelDynamic(0.1));
                     createdCloudlet.setUtilizationModelRam(new UtilizationModelDynamic(0.2));
-                    createdCloudlet.addOnUpdateProcessingListener(cloudletVmEventInfo -> cancelCloudletIfHalfExecuted(cloudletVmEventInfo, cloudlet.getCloudletMaxExecutionTime()));
                     return createdCloudlet;
                 })).forEach(cloudletList::add);
         return cloudletList;
