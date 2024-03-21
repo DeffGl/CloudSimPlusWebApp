@@ -9,6 +9,8 @@
 <body>
 <div id="form">
     <div id="simulationDTOJson" th:data-simulation-dto="${simulationDTOJson}"></div>
+    <div id="totalPages" th:total-pages="${totalPages}"></div>
+    <div id="currentPage" th:current-page="${page}"></div>
     <h1>Список Simulation DTOs</h1>
     <table class="table-container">
         <thead>
@@ -23,7 +25,7 @@
         <tbody>
 
         <tr v-for="(simulation, index) in simulationDTO">
-            <td>{{ index + 1 }}</td>
+            <td>{{ globalCounter + index }}</td>
             <td>{{ (simulation.nameSimulation == null || simulation.nameSimulation == '') ? 'Без названия' : simulation.nameSimulation }}</td>
             <td>{{ simulation.dateOfCreation }}</td>
             <td>{{ simulation.simulationType }}</td>
@@ -36,6 +38,13 @@
         </tr>
         </tbody>
     </table>
+
+    <!-- Кнопки для переключения страниц -->
+    <div>
+        <button @click="loadPage(currentPage - 1)">Предыдущая страница</button>
+        <span>{{currentPage + 1}} / {{totalPages}}</span>
+        <button @click="loadPage(currentPage + 1)">Следующая страница</button>
+    </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/vue@2.7.8/dist/vue.js"></script>

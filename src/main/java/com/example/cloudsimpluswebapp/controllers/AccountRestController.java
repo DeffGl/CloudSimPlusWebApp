@@ -8,17 +8,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-@Controller
-@RequestMapping("/account")
-public class AccountController {
+@RestController
+@RequestMapping("/rest/account")
+public class AccountRestController {
 
     private static final Logger log = LoggerFactory.getLogger(AccountController.class);
 
@@ -27,21 +29,25 @@ public class AccountController {
     private final SimulationService simulationService;
 
     @Autowired
-    public AccountController(ObjectMapper objectMapper, SimulationService simulationService) {
+    public AccountRestController(ObjectMapper objectMapper, SimulationService simulationService) {
         this.objectMapper = objectMapper;
         this.simulationService = simulationService;
     }
 
     @GetMapping
-    public String getAccountPage(
-            Model model,
-            @RequestParam(required = false, defaultValue = "0") int page) throws JsonProcessingException {
+    public ResponseEntity<String> getTable(@RequestParam(required = false, defaultValue = "0") int page) throws JsonProcessingException {
+
         Page<SimulationDTO> simulationDTOS = simulationService.getSimulationsByPerson(page);
-        model.addAttribute("simulationDTOS", simulationDTOS.getContent());
-        model.addAttribute("totalPages", simulationDTOS.getTotalPages());
-        model.addAttribute("page", page);
-        model.addAttribute("simulationDTOJson", objectMapper.writeValueAsString(simulationDTOS.getContent()));
-        model.addAttribute("simulationDTOS", simulationDTOS.getContent());
-        return "/account";
+        List<SimulationDTO> content = simulationDTOS.getContent();
+        int totalPages = simulationDTOS.getTotalPages();
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("totalPages", totalPages);
+        response.put("page", page);
+        response.put("simulationDTOS", content);
+
+        String jsonResponse = objectMapper.writeValueAsString(response);
+
+        return ResponseEntity.ok(jsonResponse);
     }
 }

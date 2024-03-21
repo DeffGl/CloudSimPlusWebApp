@@ -16,6 +16,10 @@ import org.cloudsimplus.cloudlets.Cloudlet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -113,6 +117,23 @@ public class SimulationServiceImpl implements SimulationService {
                         .setActionUrl(simulationDTO.getSimulationType()
                                 .getUrl()))
                 .toList();
+    }
+
+    @Override
+    public Page<SimulationDTO> getSimulationsByPerson(int page) {
+        Pageable pageable = PageRequest.of(page, 3);
+
+        long totalSimulations = simulationRepository.countSimulationsByPerson(currentPersonResolver.getCurrentPerson());
+        log.info("TEST CHECK: " + totalSimulations);
+        List<SimulationDTO> simulationDTOS = simulationRepository
+                .getSimulationsByPerson(currentPersonResolver.getCurrentPerson(), pageable)
+                .stream()
+                .map(simulationMapper::map)
+                .map(simulationDTO -> simulationDTO
+                        .setActionUrl(simulationDTO.getSimulationType()
+                                .getUrl()))
+                .toList();
+        return new PageImpl<>(simulationDTOS, pageable, totalSimulations);
     }
 
     @Override

@@ -5,9 +5,35 @@ var form = new Vue({
         showTableHost: true,
         showTableCloudlet: true,
         showTableVm: true,
-        showTableDatacenter: true
+        showTableDatacenter: true,
+        currentPage: 0,
+        totalPages: null,
+        globalCounter: 0
     },
     methods: {
+        loadPage(page) {
+
+            if (page < 0 || page >= this.totalPages) {
+                console.log("Запрашиваемая страница вне диапазона.");
+                return; // Не отправлять запрос, если страница вне диапазона
+            }
+            this.globalCounter = page * this.simulationDTO.length;
+
+            console.log("prev currentPage" + this.currentPage)
+            console.log("prev totalPages" + this.totalPages)
+            axios.get('/rest/account?page=' + page)
+                .then(response => {
+                    this.currentPage = response.data.page;
+                    this.totalPages = response.data.totalPages;
+                    this.simulationDTO = response.data.simulationDTOS; // Если вам нужно обновить данные
+                    console.log("pos currentPage" + this.currentPage)
+                    console.log("pos totalPages" + this.totalPages)
+                    console.log(this.simulationDTO)
+                })
+                .catch(error => {
+                    console.error('Ошибка при загрузке данных:', error);
+                });
+        },
         submitForm: function () {
             console.log(this.simulationDTO)
             var formData = JSON.stringify(this.simulationDTO);
@@ -203,6 +229,14 @@ var form = new Vue({
 
     },
     mounted: function () {
+
+        var totPageEl = document.getElementById('totalPages');
+
+        if (totPageEl != null){
+            this.totalPages = totPageEl.getAttribute('total-pages');
+        }
+
+
         switch (this.simulationDTO.simulationType) {
             case "BASIC_SIMULATION":
                 this.simulationDTO.hostDTOS.push({
