@@ -4,6 +4,7 @@ import com.example.cloudsimpluswebapp.dto.SimulationDTO;
 import com.example.cloudsimpluswebapp.utils.exceptions.SimulationException;
 import org.springframework.data.domain.Page;
 
+import java.text.ParseException;
 import java.util.List;
 import java.util.UUID;
 
@@ -16,6 +17,8 @@ public interface SimulationService {
 
     List<SimulationDTO> getSimulationsByPerson();
     Page<SimulationDTO> getSimulationsByPerson(int page);
+
+    Page<SimulationDTO> getSimulationsByPersonAndFilter(int page, String nameSimulation, String dateOfCreation, String simulationType, boolean simulationRemoved) throws ParseException;
 
     SimulationDTO getSimulation(UUID simulationId);
 }

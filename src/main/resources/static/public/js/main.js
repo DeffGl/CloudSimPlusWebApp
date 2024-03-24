@@ -8,7 +8,12 @@ var form = new Vue({
         showTableDatacenter: true,
         currentPage: 0,
         totalPages: null,
-        globalCounter: 0
+        globalCounter: 0,
+        filterNameSimulation: '',
+        filterDateOfCreation: '',
+        filterSimulationType: '',
+        simulationTypes: '',
+        showRemovedSimulation: false
     },
     methods: {
         loadPage(page) {
@@ -19,16 +24,16 @@ var form = new Vue({
             }
             this.globalCounter = page * this.simulationDTO.length;
 
-            console.log("prev currentPage" + this.currentPage)
-            console.log("prev totalPages" + this.totalPages)
-            axios.get('/rest/account?page=' + page)
+
+            axios.get('/rest/account?page=' + page
+                + "&nameSimulation=" + this.filterNameSimulation
+                + "&dateOfCreation=" + this.filterDateOfCreation
+                + "&simulationType=" + this.filterSimulationType
+                + "&showRemovedSimulation=" + this.showRemovedSimulation)
                 .then(response => {
                     this.currentPage = response.data.page;
                     this.totalPages = response.data.totalPages;
                     this.simulationDTO = response.data.simulationDTOS; // Если вам нужно обновить данные
-                    console.log("pos currentPage" + this.currentPage)
-                    console.log("pos totalPages" + this.totalPages)
-                    console.log(this.simulationDTO)
                 })
                 .catch(error => {
                     console.error('Ошибка при загрузке данных:', error);
@@ -324,5 +329,16 @@ var form = new Vue({
 
                 break;
         }
+
+        axios.get('/simulation/types')
+            .then(response => {
+                this.simulationTypes = response.data.simulationTypes
+                console.log(this.simulationTypes)
+            })
+            .catch(error => {
+                console.error('Ошибка при загрузке данных:', error);
+            });
+
     }
 });
+

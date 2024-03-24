@@ -1,6 +1,7 @@
 package com.example.cloudsimpluswebapp.controllers;
 
 import com.example.cloudsimpluswebapp.dto.SimulationDTO;
+import com.example.cloudsimpluswebapp.models.enums.SimulationType;
 import com.example.cloudsimpluswebapp.services.SimulationService;
 import com.example.cloudsimpluswebapp.utils.exceptions.SimulationException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -9,10 +10,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/simulation")
@@ -48,5 +50,14 @@ public class SimulationRestController {
         log.info(simulationDTO.toString());
         String simulationResultJson = objectMapper.writeValueAsString(simulationDTO);
         return ResponseEntity.ok(simulationResultJson);
+    }
+
+    @GetMapping("/types")
+    public ResponseEntity<String> getTypesSimulation() throws JsonProcessingException {
+        Map<String, Object> simulationTypes = new HashMap<>();
+        Map<String, Object> response = new HashMap<>();
+        Arrays.stream(SimulationType.values()).forEach(simulationType -> simulationTypes.put(simulationType.getLocalizationName(), simulationType.name()));
+        response.put("simulationTypes", simulationTypes);
+        return ResponseEntity.ok(objectMapper.writeValueAsString(response));
     }
 }

@@ -38,3 +38,94 @@ h1{
 .table-container th {
     text-align: center;
 }
+
+
+button {
+    margin: 10px;
+    padding: 5px 10px;
+    cursor: pointer;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+input[type="text"] {
+    width: 250px;
+    padding: 5px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    margin: 10px;
+}
+
+input[type="submit"] {
+    margin: 10px;
+    padding: 10px 20px;
+    cursor: pointer;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+}
+
+input[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+label {
+    display: block;
+    margin: 10px;
+}
+
+#nameSimulation {
+    width: 500px;
+    margin-bottom: 10px;
+}
+
+.filter-container{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    margin-right: 10px;
+    flex: 1;
+}
+
+select {
+    width: 250px;
+    padding: 5px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    margin: 10px;
+    font-family: 'Nunito', sans-serif;
+}
+
+/* Стили при наведении */
+select:hover {
+    border-color: #999;
+}
+
+/* Стили при фокусе */
+select:focus {
+    border-color: #555;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+}
+
+.checkbox-container input[type="checkbox"] {
+    margin-left: 10px;
+    transform: scale(1.5); /* Увеличение размера чекбокса */
+    /* Дополнительные стили для чекбокса */
+}
+

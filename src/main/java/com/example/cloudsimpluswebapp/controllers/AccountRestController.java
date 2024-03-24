@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.text.ParseException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -35,16 +35,26 @@ public class AccountRestController {
     }
 
     @GetMapping
-    public ResponseEntity<String> getTable(@RequestParam(required = false, defaultValue = "0") int page) throws JsonProcessingException {
+    public ResponseEntity<String> getTable(@RequestParam(required = false, defaultValue = "0") int page,
+                                           @RequestParam(required = false, defaultValue = "") String nameSimulation,
+                                           @RequestParam(required = false, defaultValue = "") String dateOfCreation,
+                                           @RequestParam(required = false, defaultValue = "") String simulationType,
+                                           @RequestParam(required = false, defaultValue = "false") boolean simulationRemoved) throws JsonProcessingException, ParseException {
 
-        Page<SimulationDTO> simulationDTOS = simulationService.getSimulationsByPerson(page);
-        List<SimulationDTO> content = simulationDTOS.getContent();
-        int totalPages = simulationDTOS.getTotalPages();
+
+        //Page<SimulationDTO> simulationDTOS = simulationService.getSimulationsByPerson(page);
+        Page<SimulationDTO> simulationDTOS = simulationService.getSimulationsByPersonAndFilter(
+                page,
+                nameSimulation,
+                dateOfCreation,
+                simulationType,
+                simulationRemoved);
+
 
         Map<String, Object> response = new HashMap<>();
-        response.put("totalPages", totalPages);
+        response.put("totalPages", simulationDTOS.getTotalPages());
         response.put("page", page);
-        response.put("simulationDTOS", content);
+        response.put("simulationDTOS", simulationDTOS.getContent());
 
         String jsonResponse = objectMapper.writeValueAsString(response);
 

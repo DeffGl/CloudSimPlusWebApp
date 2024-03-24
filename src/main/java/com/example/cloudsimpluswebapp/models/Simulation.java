@@ -56,4 +56,7 @@ public class Simulation {
     @JoinColumn(name = "person_id")
     private Person person;
 
+    @Column(name = "simulation_removed")
+    private boolean simulationRemoved;
+
 }

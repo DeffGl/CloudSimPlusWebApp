@@ -3,12 +3,14 @@ package com.example.cloudsimpluswebapp.services.impl;
 import com.example.cloudsimpluswebapp.dto.CloudletDTO;
 import com.example.cloudsimpluswebapp.dto.SimulationDTO;
 import com.example.cloudsimpluswebapp.dto.SimulationResultDTO;
+import com.example.cloudsimpluswebapp.models.enums.SimulationType;
 import com.example.cloudsimpluswebapp.repositories.SimulationRepository;
 import com.example.cloudsimpluswebapp.security.CurrentPersonResolver;
 import com.example.cloudsimpluswebapp.services.SimulationService;
 import com.example.cloudsimpluswebapp.simulations.BasicSimulation;
 import com.example.cloudsimpluswebapp.simulations.CloudletAndVmLifeTimeSimulation;
 import com.example.cloudsimpluswebapp.simulations.CloudletCancellationSimulation;
+import com.example.cloudsimpluswebapp.utils.DateUtil;
 import com.example.cloudsimpluswebapp.utils.exceptions.SimulationException;
 import com.example.cloudsimpluswebapp.utils.mappers.SimulationMapper;
 import com.example.cloudsimpluswebapp.utils.mappers.SimulationResultMapper;
@@ -22,6 +24,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -133,6 +136,42 @@ public class SimulationServiceImpl implements SimulationService {
                         .setActionUrl(simulationDTO.getSimulationType()
                                 .getUrl()))
                 .toList();
+        return new PageImpl<>(simulationDTOS, pageable, totalSimulations);
+    }
+
+    @Override
+    public Page<SimulationDTO> getSimulationsByPersonAndFilter(int page, String nameSimulation, String dateOfCreation, String simulationType, boolean simulationRemoved) throws ParseException {
+        Pageable pageable = PageRequest.of(page, 3);
+        log.info("page: " + page
+        + " nameSimulation: " + nameSimulation
+        + " dateOfCreation: " + dateOfCreation
+        + " simulationType: " + simulationType
+        + " simulationRemoved: " + simulationRemoved);
+        long totalSimulations = simulationRepository.countSimulationsByPersonAndNameSimulationAndDateOfCreationAndSimulationTypeAndSimulationRemoved(
+                currentPersonResolver.getCurrentPerson(),
+                nameSimulation,
+                DateUtil.getDateFromString(dateOfCreation),
+                SimulationType.getSimulationTypeByName(simulationType),
+                simulationRemoved);
+
+        List<SimulationDTO> simulationDTOS = simulationRepository
+                .
+        getSimulationsByPersonAndNameSimulationAndDateOfCreationAndSimulationTypeAndSimulationRemoved(currentPersonResolver.getCurrentPerson(),
+                nameSimulation,
+                DateUtil.getDateFromString(dateOfCreation),
+                SimulationType.getSimulationTypeByName(simulationType),
+                simulationRemoved,
+                pageable)
+
+                .stream()
+                .map(simulationMapper::map)
+                .map(simulationDTO -> simulationDTO
+                        .setActionUrl(simulationDTO.getSimulationType()
+                                .getUrl()))
+                .toList();
+
+
+        log.info("TEST CHECK: " + totalSimulations);
         return new PageImpl<>(simulationDTOS, pageable, totalSimulations);
     }
 

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Личный кабинет</title>
-    <link rel="stylesheet" type="text/css" href="/public/css/simulation/lifeTime.css">
+    <link rel="stylesheet" type="text/css" href="/public/css/account.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap">
 </head>
 <body>
@@ -12,6 +12,32 @@
     <div id="totalPages" th:total-pages="${totalPages}"></div>
     <div id="currentPage" th:current-page="${page}"></div>
     <h1>Список Simulation DTOs</h1>
+
+
+    <label th:text="#{filter}" style="font-weight: bold"></label>
+    <div class="filter-container">
+
+        <label th:text="#{simulationName}" for="filterNameSimulation"></label>
+        <input type="text" id="filterNameSimulation" v-model="filterNameSimulation">
+
+        <label th:text="#{dateOfCreation}" for="filterDateOfCreation"></label>
+        <input type="date" id="filterDateOfCreation" v-model="filterDateOfCreation">
+
+        <label th:text="#{simulationType}" for="filterSimulationType"></label>
+        <select id="filterSimulationType" v-model="filterSimulationType">
+            <option value="">Выберите тип симуляции</option>
+            <option v-for="(value, key) in simulationTypes" :key="key" :value="value">{{ key }}</option>
+        </select>
+
+        <div class="checkbox-container">
+            <label th:text="#{showRemovedSimulation}" for="showRemovedSimulation"></label>
+            <input id="showRemovedSimulation" type="checkbox" v-model="showRemovedSimulation">
+        </div>
+
+        <button @click="loadPage(currentPage)">Применить фильтр</button>
+    </div>
+
+
     <table class="table-container">
         <thead>
         <tr>
