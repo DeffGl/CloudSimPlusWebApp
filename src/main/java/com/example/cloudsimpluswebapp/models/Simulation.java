@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -24,9 +25,7 @@ public class Simulation {
     private String nameSimulation;
 
     @Column(name = "date_of_creation")
-    @Temporal(TemporalType.DATE)
-    @DateTimeFormat(pattern = "dd/MM/yyyy")
-    private Date dateOfCreation;
+    private LocalDate dateOfCreation;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "simulation_id")

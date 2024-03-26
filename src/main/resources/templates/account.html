@@ -29,10 +29,10 @@
             <option v-for="(value, key) in simulationTypes" :key="key" :value="value">{{ key }}</option>
         </select>
 
-        <div class="checkbox-container">
+       <!-- <div class="checkbox-container">
             <label th:text="#{showRemovedSimulation}" for="showRemovedSimulation"></label>
             <input id="showRemovedSimulation" type="checkbox" v-model="showRemovedSimulation">
-        </div>
+        </div>-->
 
         <button @click="loadPage(currentPage)">Применить фильтр</button>
     </div>

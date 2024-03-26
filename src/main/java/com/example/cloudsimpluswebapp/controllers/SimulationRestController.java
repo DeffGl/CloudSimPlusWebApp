@@ -54,10 +54,8 @@ public class SimulationRestController {
 
     @GetMapping("/types")
     public ResponseEntity<String> getTypesSimulation() throws JsonProcessingException {
-        Map<String, Object> simulationTypes = new HashMap<>();
         Map<String, Object> response = new HashMap<>();
-        Arrays.stream(SimulationType.values()).forEach(simulationType -> simulationTypes.put(simulationType.getLocalizationName(), simulationType.name()));
-        response.put("simulationTypes", simulationTypes);
+        response.put("simulationTypes", SimulationType.getSimulationTypes());
         return ResponseEntity.ok(objectMapper.writeValueAsString(response));
     }
 }

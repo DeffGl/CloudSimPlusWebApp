@@ -3,6 +3,8 @@ package com.example.cloudsimpluswebapp.models.enums;
 import lombok.Getter;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public enum SimulationType {
     BASIC_SIMULATION("/basic", "Базовая симуляция"),
@@ -28,5 +30,11 @@ public enum SimulationType {
         } else {
             return null;
         }
+    }
+
+    public static Map<String, Object> getSimulationTypes(){
+        Map<String, Object> simulationTypes = new HashMap<>();
+        Arrays.stream(SimulationType.values()).forEach(simulationType -> simulationTypes.put(simulationType.getLocalizationName(), simulationType.name()));
+        return simulationTypes;
     }
 }

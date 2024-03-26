@@ -3,6 +3,8 @@ package com.example.cloudsimpluswebapp.services.impl;
 import com.example.cloudsimpluswebapp.dto.CloudletDTO;
 import com.example.cloudsimpluswebapp.dto.SimulationDTO;
 import com.example.cloudsimpluswebapp.dto.SimulationResultDTO;
+import com.example.cloudsimpluswebapp.models.Person;
+import com.example.cloudsimpluswebapp.models.Simulation;
 import com.example.cloudsimpluswebapp.models.enums.SimulationType;
 import com.example.cloudsimpluswebapp.repositories.SimulationRepository;
 import com.example.cloudsimpluswebapp.security.CurrentPersonResolver;
@@ -25,9 +27,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.time.LocalDate;
+import java.util.*;
 
 @Service
 public class SimulationServiceImpl implements SimulationService {
@@ -124,7 +125,7 @@ public class SimulationServiceImpl implements SimulationService {
 
     @Override
     public Page<SimulationDTO> getSimulationsByPerson(int page) {
-        Pageable pageable = PageRequest.of(page, 3);
+        Pageable pageable = PageRequest.of(page, 10);
 
         long totalSimulations = simulationRepository.countSimulationsByPerson(currentPersonResolver.getCurrentPerson());
         log.info("TEST CHECK: " + totalSimulations);
@@ -141,37 +142,39 @@ public class SimulationServiceImpl implements SimulationService {
 
     @Override
     public Page<SimulationDTO> getSimulationsByPersonAndFilter(int page, String nameSimulation, String dateOfCreation, String simulationType, boolean simulationRemoved) throws ParseException {
-        Pageable pageable = PageRequest.of(page, 3);
-        log.info("page: " + page
-        + " nameSimulation: " + nameSimulation
-        + " dateOfCreation: " + dateOfCreation
-        + " simulationType: " + simulationType
-        + " simulationRemoved: " + simulationRemoved);
-        long totalSimulations = simulationRepository.countSimulationsByPersonAndNameSimulationAndDateOfCreationAndSimulationTypeAndSimulationRemoved(
-                currentPersonResolver.getCurrentPerson(),
-                nameSimulation,
-                DateUtil.getDateFromString(dateOfCreation),
-                SimulationType.getSimulationTypeByName(simulationType),
+        Pageable pageable = PageRequest.of(page, 10);
+        Person person = currentPersonResolver.getCurrentPerson();
+
+        long totalSimulations;
+        List<SimulationDTO> simulationDTOS;
+
+        String name = nameSimulation.isEmpty() ? null : nameSimulation;
+        LocalDate date = DateUtil.getDateFromString(dateOfCreation);
+        SimulationType simType = simulationType.isEmpty() ? null : SimulationType.getSimulationTypeByName(simulationType);
+        totalSimulations = simulationRepository.getCountSimulations(
+                person,
+                name,
+                date,
+                simType,
                 simulationRemoved);
-
-        List<SimulationDTO> simulationDTOS = simulationRepository
-                .
-        getSimulationsByPersonAndNameSimulationAndDateOfCreationAndSimulationTypeAndSimulationRemoved(currentPersonResolver.getCurrentPerson(),
-                nameSimulation,
-                DateUtil.getDateFromString(dateOfCreation),
-                SimulationType.getSimulationTypeByName(simulationType),
+        Page<Simulation> simulations = simulationRepository.getSimulations(
+                person,
+                name,
+                date,
+                simType,
                 simulationRemoved,
-                pageable)
-
-                .stream()
+                pageable);
+        simulationDTOS = simulations
                 .map(simulationMapper::map)
                 .map(simulationDTO -> simulationDTO
                         .setActionUrl(simulationDTO.getSimulationType()
                                 .getUrl()))
                 .toList();
 
+        if (totalSimulations == 0){
+            totalSimulations = 1;
+        }
 
-        log.info("TEST CHECK: " + totalSimulations);
         return new PageImpl<>(simulationDTOS, pageable, totalSimulations);
     }
 

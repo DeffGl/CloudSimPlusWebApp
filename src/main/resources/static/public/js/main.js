@@ -17,7 +17,8 @@ var form = new Vue({
     },
     methods: {
         loadPage(page) {
-
+            console.log(page)
+            console.log(this.totalPages)
             if (page < 0 || page >= this.totalPages) {
                 console.log("Запрашиваемая страница вне диапазона.");
                 return; // Не отправлять запрос, если страница вне диапазона
