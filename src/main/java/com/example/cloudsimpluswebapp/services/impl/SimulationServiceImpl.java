@@ -128,14 +128,13 @@ public class SimulationServiceImpl implements SimulationService {
         Pageable pageable = PageRequest.of(page, 10);
 
         long totalSimulations = simulationRepository.countSimulationsByPerson(currentPersonResolver.getCurrentPerson());
-        log.info("TEST CHECK: " + totalSimulations);
         List<SimulationDTO> simulationDTOS = simulationRepository
                 .getSimulationsByPerson(currentPersonResolver.getCurrentPerson(), pageable)
                 .stream()
                 .map(simulationMapper::map)
                 .map(simulationDTO -> simulationDTO
-                        .setActionUrl(simulationDTO.getSimulationType()
-                                .getUrl()))
+                        .setActionUrl(simulationDTO.getSimulationType().getUrl())
+                        .setLocalizationTypeName(simulationDTO.getSimulationType().getLocalizationName()))
                 .toList();
         return new PageImpl<>(simulationDTOS, pageable, totalSimulations);
     }
@@ -167,8 +166,8 @@ public class SimulationServiceImpl implements SimulationService {
         simulationDTOS = simulations
                 .map(simulationMapper::map)
                 .map(simulationDTO -> simulationDTO
-                        .setActionUrl(simulationDTO.getSimulationType()
-                                .getUrl()))
+                        .setActionUrl(simulationDTO.getSimulationType().getUrl())
+                        .setLocalizationTypeName(simulationDTO.getSimulationType().getLocalizationName()))
                 .toList();
 
         if (totalSimulations == 0){

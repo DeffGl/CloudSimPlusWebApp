@@ -51,10 +51,10 @@
         <tbody>
 
         <tr v-for="(simulation, index) in simulationDTO">
-            <td>{{ globalCounter + index }}</td>
+            <td>{{ globalCounter + index + 1 }}</td>
             <td>{{ (simulation.nameSimulation == null || simulation.nameSimulation == '') ? 'Без названия' : simulation.nameSimulation }}</td>
             <td>{{ simulation.dateOfCreation }}</td>
-            <td>{{ simulation.simulationType }}</td>
+            <td>{{ simulation.localizationTypeName }}</td>
             <td>
 
                 <form @submit.prevent="repeatSimulation(simulation)">
