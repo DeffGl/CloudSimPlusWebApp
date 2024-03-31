@@ -25,7 +25,9 @@ public class Simulation {
     private String nameSimulation;
 
     @Column(name = "date_of_creation")
-    private LocalDate dateOfCreation;
+    @Temporal(TemporalType.DATE)
+    @DateTimeFormat(pattern = "yyyy/MM/dd")
+    private Date dateOfCreation;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "simulation_id")

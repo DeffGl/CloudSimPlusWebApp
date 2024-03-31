@@ -15,7 +15,7 @@ import java.util.UUID;
 public class SimulationDTO {
     private UUID simulationId;
     private String nameSimulation;
-    private LocalDate dateOfCreation = LocalDate.now();
+    private Date dateOfCreation = new Date();
     private List<HostDTO> hostDTOS = new ArrayList<>();
     private List<CloudletDTO> cloudletDTOS = new ArrayList<>();
     private List<SimulationResultDTO> simulationResultDTOS = new ArrayList<>();

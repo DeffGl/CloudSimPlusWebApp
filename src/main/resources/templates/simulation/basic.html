@@ -14,7 +14,7 @@
         <div id="simulationDTOJson" th:data-simulation-dto="${simulationDTOJson}"></div>
 
         <label th:text="#{nameSimulationLabel}" for="nameSimulation"></label>
-        <input type="text" th:field="*{nameSimulation}" id="nameSimulation">
+        <input type="text" th:field="*{nameSimulation}" id="nameSimulation" v-model="simulationDTO.nameSimulation">
 
         <div style="color:red" th:if="${#fields.hasErrors('nameSimulation')}" th:errors="*{nameSimulation}">Name
             simulation Errors

@@ -149,7 +149,7 @@ public class SimulationServiceImpl implements SimulationService {
         List<SimulationDTO> simulationDTOS;
 
         String name = nameSimulation.isEmpty() ? null : nameSimulation;
-        LocalDate date = DateUtil.getDateFromString(dateOfCreation);
+        Date date = DateUtil.getDateFromString(dateOfCreation);
         SimulationType simType = simulationType.isEmpty() ? null : SimulationType.getSimulationTypeByName(simulationType);
         totalSimulations = simulationRepository.getCountSimulations(
                 person,
