@@ -1,7 +1,14 @@
+html{
+    height: 100%;
+}
+
 body {
     font-family: 'Nunito', sans-serif;
     font-size: 16px;
     color: #282828;
+    min-height: 100%;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
 }
 
 h1{
@@ -17,6 +24,7 @@ h1{
     border-radius: 16px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     overflow: hidden;
+    margin-top: 10px;
 }
 
 #hostTable, #cloudletTable, #vmTable, #resultTable {
@@ -31,7 +39,7 @@ h1{
     background-color: white; /* Белый фон для строк с данными */
     padding: 10px; /* задаем отступ */
 }
-/*TODO надо доделать оформление таблицы*/
+
 #hostTable tbody tr td table thead
 {
     background-color: #eefbfb;

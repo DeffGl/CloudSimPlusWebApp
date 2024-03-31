@@ -11,10 +11,10 @@
 
 <div th:include="header"></div>
 
-<h1 th:text="#{lifeTimeSimulation}"></h1>
 <div id="form">
     <form id="simulationForm" th:method="POST" th:action="@{/simulation/lifetime}" th:object="${simulationDTO}" @submit.prevent="submitForm">
         <div id="simulationDTOJson" th:data-simulation-dto="${simulationDTOJson}"></div>
+        <h1 th:text="#{lifeTimeSimulation}"></h1>
 
         <label th:text="#{nameSimulationLabel}" for="nameSimulation"></label>
         <input type="text" th:field="*{nameSimulation}" id="nameSimulation" v-model="simulationDTO.nameSimulation">
@@ -204,6 +204,7 @@
         </div>
     </form>
 </div>
+<div th:include="footer"></div>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.7.8/dist/vue.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script src="/public/js/main.js"></script>

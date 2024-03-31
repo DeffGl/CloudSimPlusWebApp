@@ -1,5 +1,14 @@
+html{
+    height: 100%;
+}
 body {
     font-family: 'Nunito', sans-serif;
+    min-height: 100%;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+}
+
+.cards {
     text-align: center;
 }
 
@@ -17,26 +26,4 @@ body {
 
 .card-link:hover {
     background-color: #f0f0f0;
-}
-
-.logout-button-container {
-    text-align: right; /* Выравнивание содержимого вправо */
-}
-
-.logout-button {
-    font-size: 20px;
-    text-align: right; /* Выравнивание содержимого вправо */
-    font-family: 'Nunito', sans-serif;
-    display: inline-block;
-    padding: 10px; /* Паддинг относительно высоты и ширины экрана */
-    background-color: #ff6347;
-    color: #fff;
-    border: none;
-    border-radius: 5px; /* Радиус границы относительно ширины экрана */
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.logout-button:hover {
-    background-color: #d32f2f;
 }

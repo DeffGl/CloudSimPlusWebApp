@@ -37,7 +37,7 @@
             <input id="showRemovedSimulation" type="checkbox" v-model="showRemovedSimulation">
         </div>-->
 
-        <button class="custom-button" @click="loadPage(currentPage)">Применить фильтр</button>
+        <button class="custom-button" @click="loadPage(0)">Применить фильтр</button>
     </div>
 
 
@@ -75,7 +75,7 @@
         <button class="custom-button" @click="loadPage(currentPage + 1)">Следующая страница</button>
     </div>
 </div>
-
+<div th:include="footer"></div>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.7.8/dist/vue.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script src="/public/js/main.js"></script>

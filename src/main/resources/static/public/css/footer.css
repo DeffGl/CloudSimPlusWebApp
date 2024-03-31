@@ -1,0 +1,15 @@
+.footer {
+    background-color: #333; /* Цвет фона */
+    color: #fff; /* Цвет текста */
+    padding: 10px 20px; /* Отступы */
+    text-align: center; /* Выравнивание текста по центру */
+    border-top: 1px solid #666; /* Верхняя граница */
+    font-size: 14px; /* Размер шрифта */
+    margin-top: auto; /* Выравнивание внизу, если контента мало */
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1); /* Тень */
+}
+
+.footer p {
+    margin: 0;
+    font-size: 14px;
+}

@@ -3,18 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <link rel="stylesheet" type="text/css" href="/public/css/simulation/main.css">
+    <link rel="stylesheet" type="text/css" href="/public/css/header.css">
 </head>
 <body>
-<div>
-    <div>
+
+<header class="header">
+    <a class="header-logo" th:href="@{/simulation}">CloudSim Web Application</a>
+    <nav class="header-links">
         <a th:href="@{/account}">Личный кабинет</a>
-    </div>
+    </nav>
     <div class="logout-button-container">
         <form th:method="POST" th:action="@{/logout}">
             <input class="logout-button" type="submit" value="Выйти"/>
         </form>
     </div>
-</div>
+</header>
 </body>
 </html>
