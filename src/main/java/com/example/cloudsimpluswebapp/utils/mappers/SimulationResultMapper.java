@@ -3,6 +3,7 @@ package com.example.cloudsimpluswebapp.utils.mappers;
 import com.example.cloudsimpluswebapp.dto.CloudletDTO;
 import com.example.cloudsimpluswebapp.dto.SimulationResultDTO;
 import com.example.cloudsimpluswebapp.models.SimulationResult;
+import com.example.cloudsimpluswebapp.models.enums.ResultStatusType;
 import org.cloudsimplus.cloudlets.Cloudlet;
 import org.cloudsimplus.datacenters.Datacenter;
 import org.cloudsimplus.hosts.Host;
@@ -32,7 +33,7 @@ public abstract class SimulationResultMapper {
                 result.getLength(),
                 result.getFinishedLengthSoFar(),
                 result.getPesNumber(),
-                result.getStatus().name(),
+                ResultStatusType.getLocalizationNameByStatus(result.getStatus().name()),
                 result.getStartTime(),
                 result.getFinishTime(),
                 cloudletDTO.getCloudletMaxExecutionTime(),

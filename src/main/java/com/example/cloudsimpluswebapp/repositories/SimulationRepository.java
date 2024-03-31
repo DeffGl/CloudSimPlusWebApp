@@ -23,7 +23,7 @@ public interface SimulationRepository extends JpaRepository<Simulation, UUID> {
     long countSimulationsByPersonAndSimulationRemoved(Person currentPerson, boolean simulationRemoved);
     @Query("SELECT COUNT(s) FROM Simulation s " +
             "WHERE (s.person = :currentPerson)" +
-            "AND ((cast(:nameSimulation as string) IS NULL ) OR LOWER(s.nameSimulation) = LOWER((cast(:nameSimulation as string)))) " +
+            "AND ((cast(:nameSimulation as string) IS NULL ) OR LOWER(s.nameSimulation) LIKE LOWER(concat('%',cast(:nameSimulation as string), '%'))) " +
             "AND (cast(:dateOfCreation as date) IS NULL OR s.dateOfCreation = (:dateOfCreation)) " +
             "AND (:simulationType IS NULL OR s.simulationType = :simulationType) " +
             "AND (:simulationRemoved IS NULL OR s.simulationRemoved = :simulationRemoved)")
@@ -36,7 +36,7 @@ public interface SimulationRepository extends JpaRepository<Simulation, UUID> {
 
     @Query("SELECT s FROM Simulation s " +
             "WHERE (s.person = :currentPerson)" +
-            "AND ((cast(:nameSimulation as string) IS NULL ) OR LOWER(s.nameSimulation) = LOWER((cast(:nameSimulation as string)))) " +
+            "AND ((cast(:nameSimulation as string) IS NULL ) OR LOWER(s.nameSimulation) LIKE LOWER(concat('%',cast(:nameSimulation as string), '%'))) " +
             "AND (cast(:dateOfCreation as date) IS NULL OR s.dateOfCreation = (:dateOfCreation)) " +
             "AND (:simulationType IS NULL OR s.simulationType = :simulationType) " +
             "AND (:simulationRemoved IS NULL OR s.simulationRemoved = :simulationRemoved)")

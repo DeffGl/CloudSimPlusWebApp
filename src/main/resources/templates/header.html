@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="/public/css/simulation/main.css">
+</head>
+<body>
+<div>
+    <div>
+        <a th:href="@{/account}">Личный кабинет</a>
+    </div>
+    <div class="logout-button-container">
+        <form th:method="POST" th:action="@{/logout}">
+            <input class="logout-button" type="submit" value="Выйти"/>
+        </form>
+    </div>
+</div>
+</body>
+</html>

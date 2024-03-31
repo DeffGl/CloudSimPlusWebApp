@@ -7,6 +7,9 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap">
 </head>
 <body>
+
+<div th:include="header"></div>
+
 <div id="form">
     <div id="simulationDTOJson" th:data-simulation-dto="${simulationDTOJson}"></div>
     <div id="totalPages" th:total-pages="${totalPages}"></div>
@@ -34,7 +37,7 @@
             <input id="showRemovedSimulation" type="checkbox" v-model="showRemovedSimulation">
         </div>-->
 
-        <button @click="loadPage(currentPage)">Применить фильтр</button>
+        <button class="custom-button" @click="loadPage(currentPage)">Применить фильтр</button>
     </div>
 
 
@@ -58,7 +61,7 @@
             <td>
 
                 <form @submit.prevent="repeatSimulation(simulation)">
-                    <button type="submit">Повторить симуляцию</button>
+                    <button class="custom-button" type="submit">Повторить симуляцию</button>
                 </form>
             </td>
         </tr>
@@ -67,9 +70,9 @@
 
     <!-- Кнопки для переключения страниц -->
     <div>
-        <button @click="loadPage(currentPage - 1)">Предыдущая страница</button>
+        <button class="custom-button" @click="loadPage(currentPage - 1)">Предыдущая страница</button>
         <span>{{currentPage + 1}} / {{totalPages}}</span>
-        <button @click="loadPage(currentPage + 1)">Следующая страница</button>
+        <button class="custom-button" @click="loadPage(currentPage + 1)">Следующая страница</button>
     </div>
 </div>
 

@@ -8,6 +8,9 @@
 </head>
 
 <body>
+
+<div th:include="header"></div>
+
 <h1 th:text="#{cancelSimulation}"></h1>
 <div id="form">
     <form id="simulationForm" th:method="POST" th:action="@{/simulation/cancel}" th:object="${simulationDTO}" @submit.prevent="submitForm">
@@ -41,14 +44,14 @@
                 <!--<td><input type="text" v-model="datacenter.datacenterCount" /></td>-->
                 <td><input type="text" v-model="datacenter.schedulingInterval" /></td>
                 <td>
-                    <button type="button" th:text="#{removeDatacenter}" style="display: none" @click="removeDatacenter(index)"></button>
-                    <button type="button" th:text="#{addDatacenterCopy}" style="display: none" @click="addDatacenterCopy(index)"></button>
+                    <button class="custom-button" type="button" th:text="#{removeDatacenter}" style="display: none" @click="removeDatacenter(index)"></button>
+                    <button class="custom-button" type="button" th:text="#{addDatacenterCopy}" style="display: none" @click="addDatacenterCopy(index)"></button>
                 </td> <!-- Delete button -->
             </tr>
             </tbody>
         </table>
 
-        <button type="button" th:text="#{addDatacenter}" style="display: none" @click="addDatacenter"></button>
+        <button class="custom-button" type="button" th:text="#{addDatacenter}" style="display: none" @click="addDatacenter"></button>
 
         <table id="hostTable" v-show="showTableHost" class="table-container">
             <thead>
@@ -99,26 +102,26 @@
                             <td><input type="text" v-model="vm.vmStorage"/></td>
 
                             <td>
-                                <button type="button" th:text="#{removeVm}" @click="removeVm(index, vmIndex)">Удалить VM</button>
-                                <button type="button" th:text="#{addVmCopy}" @click="addVmCopy(index, vmIndex)">Добавить копию VM</button>
+                                <button class="custom-button" type="button" th:text="#{removeVm}" @click="removeVm(index, vmIndex)">Удалить VM</button>
+                                <button class="custom-button" type="button" th:text="#{addVmCopy}" @click="addVmCopy(index, vmIndex)">Добавить копию VM</button>
                             </td>
                         </tr>
                         </tbody>
                     </table>
 
-                    <button type="button" th:text="#{addVm}" @click="addVm(index)">Добавить VM</button>
+                    <button class="custom-button" type="button" th:text="#{addVm}" @click="addVm(index)">Добавить VM</button>
                 </td>
 
                 <td>
-                    <button type="button" th:text="#{removeHost}" @click="removeHost(index)">Удалить хост</button>
-                    <button type="button" th:text="#{addHostCopy}" @click="addHostCopy(index)">Добавить копию хоста</button>
+                    <button class="custom-button" type="button" th:text="#{removeHost}" @click="removeHost(index)">Удалить хост</button>
+                    <button class="custom-button" type="button" th:text="#{addHostCopy}" @click="addHostCopy(index)">Добавить копию хоста</button>
                 </td>
             </tr>
             </tbody>
         </table>
 
 
-        <button type="button" th:text="#{addHost}" @click="addHost">Добавить хост</button>
+        <button class="custom-button" type="button" th:text="#{addHost}" @click="addHost">Добавить хост</button>
 
         <table id="cloudletTable" v-show="showTableCloudlet" class="table-container">
             <thead>
@@ -141,15 +144,15 @@
                 <td><input type="text" v-model="cloudlet.cloudletLength"/></td>
                 <td><input type="text" v-model="cloudlet.cloudletSize"/></td>
                 <td>
-                    <button type="button" th:text="#{removeCloudlet}" @click="removeCloudlet(index)">Удалить</button>
-                    <button type="button" th:text="#{addCloudletCopy}" @click="addCloudletCopy(index)">Добавить копию cloudlet</button>
+                    <button class="custom-button" type="button" th:text="#{removeCloudlet}" @click="removeCloudlet(index)">Удалить</button>
+                    <button class="custom-button" type="button" th:text="#{addCloudletCopy}" @click="addCloudletCopy(index)">Добавить копию cloudlet</button>
                 </td>
             </tr>
             </tbody>
         </table>
-        <button type="button" th:text="#{addCloudlet}" @click="addCloudlet">Добавить задачу</button>
+        <button class="custom-button" type="button" th:text="#{addCloudlet}" @click="addCloudlet">Добавить задачу</button>
 
-        <button type="submit" th:text="#{start}"></button>
+        <button class="custom-button" type="submit" th:text="#{start}"></button>
 
         <table id="resultTable" v-if="simulationDTO.simulationResultDTOS.length > 0" class="table-container">
             <thead>
