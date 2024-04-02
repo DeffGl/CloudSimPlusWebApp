@@ -9,9 +9,7 @@ import com.example.cloudsimpluswebapp.models.enums.SimulationType;
 import com.example.cloudsimpluswebapp.repositories.SimulationRepository;
 import com.example.cloudsimpluswebapp.security.CurrentPersonResolver;
 import com.example.cloudsimpluswebapp.services.SimulationService;
-import com.example.cloudsimpluswebapp.simulations.BasicSimulation;
-import com.example.cloudsimpluswebapp.simulations.CloudletAndVmLifeTimeSimulation;
-import com.example.cloudsimpluswebapp.simulations.CloudletCancellationSimulation;
+import com.example.cloudsimpluswebapp.simulations.*;
 import com.example.cloudsimpluswebapp.utils.DateUtil;
 import com.example.cloudsimpluswebapp.utils.exceptions.SimulationException;
 import com.example.cloudsimpluswebapp.utils.mappers.SimulationMapper;
@@ -27,7 +25,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
-import java.time.LocalDate;
 import java.util.*;
 
 @Service
@@ -41,9 +38,11 @@ public class SimulationServiceImpl implements SimulationService {
     private final SimulationMapper simulationMapper;
     private final CurrentPersonResolver currentPersonResolver;
     private final CloudletCancellationSimulation cloudletCancellationSimulation;
+    private final HostFaultInjectionSimulation hostFaultInjectionSimulation;
+    private final VmBootTimeAndOverhead vmBootTimeAndOverhead;
 
     @Autowired
-    public SimulationServiceImpl(SimulationRepository simulationRepository, BasicSimulation basicSimulation, SimulationResultMapper simulationResultMapper, SimulationMapper simulationMapper, CloudletAndVmLifeTimeSimulation cloudletAndVmLifeTimeSimulation, CurrentPersonResolver currentPersonResolver, CloudletCancellationSimulation cloudletCancellationSimulation) {
+    public SimulationServiceImpl(SimulationRepository simulationRepository, BasicSimulation basicSimulation, SimulationResultMapper simulationResultMapper, SimulationMapper simulationMapper, CloudletAndVmLifeTimeSimulation cloudletAndVmLifeTimeSimulation, CurrentPersonResolver currentPersonResolver, CloudletCancellationSimulation cloudletCancellationSimulation, HostFaultInjectionSimulation hostFaultInjectionSimulation, VmBootTimeAndOverhead vmBootTimeAndOverhead) {
         this.simulationRepository = simulationRepository;
         this.basicSimulation = basicSimulation;
         this.simulationResultMapper = simulationResultMapper;
@@ -51,6 +50,8 @@ public class SimulationServiceImpl implements SimulationService {
         this.cloudletAndVmLifeTimeSimulation = cloudletAndVmLifeTimeSimulation;
         this.currentPersonResolver = currentPersonResolver;
         this.cloudletCancellationSimulation = cloudletCancellationSimulation;
+        this.hostFaultInjectionSimulation = hostFaultInjectionSimulation;
+        this.vmBootTimeAndOverhead = vmBootTimeAndOverhead;
     }
 
     @Override
@@ -98,6 +99,44 @@ public class SimulationServiceImpl implements SimulationService {
             simulationDTO.setSimulationResultDTOS(
                     getSimulationResultListDTO(
                             cloudletCancellationSimulation.startCloudletCancellationSimulation(simulationDTO),
+                            simulationDTO.getCloudletDTOS()
+                    )
+            );
+
+            if (simulationDTO.isSaveResults()){
+                simulationRepository.save(simulationMapper.map(simulationDTO).setPerson(currentPersonResolver.getCurrentPerson()));
+            }
+        } catch (Exception e){
+            throwException(e, simulationDTO);
+        }
+        return simulationDTO;
+    }
+
+    @Override
+    public SimulationDTO startHostFaultInjectionSimulation(SimulationDTO simulationDTO) throws SimulationException {
+        try{
+            simulationDTO.setSimulationResultDTOS(
+                    getSimulationResultListDTO(
+                            hostFaultInjectionSimulation.startHostFaultInjectionSimulation(simulationDTO),
+                            simulationDTO.getCloudletDTOS()
+                    )
+            );
+
+            if (simulationDTO.isSaveResults()){
+                simulationRepository.save(simulationMapper.map(simulationDTO).setPerson(currentPersonResolver.getCurrentPerson()));
+            }
+        } catch (Exception e){
+            throwException(e, simulationDTO);
+        }
+        return simulationDTO;
+    }
+
+    @Override
+    public SimulationDTO startVmBootTimeAndOverheadSimulation(SimulationDTO simulationDTO) throws SimulationException {
+        try{
+            simulationDTO.setSimulationResultDTOS(
+                    getSimulationResultListDTO(
+                            vmBootTimeAndOverhead.startVmBootTimeAndOverhead(simulationDTO),
                             simulationDTO.getCloudletDTOS()
                     )
             );

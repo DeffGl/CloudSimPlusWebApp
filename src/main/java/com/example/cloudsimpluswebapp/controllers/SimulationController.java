@@ -57,6 +57,21 @@ public class SimulationController {
         model.addAttribute("simulationDTO", simulationDTO);
         return "simulation/cancel";
     }
+    @GetMapping("/hostFault")
+    public String getHostFaultInjectionSimulationPage(Model model, @RequestParam(name = "simulationId", required = false) UUID simulationId) throws JsonProcessingException {
+        SimulationDTO simulationDTO = getSimulationDTO(simulationId, SimulationType.HOST_FAULT_INJECTION_SIMULATION);
+        model.addAttribute("simulationDTOJson", objectMapper.writeValueAsString(simulationDTO));
+        model.addAttribute("simulationDTO", simulationDTO);
+        return "simulation/hostFault";
+    }
+
+    @GetMapping("/bootAndOverhead")
+    public String getVmBootTimeAndOverheadSimulationPage(Model model, @RequestParam(name = "simulationId", required = false) UUID simulationId) throws JsonProcessingException {
+        SimulationDTO simulationDTO = getSimulationDTO(simulationId, SimulationType.VM_BOOT_TIME_AND_OVERHEAD_SIMULATION);
+        model.addAttribute("simulationDTOJson", objectMapper.writeValueAsString(simulationDTO));
+        model.addAttribute("simulationDTO", simulationDTO);
+        return "simulation/bootAndOverhead";
+    }
 
     private SimulationDTO getSimulationDTO(UUID simulationId, SimulationType simulationType){
         SimulationDTO simulationDTO;

@@ -47,7 +47,19 @@ public class SimulationRestController {
     @PostMapping("/cancel")
     public ResponseEntity<String> startCloudletCancellationSimulation(@RequestBody SimulationDTO simulationDTO) throws SimulationException, JsonProcessingException {
         simulationDTO = simulationService.startCloudletCancellationSimulation(simulationDTO);
-        log.info(simulationDTO.toString());
+        String simulationResultJson = objectMapper.writeValueAsString(simulationDTO);
+        return ResponseEntity.ok(simulationResultJson);
+    }
+
+    @PostMapping("/hostFault")
+    public ResponseEntity<String> startHostFaultInjectionSimulation(@RequestBody SimulationDTO simulationDTO) throws JsonProcessingException, SimulationException {
+        simulationDTO = simulationService.startHostFaultInjectionSimulation(simulationDTO);
+        String simulationResultJson = objectMapper.writeValueAsString(simulationDTO);
+        return ResponseEntity.ok(simulationResultJson);
+    }
+    @PostMapping("/bootAndOverhead")
+    public ResponseEntity<String> startVmBootTimeAndOverheadSimulation(@RequestBody SimulationDTO simulationDTO) throws JsonProcessingException, SimulationException {
+        simulationDTO = simulationService.startVmBootTimeAndOverheadSimulation(simulationDTO);
         String simulationResultJson = objectMapper.writeValueAsString(simulationDTO);
         return ResponseEntity.ok(simulationResultJson);
     }

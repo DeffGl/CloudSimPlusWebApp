@@ -9,7 +9,9 @@ import java.util.Map;
 public enum SimulationType {
     BASIC_SIMULATION("/basic", "Базовая симуляция"),
     LIFETIME_SIMULATION("/lifetime", "Lifetime симуляция"),
-    CANCEL_SIMULATION("/cancel", "Симуляция отмены");
+    CANCEL_SIMULATION("/cancel", "Симуляция отмены"),
+    HOST_FAULT_INJECTION_SIMULATION("/hostFault", "Симуляция ошибки хоста"),
+    VM_BOOT_TIME_AND_OVERHEAD_SIMULATION("/bootAndOverhead", "Симуляция времени запуска ВМ");
 
     private final String url;
     @Getter

@@ -1,0 +1,90 @@
+html{
+    height: 100%;
+}
+body {
+    font-family: 'Nunito', sans-serif;
+    font-size: 16px;
+    color: #282828;
+    min-height: 100%;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+}
+h1{
+    text-align: center;
+}
+
+#form {
+    margin: 20px;
+}
+
+.table-container {
+    background-color: #eefbfb;
+    border-radius: 16px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    border-collapse: collapse;
+    width: 100%;
+    margin: 10px;
+}
+
+.table-container tbody tr {
+    background-color: white; /* Белый фон для строк с данными */
+    padding: 10px; /* задаем отступ */
+}
+
+.table-container tbody tr td table thead {
+    background-color: #eefbfb;
+}
+
+.table-container th, .table-container td {
+    text-align: center;
+    padding: 8px;
+}
+
+.table-container th {
+    text-align: center;
+}
+
+.custom-button {
+    margin: 10px;
+    padding: 5px 10px;
+    cursor: pointer;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+}
+
+.custom-button:hover {
+    background-color: #45a049;
+}
+
+input[type="text"] {
+    width: 100px;
+    padding: 5px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    margin: 10px;
+}
+
+label {
+    display: block;
+    margin: 10px;
+}
+
+#nameSimulation {
+    width: 500px;
+    margin-bottom: 10px;
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.checkbox-container input[type="checkbox"] {
+    margin-left: 1px;
+    transform: scale(1.5);
+}
