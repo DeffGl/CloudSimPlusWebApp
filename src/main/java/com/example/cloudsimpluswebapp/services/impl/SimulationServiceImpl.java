@@ -14,6 +14,7 @@ import com.example.cloudsimpluswebapp.utils.DateUtil;
 import com.example.cloudsimpluswebapp.utils.exceptions.SimulationException;
 import com.example.cloudsimpluswebapp.utils.mappers.SimulationMapper;
 import com.example.cloudsimpluswebapp.utils.mappers.SimulationResultMapper;
+import org.cloudsimplus.brokers.DatacenterBrokerSimple;
 import org.cloudsimplus.cloudlets.Cloudlet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -115,9 +116,17 @@ public class SimulationServiceImpl implements SimulationService {
     @Override
     public SimulationDTO startHostFaultInjectionSimulation(SimulationDTO simulationDTO) throws SimulationException {
         try{
+            DatacenterBrokerSimple datacenterBrokerSimple = hostFaultInjectionSimulation.startHostFaultInjectionSimulation(simulationDTO).get(0);
             simulationDTO.setSimulationResultDTOS(
-                    getSimulationResultListDTO(
-                            hostFaultInjectionSimulation.startHostFaultInjectionSimulation(simulationDTO),
+                    getSimulationResultListDTOForFault(
+                            datacenterBrokerSimple.getCloudletFinishedList(),
+                            simulationDTO.getCloudletDTOS()
+                    )
+            );
+
+            simulationDTO.setSimulationResultSubmittedDTOS(
+                    getSimulationResultListDTOForFault(
+                            datacenterBrokerSimple.getCloudletSubmittedList(),
                             simulationDTO.getCloudletDTOS()
                     )
             );
@@ -126,7 +135,8 @@ public class SimulationServiceImpl implements SimulationService {
                 simulationRepository.save(simulationMapper.map(simulationDTO).setPerson(currentPersonResolver.getCurrentPerson()));
             }
         } catch (Exception e){
-            throwException(e, simulationDTO);
+            e.printStackTrace();
+            //throwException(e, simulationDTO);
         }
         return simulationDTO;
     }
@@ -225,6 +235,28 @@ public class SimulationServiceImpl implements SimulationService {
         List<SimulationResultDTO> simulationResultDTOS = new ArrayList<>();
         for (int i = 0, j = 0; i<cloudletDTOS.size(); i++){
             for (int k = 0; k<cloudletDTOS.get(i).getCloudletCount(); k++, j++){
+                simulationResultDTOS.add(simulationResultMapper.map(resultList.get(j), cloudletDTOS.get(i)));
+            }
+        }
+        //TODO придумать как реализовать цикл выше в потоках
+/*        cloudletDTOS.stream()
+                .flatMap(cloudletDTO -> {
+                    int j = 0;
+                    SimulationResultDTO simulationResultDTO;
+                    IntStream.range(0, cloudletDTO.getCloudletCount()).mapToObj(k -> {
+                        int f = j;
+                        simulationResultDTOS.add(simulationResultMapper.map(resultList.get(j++), cloudletDTO));
+                    });
+                    return simulationResultDTO;
+                })
+                .forEach(simulationResultDTOS::add);*/
+        return simulationResultDTOS;
+    }
+
+    private List<SimulationResultDTO> getSimulationResultListDTOForFault(List<Cloudlet> resultList, List<CloudletDTO> cloudletDTOS){
+        List<SimulationResultDTO> simulationResultDTOS = new ArrayList<>();
+        for (int i = 0, j = 0; i<cloudletDTOS.size(); i++){
+            for (int k = 0; k<cloudletDTOS.get(i).getCloudletCount() - 1; k++, j++){
                 simulationResultDTOS.add(simulationResultMapper.map(resultList.get(j), cloudletDTOS.get(i)));
             }
         }

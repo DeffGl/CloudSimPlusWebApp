@@ -1,7 +1,8 @@
 package com.example.cloudsimpluswebapp.simulations.impl;
 
-import com.example.cloudsimpluswebapp.dto.SimulationDTO;
+import com.example.cloudsimpluswebapp.dto.*;
 import com.example.cloudsimpluswebapp.simulations.HostFaultInjectionSimulation;
+import org.cloudsimplus.allocationpolicies.VmAllocationPolicyBestFit;
 import org.cloudsimplus.brokers.DatacenterBroker;
 import org.cloudsimplus.brokers.DatacenterBrokerSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
@@ -25,6 +26,8 @@ import org.cloudsimplus.utilizationmodels.UtilizationModelDynamic;
 import org.cloudsimplus.utilizationmodels.UtilizationModelFull;
 import org.cloudsimplus.vms.Vm;
 import org.cloudsimplus.vms.VmSimple;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -33,31 +36,17 @@ import java.util.stream.IntStream;
 @Service
 public class HostFaultInjectionSimulationImpl implements HostFaultInjectionSimulation {
 
+    private static final Logger log = LoggerFactory.getLogger(HostFaultInjectionSimulationImpl.class);
     private static final int SCHEDULE_TIME_TO_PROCESS_DATACENTER_EVENTS = 0;
-
     private static final int BROKERS = 1;
-
-    /**
-     * Number of Hosts to create for each Datacenter. The number of elements in
-     * this array defines the number of Datacenters to be created.
-     */
     private static final int HOSTS = 8;
     private static final int HOST_PES = 5;
     private static final int HOST_MIPS_BY_PE = 1000;
     private static final long HOST_RAM = 500000; //host memory (Megabyte)
     private static final long HOST_STORAGE = 1000000; //host storage
     private static final long HOST_BW = 100000000L;
-
-    /**
-     * The average number of failures expected to happen each hour
-     * in a Poisson arrival process, which is also called event rate or rate parameter.
-     * @see PoissonDistr */
     private static final double MEAN_FAILURE_NUMBER_PER_HOUR = 0.01;
-
-    /** @see HostFaultInjection#setMaxTimeToFailInHours(double) */
     private static final double MAX_TIME_TO_FAIL_IN_HOURS = TimeUtil.daysToHours(30);
-
-    private List<Host> hostList;
 
     private static final int VMS_BY_BROKER = 2;
     private static final int VM_PES = 2; //number of cpus
@@ -65,174 +54,131 @@ public class HostFaultInjectionSimulationImpl implements HostFaultInjectionSimul
     private static final long VM_SIZE = 1000; //image size (Megabyte)
     private static final int VM_RAM = 10000; //vm memory (Megabyte)
     private static final long VM_BW = 100000;
-
     private static final int CLOUDLETS_BY_BROKER = 6;
     private static final int CLOUDLET_PES = 2;
-
-    /**
-     * The length has to be large to ensure the simulation will run for long enough,
-     * so that faults will affect all VMs from certain broker.
-     */
     private static final long CLOUDLET_LENGTH = 1_000_000_000L;
-
     private static final long CLOUDLET_FILESIZE = 300;
     private static final long CLOUDLET_OUTPUT_SIZE = 300;
-
     private CloudSimPlus simulation;
-    private List<DatacenterBrokerSimple> brokerList;
-
     private int createdVms;
     private int createdCloudlets;
-
     private HostFaultInjection fault;
-
-    /**
-     * The Poisson Random Number Generator used to generate failure times (in hours).
-     */
     private PoissonDistr poisson;
 
     public HostFaultInjectionSimulationImpl() {
+
     }
 
     @Override
-    public List<Cloudlet> startHostFaultInjectionSimulation(SimulationDTO simulationDTO) {
+    public List<DatacenterBrokerSimple> startHostFaultInjectionSimulation(SimulationDTO simulationDTO) {
 
-        /*Enables just some level of log messages.
-          Make sure to import org.cloudsimplus.util.Log;*/
-        //Log.setLevel(ch.qos.logback.classic.Level.WARN);
+        List<HostDTO> hosts = simulationDTO.getHostDTOS();
+        List<CloudletDTO> cloudlets = simulationDTO.getCloudletDTOS();
+        List<DatacenterDTO> datacenterDTOS = simulationDTO.getDatacenterDTOS();
+        List<DatacenterBrokerDTO> datacenterBrokerDTOS = simulationDTO.getDatacenterBrokerDTOS();
 
+        CloudSimPlus cloudSimPlus = new CloudSimPlus();
+        List<Host> hostList = createHosts(hosts);
+        List<Vm> vmList = createVms(hosts);
+        List<Cloudlet> cloudletList = createCloudlets(cloudlets);
+
+
+        Datacenter datacenter0 = new DatacenterSimple(cloudSimPlus, hostList, new VmAllocationPolicyBestFit());
+
+        //List<DatacenterBrokerSimple> brokerList = IntStream.range(0, datacenterBrokerDTOS.size()).mapToObj(i -> new DatacenterBrokerSimple(cloudSimPlus)).toList();
+        List<DatacenterBrokerSimple> brokerList  = IntStream.range(0, BROKERS).mapToObj(i -> {
+            DatacenterBrokerSimple broker0 = new DatacenterBrokerSimple(cloudSimPlus);
+            broker0.submitVmList(vmList);
+            broker0.submitCloudletList(cloudletList);
+            return broker0;
+        }).toList();
         System.out.println("Starting " + getClass().getSimpleName());
-        simulation = new CloudSimPlus();
+        DatacenterDTO datacenterDTO = new DatacenterDTO();
+        if (!datacenterDTOS.isEmpty()) {
+            datacenterDTO = datacenterDTOS.get(0);
+            datacenter0.setSchedulingInterval(datacenterDTO.getSchedulingInterval());
+            fault = createFaultInjectionForHosts(datacenter0, datacenterDTO, brokerList);
+        }
 
-        final var datacenter = createDatacenter();
-
-        brokerList = IntStream.range(0, BROKERS).mapToObj(i -> new DatacenterBrokerSimple(simulation)).toList();
-        createVmsAndCloudlets();
-        fault = createFaultInjectionForHosts(datacenter);
-
-        simulation.start();
-        printResults();
+        cloudSimPlus.start();
+        printResults(brokerList, datacenterDTO, cloudSimPlus);
 
         System.out.println(getClass().getSimpleName() + " finished!");
-        return null;
+        return brokerList;
     }
 
-    private void printResults() {
+    private void printResults(List<DatacenterBrokerSimple> brokerList, DatacenterDTO datacenterDTO, CloudSimPlus cloudSimPlus) {
         brokerList.forEach(broker -> new CloudletsTableBuilder(broker.getCloudletFinishedList()).setTitle(broker.toString()).build());
 
         final int k = poisson.getK();
         final double interArrival = poisson.getInterArrivalMeanTime();
 
-        System.out.printf("%n# Total simulation time: %s%n", TimeUtil.secondsToStr(simulation.clock()));
+        System.out.printf("%n# Total simulation time: %s%n", TimeUtil.secondsToStr(cloudSimPlus.clock()));
         System.out.printf("# Number of Host faults: %d%n", fault.getHostFaultsNumber());
         System.out.printf(
                 "# Mean Number of Failures per Hour: %.3f (%.3f x %.0f = %d failure expected at each %.0f hours).%n",
-                MEAN_FAILURE_NUMBER_PER_HOUR, MEAN_FAILURE_NUMBER_PER_HOUR, interArrival, k, interArrival);
+                datacenterDTO.getHostMeanFailureNumberPerHour(), datacenterDTO.getMaxTimeToFailInHours(), interArrival, k, interArrival);
         System.out.printf("# Number of faults affecting all VMs from a broker: %d%n", fault.getTotalFaultsNumber());
         System.out.printf("# Mean Time To Repair Failures of VMs (MTTR): %.2f minutes%n", fault.meanTimeToRepairVmFaultsInMinutes());
         System.out.printf("# Mean Time Between Failures (MTBF) affecting all VMs: %.2f minutes%n", fault.meanTimeBetweenVmFaultsInMinutes());
         System.out.printf("# Hosts MTBF: %.2f minutes%n", fault.meanTimeBetweenHostFaultsInMinutes());
         System.out.printf("# Availability: %.4f%%%n%n", fault.availability()*100);
     }
-
-    private void createVmsAndCloudlets() {
-        for (final DatacenterBroker broker : brokerList) {
-            createAndSubmitVms(broker);
-            createAndSubmitCloudlets(broker);
-        }
+    private List<Host> createHosts(List<HostDTO> hosts) {
+        List<Host> hostList = new ArrayList<>();
+        hosts.stream()
+                .flatMap(host -> IntStream.range(0, host.getHostCount()).mapToObj(i -> createHost(host)))
+                .forEach(hostList::add);
+        return hostList;
     }
 
-    public void createAndSubmitVms(final DatacenterBroker broker) {
-        final var list = new ArrayList<Vm>(VMS_BY_BROKER);
-
-        for (int i = 0; i < VMS_BY_BROKER; i++) {
-            list.add(createVm());
-        }
-
-        broker.submitVmList(list);
+    private Host createHost(HostDTO host) {
+        List<Pe> peList = new ArrayList<>();
+        IntStream.range(0, host.getHostPes())
+                .mapToObj(i -> new PeSimple(host.getHostMips()))
+                .forEach(peList::add);
+        return new HostSimple(host.getHostRam(), host.getHostBw(), host.getHostStorage(), peList).setVmScheduler(new VmSchedulerTimeShared()).setRamProvisioner(new ResourceProvisionerSimple()).setBwProvisioner(new ResourceProvisionerSimple());
     }
 
-    public Vm createVm() {
-        final Vm vm = new VmSimple(++createdVms, VM_MIPS, VM_PES);
-        vm
-                .setRam(VM_RAM).setBw(VM_BW).setSize(VM_SIZE)
-                .setCloudletScheduler(new CloudletSchedulerTimeShared());
+    private List<Cloudlet> createCloudlets(List<CloudletDTO> cloudlets) {
+        final var cloudletList = new ArrayList<Cloudlet>();
 
-        return vm;
+        cloudlets.stream()
+                .flatMap(cloudlet -> IntStream.range(0, cloudlet.getCloudletCount()).mapToObj(i -> {
+                    Cloudlet createdCloudlet = new CloudletSimple(cloudlet.getCloudletLength(), cloudlet.getCloudletPes());
+                    createdCloudlet.setSizes(cloudlet.getCloudletSize());
+                    createdCloudlet.setUtilizationModelCpu(new UtilizationModelFull());
+                    createdCloudlet.setUtilizationModelBw(new UtilizationModelDynamic(0.1));
+                    createdCloudlet.setUtilizationModelRam(new UtilizationModelDynamic(0.2));
+                    return createdCloudlet;
+                })).forEach(cloudletList::add);
+        return cloudletList;
     }
 
-    /**
-     * Creates the number of Cloudlets defined in {@link #CLOUDLETS_BY_BROKER} and submits
-     * them to the created broker.
-     */
-    public void createAndSubmitCloudlets(final DatacenterBroker broker) {
-        final List<Cloudlet> cloudletList = new ArrayList<>(CLOUDLETS_BY_BROKER);
-        final var utilizationModelDynamic = new UtilizationModelDynamic(0.1);
-        final var utilizationModelFull = new UtilizationModelFull();
-        for (int i = 0; i < CLOUDLETS_BY_BROKER; i++) {
-            Cloudlet c
-                    = new CloudletSimple(++createdCloudlets, CLOUDLET_LENGTH, CLOUDLET_PES)
-                    .setFileSize(CLOUDLET_FILESIZE)
-                    .setOutputSize(CLOUDLET_OUTPUT_SIZE)
-                    .setUtilizationModelCpu(utilizationModelFull)
-                    .setUtilizationModelBw(utilizationModelDynamic)
-                    .setUtilizationModelBw(utilizationModelDynamic);
-            cloudletList.add(c);
-        }
-
-        broker.submitCloudletList(cloudletList);
+    private List<Vm> createVms(List<HostDTO> hosts) {
+        List<Vm> vmList = new ArrayList<>();
+        hosts.stream()
+                .flatMap(host -> IntStream.range(0, host.getHostCount())
+                        .mapToObj(i -> host.getVmDTOS().stream()
+                                .flatMap(vm -> IntStream.range(0, vm.getVmCount())
+                                        .mapToObj(j -> {
+                                            Vm createdVm = new VmSimple(host.getHostMips(), vm.getVmPes());
+                                            createdVm.setRam(vm.getVmRam()).setBw(vm.getVmBw()).setSize(vm.getVmStorage());
+                                            createdVm.setCloudletScheduler(new CloudletSchedulerTimeShared());
+                                            return createdVm;
+                                        }))
+                        )
+                )
+                .forEach(vmStream -> vmStream.forEach(vmList::add));
+        return vmList;
     }
 
-    private Datacenter createDatacenter() {
-        hostList = new ArrayList<>();
-        for (int id = 1; id <= HOSTS; id++) {
-            hostList.add(createHost(id));
-        }
-        System.out.println();
-
-        final var dc = new DatacenterSimple(simulation, hostList);
-        dc.setSchedulingInterval(SCHEDULE_TIME_TO_PROCESS_DATACENTER_EVENTS);
-        return dc;
-    }
-
-    public Host createHost(final int id) {
-        final var pesList = createPeList(HOST_PES, HOST_MIPS_BY_PE);
-        final var ramProvisioner = new ResourceProvisionerSimple();
-        final var bwProvisioner = new ResourceProvisionerSimple();
-        final var vmScheduler = new VmSchedulerTimeShared();
-        final var host = new HostSimple(HOST_RAM, HOST_BW, HOST_STORAGE, pesList);
-        host
-                .setRamProvisioner(ramProvisioner)
-                .setBwProvisioner(bwProvisioner)
-                .setVmScheduler(vmScheduler)
-                .setId(id);
-
-        return host;
-    }
-
-    public List<Pe> createPeList(final int pesNumber, final long mips) {
-        final var peList = new ArrayList<Pe>(pesNumber);
-        for (int i = 0; i < pesNumber; i++) {
-            peList.add(new PeSimple(mips));
-        }
-
-        return peList;
-    }
-
-    /**
-     * Creates the fault injection for host
-     *
-     * @param datacenter
-     * @return
-     */
-    private HostFaultInjection createFaultInjectionForHosts(final Datacenter datacenter) {
-        //Use the system time to get random results every time you run the simulation
-        //final long seed = System.currentTimeMillis();
+    private HostFaultInjection createFaultInjectionForHosts(Datacenter datacenter, DatacenterDTO datacenterDTO, List<DatacenterBrokerSimple> brokerList) {
         final long seed = 112717613L;
-        this.poisson = new PoissonDistr(MEAN_FAILURE_NUMBER_PER_HOUR, seed);
+        this.poisson = new PoissonDistr(datacenterDTO.getHostMeanFailureNumberPerHour(), seed);
 
         final var fault = new HostFaultInjection(datacenter, poisson);
-        fault.setMaxTimeToFailInHours(MAX_TIME_TO_FAIL_IN_HOURS);
+        fault.setMaxTimeToFailInHours(datacenterDTO.getMaxTimeToFailInHours());
 
         for (final DatacenterBroker broker : brokerList) {
             fault.addVmCloner(broker, new VmClonerSimple(this::cloneVm, this::cloneCloudlets));
@@ -241,22 +187,8 @@ public class HostFaultInjectionSimulationImpl implements HostFaultInjectionSimul
         return fault;
     }
 
-    /**
-     * Clones a VM by creating another one with the same configurations of a
-     * given VM.
-     *
-     * @param vm the VM to be cloned
-     * @return the cloned (new) VM.
-     *
-     * @see #createFaultInjectionForHosts(Datacenter)
-     */
     private Vm cloneVm(final Vm vm) {
         final Vm clone = new VmSimple(vm.getMips(), vm.getPesNumber());
-        /*It' not required to set an ID for the clone.
-        It is being set here just to make it easy to
-        relate the ID of the vm to its clone,
-        since the clone ID will be 10 times the id of its
-        source VM.*/
         clone.setId(vm.getId() * 10);
         clone.setDescription("Clone of Vm " + vm.getId());
         clone
@@ -272,18 +204,6 @@ public class HostFaultInjectionSimulationImpl implements HostFaultInjectionSimul
         return clone;
     }
 
-    /**
-     * Clones each Cloudlet associated to a given VM. The method is called when
-     * a VM is destroyed due to a Host failure and a snapshot from that VM (a
-     * clone) is started into another Host. In this case, all the Cloudlets
-     * which were running inside the destroyed VM will be recreated from scratch
-     * into the VM clone, re-starting their execution from the beginning.
-     *
-     * @param sourceVm the VM to clone its Cloudlets
-     * @return the List of cloned Cloudlets.
-     * @see
-     * #createFaultInjectionForHosts(Datacenter)
-     */
     private List<Cloudlet> cloneCloudlets(final Vm sourceVm) {
         final var sourceVmCloudletList = sourceVm.getCloudletScheduler().getCloudletList();
         final var clonedCloudletList = new ArrayList<Cloudlet>(sourceVmCloudletList.size());
@@ -298,19 +218,8 @@ public class HostFaultInjectionSimulationImpl implements HostFaultInjectionSimul
         return clonedCloudletList;
     }
 
-    /**
-     * Creates a clone from a given Cloudlet.
-     *
-     * @param source the Cloudlet to be cloned.
-     * @return the cloned (new) cloudlet
-     */
     private Cloudlet cloneCloudlet(Cloudlet source) {
         final var clone = new CloudletSimple(source.getLength(), source.getPesNumber());
-        /*It' not required to set an ID for the clone.
-        It is being set here just to make it easy to
-        relate the ID of the cloudlet to its clone,
-        since the clone ID will be 10 times the id of its
-        source cloudlet.*/
         clone.setId(source.getId() * 10);
         clone
                 .setUtilizationModelBw(source.getUtilizationModelBw())

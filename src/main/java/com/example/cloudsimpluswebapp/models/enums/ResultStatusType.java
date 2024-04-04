@@ -8,7 +8,8 @@ import java.util.Arrays;
 @Getter
 public enum ResultStatusType {
     SUCCESS("Успешно"),
-    CANCELED("Отменено");
+    CANCELED("Отменено"),
+    RESULT_EMPTY("Результат отсутствует");
 
     private final String localizationName;
 
@@ -17,10 +18,11 @@ public enum ResultStatusType {
     }
 
     public static String getLocalizationNameByStatus(String status){
+        System.out.println(status);
         return Arrays.stream(ResultStatusType.values())
                 .filter(resultStatusType -> resultStatusType.name().equals(status))
                 .findAny()
-                .orElseThrow()
+                .orElse(RESULT_EMPTY)
                 .getLocalizationName();
     }
 

@@ -150,7 +150,9 @@ var form = new Vue({
             }
             var newDatacenter = {
                 datacenterCount: '',
-                schedulingInterval: ''
+                schedulingInterval: '',
+                hostMeanFailureNumberPerHour: '',
+                maxTimeToFailInHours: '',
             };
             this.simulationDTO.datacenterDTOS.push(newDatacenter);
         },
@@ -326,8 +328,37 @@ var form = new Vue({
                     schedulingInterval: 3
                 });
                 break;
-            default:
+            case "HOST_FAULT_INJECTION_SIMULATION":
+                this.simulationDTO.hostDTOS.push({
+                    hostCount: 8,
+                    hostPes: 5,
+                    hostMips: 1000,
+                    hostRam: 500000,
+                    hostBw: 100000000,
+                    hostStorage: 1000000,
+                    vmDTOS: [{
+                        vmCount: 2,
+                        vmPes: 2,
+                        vmRam: 10000,
+                        vmBw: 100000,
+                        vmStorage: 1000
+                    }]
+                });
+                this.simulationDTO.cloudletDTOS.push({
+                    cloudletCount: 6,
+                    cloudletPes: 2,
+                    cloudletLength: 1000000000,
+                    cloudletSize: 300
+                });
 
+                this.simulationDTO.datacenterDTOS.push({
+                    datacenterCount: 1,
+                    schedulingInterval: 3,
+                    hostMeanFailureNumberPerHour: 0.01,
+                    maxTimeToFailInHours: 720
+                });
+                break;
+            default:
                 break;
         }
 

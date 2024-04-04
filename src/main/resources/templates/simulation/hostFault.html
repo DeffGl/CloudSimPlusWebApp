@@ -33,6 +33,8 @@
                 <th th:text="#{datacenterNumber}"></th>
                 <th th:text="#{datacenterCount}"></th>
                 <th th:text="#{datacenterSchedulingInterval}"></th>
+                <th th:text="#{hostMeanFailureNumberPerHour}"></th>
+                <th th:text="#{maxTimeToFailInHours}"></th>
                 <th th:text="#{actions}" style="display: none"></th>
             </tr>
             </thead>
@@ -42,6 +44,8 @@
                 <td>{{ datacenter.datacenterCount }}</td>
                 <!--<td><input type="text" v-model="datacenter.datacenterCount" /></td>-->
                 <td><input type="text" v-model="datacenter.schedulingInterval" /></td>
+                <td><input type="text" v-model="datacenter.hostMeanFailureNumberPerHour" /></td>
+                <td><input type="text" v-model="datacenter.maxTimeToFailInHours" /></td>
                 <td>
                     <button class="custom-button" type="button" th:text="#{removeDatacenter}" style="display: none" @click="removeDatacenter(index)"></button>
                     <button class="custom-button" type="button" th:text="#{addDatacenterCopy}" style="display: none" @click="addDatacenterCopy(index)"></button>
@@ -126,7 +130,6 @@
             <thead>
             <tr>
                 <th th:text="#{cloudletNumber}"></th>
-                <th th:text="#{cloudletMaxExecutionTime}"></th>
                 <th th:text="#{cloudletCount}"></th>
                 <th th:text="#{cloudletPes}"></th>
                 <th th:text="#{cloudletLength}"></th>
@@ -137,7 +140,6 @@
             <tbody>
             <tr v-for="(cloudlet, index) in simulationDTO.cloudletDTOS">
                 <td>{{ index + 1 }}</td>
-                <td><input type="text" v-model="cloudlet.cloudletMaxExecutionTime" /></td>
                 <td><input type="text" v-model="cloudlet.cloudletCount" /></td>
                 <td><input type="text" v-model="cloudlet.cloudletPes"/></td>
                 <td><input type="text" v-model="cloudlet.cloudletLength"/></td>
@@ -153,6 +155,48 @@
 
         <button class="custom-button" type="submit" th:text="#{start}"></button>
 
+        <table id="resultTable2" v-if="simulationDTO.simulationResultSubmittedDTOS.length > 0" class="table-container">
+            <thead>
+            <tr>
+                <th th:text="#{cloudletMaxExecutionTime}"></th>
+                <th th:text="#{cloudletNumber}"></th>
+                <th th:text="#{status}"></th>
+                <th th:text="#{datacenterNumber}"></th>
+                <th th:text="#{hostNumber}"></th>
+                <th th:text="#{hostPes}"></th>
+                <th th:text="#{vmNumber}"></th>
+                <th th:text="#{vmPes}"></th>
+                <th th:text="#{cloudletLength}"></th>
+                <th th:text="#{finishedLength}"></th>
+                <th th:text="#{cloudletPes}"></th>
+                <th th:text="#{startTime}"></th>
+                <th th:text="#{finishTime}"></th>
+                <th th:text="#{executionTime}"></th>
+            </tr>
+            </thead>
+            <tbody>
+
+            <tr v-for="(result, index) in simulationDTO.simulationResultSubmittedDTOS">
+                <td><label>{{ result.cloudletMaxExecutionTime}}</label></td>
+                <td><label>{{ result.cloudletNumber }}</label></td>
+                <td><label>{{ result.status }}</label></td>
+                <td><label>{{ result.datacenterBrokerNumber }}</label></td>
+                <td><label>{{ result.hostNumber }}</label></td>
+                <td><label>{{ result.hostPes }}</label></td>
+                <td><label>{{ result.vmNumber }}</label></td>
+                <td><label>{{ result.vmPes }}</label></td>
+                <td><label>{{ result.cloudletLength }}</label></td>
+                <td><label>{{ result.finishedLength }}</label></td>
+                <td><label>{{ result.cloudletPes }}</label></td>
+                <td><label>{{ result.startTime }}</label></td>
+                <td><label>{{ result.finishTime }}</label></td>
+                <td><label>{{ result.executionTime }}</label></td>
+            </tr>
+            </tbody>
+        </table>
+        <br>
+        <br>
+        <br>
         <table id="resultTable" v-if="simulationDTO.simulationResultDTOS.length > 0" class="table-container">
             <thead>
             <tr>
@@ -192,7 +236,6 @@
             </tr>
             </tbody>
         </table>
-
 
         <div th:if="${param.error}" style="color:red">
             Неправильные имя и пароль

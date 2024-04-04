@@ -21,4 +21,10 @@ public class Datacenter {
 
     @Column(name="datacenter_scheduling_interval")
     private int schedulingInterval;
+
+    @Column(name="host_mean_failure_number_per_hour")
+    private double hostMeanFailureNumberPerHour;
+
+    @Column(name="max_time_to_fail_in_hours")
+    private double maxTimeToFailInHours;
 }

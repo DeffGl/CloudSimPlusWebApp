@@ -8,4 +8,6 @@ import lombok.experimental.Accessors;
 public class DatacenterDTO {
     private int datacenterCount;
     private int schedulingInterval;
+    private double hostMeanFailureNumberPerHour;
+    private double maxTimeToFailInHours;
 }

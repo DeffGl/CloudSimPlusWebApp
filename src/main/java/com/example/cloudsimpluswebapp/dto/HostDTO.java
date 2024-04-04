@@ -17,7 +17,5 @@ public class HostDTO {
     private long hostRam;
     private long hostBw;
     private long hostStorage;
-    private double hostMeanFailureNumberPerHour;
-    private double maxTimeToFailInHours;
     private List<VmDTO> vmDTOS = new ArrayList<>();
 }
