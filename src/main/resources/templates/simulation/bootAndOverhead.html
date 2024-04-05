@@ -86,6 +86,8 @@
                             <th th:text="#{vmRam}"></th>
                             <th th:text="#{vmBw}"></th>
                             <th th:text="#{vmStorage}"></th>
+                            <th th:text="#{vmBootDelay}"></th>
+                            <th th:text="#{vmShutdownDelay}"></th>
                             <th th:text="#{actions}"></th>
                         </tr>
                         </thead>
@@ -98,6 +100,8 @@
                             <td><input type="text" v-model="vm.vmRam"/></td>
                             <td><input type="text" v-model="vm.vmBw"/></td>
                             <td><input type="text" v-model="vm.vmStorage"/></td>
+                            <td><input type="text" v-model="vm.vmBootDelay"/></td>
+                            <td><input type="text" v-model="vm.vmShutdownDelay"/></td>
 
                             <td>
                                 <button class="custom-button" type="button" th:text="#{removeVm}" @click="removeVm(index, vmIndex)">Удалить VM</button>
@@ -155,7 +159,6 @@
         <table id="resultTable" v-if="simulationDTO.simulationResultDTOS.length > 0" class="table-container">
             <thead>
             <tr>
-                <th th:text="#{cloudletMaxExecutionTime}"></th>
                 <th th:text="#{cloudletNumber}"></th>
                 <th th:text="#{status}"></th>
                 <th th:text="#{datacenterNumber}"></th>
@@ -174,7 +177,6 @@
             <tbody>
 
             <tr v-for="(result, index) in simulationDTO.simulationResultDTOS">
-                <td><label>{{ result.cloudletMaxExecutionTime}}</label></td>
                 <td><label>{{ result.cloudletNumber }}</label></td>
                 <td><label>{{ result.status }}</label></td>
                 <td><label>{{ result.datacenterBrokerNumber }}</label></td>

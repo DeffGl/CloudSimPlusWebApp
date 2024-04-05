@@ -12,4 +12,6 @@ public class VmDTO {
     private long vmBw;
     private long vmStorage;
     private double vmLifetime;
+    private double vmBootDelay;
+    private double vmShutdownDelay;
 }

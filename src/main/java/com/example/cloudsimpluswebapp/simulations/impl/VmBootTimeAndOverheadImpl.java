@@ -57,9 +57,6 @@ public class VmBootTimeAndOverheadImpl implements VmBootTimeAndOverhead {
     private Datacenter datacenter0;
     @Override
     public List<Cloudlet> startVmBootTimeAndOverhead(SimulationDTO simulationDTO) {
-        /*Enables just some level of log messages.
-          Make sure to import org.cloudsimplus.util.Log;*/
-        //Log.setLevel(ch.qos.logback.classic.Level.WARN);
 
         simulation = new CloudSimPlus();
         datacenter0 = createDatacenter();

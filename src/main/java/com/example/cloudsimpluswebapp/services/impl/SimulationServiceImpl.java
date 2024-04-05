@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 public class SimulationServiceImpl implements SimulationService {
@@ -255,9 +256,19 @@ public class SimulationServiceImpl implements SimulationService {
 
     private List<SimulationResultDTO> getSimulationResultListDTOForFault(List<Cloudlet> resultList, List<CloudletDTO> cloudletDTOS){
         List<SimulationResultDTO> simulationResultDTOS = new ArrayList<>();
-        for (int i = 0, j = 0; i<cloudletDTOS.size(); i++){
-            for (int k = 0; k<cloudletDTOS.get(i).getCloudletCount() - 1; k++, j++){
-                simulationResultDTOS.add(simulationResultMapper.map(resultList.get(j), cloudletDTOS.get(i)));
+        AtomicInteger count = new AtomicInteger(0);
+        cloudletDTOS.forEach(cloudletDTO -> count.addAndGet(cloudletDTO.getCloudletCount()));
+        if (count.get() == resultList.size()){
+            for (int i = 0, j = 0; i<cloudletDTOS.size(); i++){
+                for (int k = 0; k<cloudletDTOS.get(i).getCloudletCount(); k++, j++){
+                    simulationResultDTOS.add(simulationResultMapper.map(resultList.get(j), cloudletDTOS.get(i)));
+                }
+            }
+        } else {
+            for (int i = 0, j = 0; i<cloudletDTOS.size(); i++){
+                for (int k = 0; k<resultList.size(); k++, j++){
+                    simulationResultDTOS.add(simulationResultMapper.map(resultList.get(j), cloudletDTOS.get(i)));
+                }
             }
         }
         //TODO придумать как реализовать цикл выше в потоках

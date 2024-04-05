@@ -124,7 +124,9 @@ var form = new Vue({
                     vmPes: '',
                     vmRam: '',
                     vmBw: '',
-                    vmStorage: ''
+                    vmStorage: '',
+                    vmBootDelay: '',
+                    vmShutdownDelay: ''
                 }]
             };
             this.simulationDTO.hostDTOS.push(newHost);
@@ -208,7 +210,9 @@ var form = new Vue({
                 vmPes: '',
                 vmRam: '',
                 vmBw: '',
-                vmStorage: ''
+                vmStorage: '',
+                vmBootDelay: '',
+                vmShutdownDelay: ''
             };
             this.simulationDTO.hostDTOS[index].vmDTOS.push(newVm);
         },
@@ -356,6 +360,36 @@ var form = new Vue({
                     schedulingInterval: 3,
                     hostMeanFailureNumberPerHour: 0.01,
                     maxTimeToFailInHours: 720
+                });
+                break;
+            case "VM_BOOT_TIME_AND_OVERHEAD_SIMULATION":
+                this.simulationDTO.hostDTOS.push({
+                    hostCount: 1,
+                    hostPes: 8,
+                    hostMips: 1000,
+                    hostRam: 2048,
+                    hostBw: 10000,
+                    hostStorage: 1000000,
+                    vmDTOS: [{
+                        vmCount: 2,
+                        vmPes: 4,
+                        vmRam: 512,
+                        vmBw: 1000,
+                        vmStorage: 10000,
+                        vmBootDelay: 5,
+                        vmShutdownDelay: 2
+                    }]
+                });
+                this.simulationDTO.cloudletDTOS.push({
+                    cloudletCount: 2,
+                    cloudletPes: 2,
+                    cloudletLength: 10000,
+                    cloudletSize: 300
+                });
+
+                this.simulationDTO.datacenterDTOS.push({
+                    datacenterCount: 1,
+                    schedulingInterval: 1
                 });
                 break;
             default:

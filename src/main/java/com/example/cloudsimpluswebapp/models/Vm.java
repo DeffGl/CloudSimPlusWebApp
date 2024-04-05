@@ -33,4 +33,10 @@ public class Vm {
 
     @Column(name="vm_lifetime")
     private double vmLifetime;
+
+    @Column(name = "vm_boot_delay")
+    private double vmBootDelay;
+
+    @Column(name = "vm_shutdown_delay")
+    private double vmShutdownDelay;
 }
