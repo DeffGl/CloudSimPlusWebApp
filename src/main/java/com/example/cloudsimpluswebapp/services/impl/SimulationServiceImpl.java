@@ -156,7 +156,8 @@ public class SimulationServiceImpl implements SimulationService {
                 simulationRepository.save(simulationMapper.map(simulationDTO).setPerson(currentPersonResolver.getCurrentPerson()));
             }
         } catch (Exception e){
-            throwException(e, simulationDTO);
+            //throwException(e, simulationDTO);
+            e.printStackTrace();
         }
         return simulationDTO;
     }

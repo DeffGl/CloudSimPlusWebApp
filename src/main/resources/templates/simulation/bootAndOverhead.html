@@ -129,7 +129,6 @@
             <thead>
             <tr>
                 <th th:text="#{cloudletNumber}"></th>
-                <th th:text="#{cloudletMaxExecutionTime}"></th>
                 <th th:text="#{cloudletCount}"></th>
                 <th th:text="#{cloudletPes}"></th>
                 <th th:text="#{cloudletLength}"></th>
@@ -140,7 +139,6 @@
             <tbody>
             <tr v-for="(cloudlet, index) in simulationDTO.cloudletDTOS">
                 <td>{{ index + 1 }}</td>
-                <td><input type="text" v-model="cloudlet.cloudletMaxExecutionTime" /></td>
                 <td><input type="text" v-model="cloudlet.cloudletCount" /></td>
                 <td><input type="text" v-model="cloudlet.cloudletPes"/></td>
                 <td><input type="text" v-model="cloudlet.cloudletLength"/></td>

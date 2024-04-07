@@ -1,7 +1,8 @@
 package com.example.cloudsimpluswebapp.simulations.impl;
 
-import com.example.cloudsimpluswebapp.dto.SimulationDTO;
+import com.example.cloudsimpluswebapp.dto.*;
 import com.example.cloudsimpluswebapp.simulations.VmBootTimeAndOverhead;
+import org.cloudsimplus.allocationpolicies.VmAllocationPolicyBestFit;
 import org.cloudsimplus.brokers.DatacenterBroker;
 import org.cloudsimplus.brokers.DatacenterBrokerSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
@@ -13,68 +14,58 @@ import org.cloudsimplus.datacenters.DatacenterSimple;
 import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.hosts.HostSimple;
 import org.cloudsimplus.listeners.VmHostEventInfo;
+import org.cloudsimplus.provisioners.ResourceProvisionerSimple;
 import org.cloudsimplus.resources.Pe;
 import org.cloudsimplus.resources.PeSimple;
+import org.cloudsimplus.schedulers.cloudlet.CloudletSchedulerTimeShared;
+import org.cloudsimplus.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudsimplus.utilizationmodels.BootModel;
 import org.cloudsimplus.utilizationmodels.UtilizationModelDynamic;
+import org.cloudsimplus.utilizationmodels.UtilizationModelFull;
 import org.cloudsimplus.vms.Vm;
 import org.cloudsimplus.vms.VmSimple;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
+
 @Service
 public class VmBootTimeAndOverheadImpl implements VmBootTimeAndOverhead {
-    private static final int  HOSTS = 1;
-    private static final int  HOST_PES = 8;
-    private static final int  HOST_MIPS = 1000; // Milion Instructions per Second (MIPS)
-    private static final int  HOST_RAM = 2048; //in Megabytes
-    private static final long HOST_BW = 10_000; //in Megabits/s
-    private static final long HOST_STORAGE = 1_000_000; //in Megabytes
 
-    private static final int VMS = 2;
-    private static final int VM_PES = 4;
-
-    private static final int CLOUDLETS = 2;
-    private static final int CLOUDLET_PES = 2;
-    private static final int CLOUDLET_LENGTH = 10_000; // Milion Instructions (MI)
-
-    /**
-     * Defines the time (in seconds) each VM will take to boot up.
-     */
-    private static final double VM_BOOT_DELAY = 5;
-
-    /**
-     * Defines the time (in seconds) each VM will take to shut down.
-     */
-    private static final double VM_SHUTDOWN_DELAY = 2;
-    private static final double SCHEDULING_INTERVAL = 1;
-
-    private CloudSimPlus simulation;
-    private DatacenterBroker broker0;
-    private List<Vm> vmList;
-    private List<Cloudlet> cloudletList;
-    private Datacenter datacenter0;
     @Override
     public List<Cloudlet> startVmBootTimeAndOverhead(SimulationDTO simulationDTO) {
 
-        simulation = new CloudSimPlus();
-        datacenter0 = createDatacenter();
+        List<HostDTO> hosts = simulationDTO.getHostDTOS();
+        List<CloudletDTO> cloudlets = simulationDTO.getCloudletDTOS();
+        List<DatacenterDTO> datacenterDTOS = simulationDTO.getDatacenterDTOS();
+        List<DatacenterBrokerDTO> datacenterBrokerDTOS = simulationDTO.getDatacenterBrokerDTOS();
 
-        //Creates a broker that is a software acting on behalf of a cloud customer to manage his/her VMs and Cloudlets
-        broker0 = new DatacenterBrokerSimple(simulation);
+        CloudSimPlus cloudSimPlus = new CloudSimPlus();
+        List<Host> hostList = createHosts(hosts);
+        List<Vm> vmList = createVms(hosts);
+        List<Cloudlet> cloudletList = createCloudlets(cloudlets);
 
-        vmList = createVms();
-        cloudletList = createCloudlets();
+        Datacenter datacenter0 = new DatacenterSimple(cloudSimPlus, hostList, new VmAllocationPolicyBestFit());
+
+        if (!datacenterDTOS.isEmpty()){
+            datacenter0.setSchedulingInterval(datacenterDTOS.get(0).getSchedulingInterval());
+        }
+
+        DatacenterBroker broker0 = new DatacenterBrokerSimple(cloudSimPlus);
+
+        broker0.submitVmList(vmList);
+        broker0.submitCloudletList(cloudletList);
+
         broker0.submitVmList(vmList);
         vmList.get(0).addOnUpdateProcessingListener(this::updateVmProcessingListener);
         broker0.submitCloudletList(cloudletList);
 
-        simulation.start();
+        cloudSimPlus.start();
 
         final var cloudletFinishedList = broker0.getCloudletFinishedList();
         new CloudletsTableBuilder(cloudletFinishedList).build();
-        return null;
+        return cloudletFinishedList;
     }
 
     private void updateVmProcessingListener(final VmHostEventInfo info) {
@@ -93,74 +84,58 @@ public class VmBootTimeAndOverheadImpl implements VmBootTimeAndOverhead {
         return vm.getRam().getPercentUtilization() * 100.0;
     }
 
-    /**
-     * Creates a Datacenter and its Hosts.
-     */
-    private Datacenter createDatacenter() {
-        final var hostList = new ArrayList<Host>(HOSTS);
-        for(int i = 0; i < HOSTS; i++) {
-            final var host = createHost();
-            hostList.add(host);
-        }
 
-        //Uses a VmAllocationPolicySimple by default to allocate VMs
-        return new DatacenterSimple(simulation, hostList).setSchedulingInterval(SCHEDULING_INTERVAL);
+    private List<Host> createHosts(List<HostDTO> hosts) {
+        List<Host> hostList = new ArrayList<>();
+        hosts.stream()
+                .flatMap(host -> IntStream.range(0, host.getHostCount()).mapToObj(i -> createHost(host)))
+                .forEach(hostList::add);
+        return hostList;
     }
 
-    private Host createHost() {
-        final var peList = new ArrayList<Pe>(HOST_PES);
-        //List of Host's CPUs (Processing Elements, PEs)
-        for (int i = 0; i < HOST_PES; i++) {
-            //Uses a PeProvisionerSimple by default to provision PEs for VMs
-            peList.add(new PeSimple(HOST_MIPS));
-        }
-
-        /*
-        Uses ResourceProvisionerSimple by default for RAM and BW provisioning
-        and VmSchedulerSpaceShared for VM scheduling.
-        */
-        return new HostSimple(HOST_RAM, HOST_BW, HOST_STORAGE, peList);
+    private Host createHost(HostDTO host) {
+        List<Pe> peList = new ArrayList<>();
+        IntStream.range(0, host.getHostPes())
+                .mapToObj(i -> new PeSimple(host.getHostMips()))
+                .forEach(peList::add);
+        return new HostSimple(host.getHostRam(), host.getHostBw(), host.getHostStorage(), peList).setVmScheduler(new VmSchedulerTimeShared()).setRamProvisioner(new ResourceProvisionerSimple()).setBwProvisioner(new ResourceProvisionerSimple());
     }
 
-    /**
-     * Creates a list of VMs setting a {@link BootModel}
-     * to indicate how the VM will use CPU and RAM during the boot process.
-     * @see BootModel#BootModel(UtilizationModel, UtilizationModel)
-     */
-    private List<Vm> createVms() {
-        final var vmList = new ArrayList<Vm>(VMS);
-        final var bootModelCpu = new UtilizationModelDynamic(0.5);
-        final var bootModelRam = new UtilizationModelDynamic(0.3);
-        for (int i = 0; i < VMS; i++) {
-            //Uses a CloudletSchedulerTimeShared by default to schedule Cloudlets
-            final var vm = new VmSimple(HOST_MIPS, VM_PES);
-            vm.setRam(512)
-                    .setBw(1000)
-                    .setSize(10_000)
-                    .setBootModel(new BootModel(bootModelCpu, bootModelRam))
-                    .setStartupDelay(VM_BOOT_DELAY)
-                    .setShutDownDelay(VM_SHUTDOWN_DELAY);
-            vmList.add(vm);
-        }
+    private List<Cloudlet> createCloudlets(List<CloudletDTO> cloudlets) {
+        final var cloudletList = new ArrayList<Cloudlet>();
 
-        return vmList;
-    }
-
-    /**
-     * Creates a list of Cloudlets.
-     */
-    private List<Cloudlet> createCloudlets() {
-        final var cloudletList = new ArrayList<Cloudlet>(CLOUDLETS);
-
-        //UtilizationModel defining the Cloudlets use only 50% of any resource all the time
-        final var utilizationModel = new UtilizationModelDynamic(0.5);
-
-        for (int i = 0; i < CLOUDLETS; i++) {
-            final var cloudlet = new CloudletSimple(CLOUDLET_LENGTH, CLOUDLET_PES, utilizationModel);
-            cloudlet.setSizes(1024);
-            cloudletList.add(cloudlet);
-        }
-
+        cloudlets.stream()
+                .flatMap(cloudlet -> IntStream.range(0, cloudlet.getCloudletCount()).mapToObj(i -> {
+                    Cloudlet createdCloudlet = new CloudletSimple(cloudlet.getCloudletLength(), cloudlet.getCloudletPes());
+                    createdCloudlet.setSizes(cloudlet.getCloudletSize());
+                    createdCloudlet.setUtilizationModelCpu(new UtilizationModelFull());
+                    createdCloudlet.setUtilizationModelBw(new UtilizationModelDynamic(0.1));
+                    createdCloudlet.setUtilizationModelRam(new UtilizationModelDynamic(0.2));
+                    return createdCloudlet;
+                })).forEach(cloudletList::add);
         return cloudletList;
+    }
+
+    private List<Vm> createVms(List<HostDTO> hosts) {
+        List<Vm> vmList = new ArrayList<>();
+        hosts.stream()
+                .flatMap(host -> IntStream.range(0, host.getHostCount())
+                        .mapToObj(i -> host.getVmDTOS().stream()
+                                .flatMap(vm -> IntStream.range(0, vm.getVmCount())
+                                        .mapToObj(j -> {
+                                            Vm createdVm = new VmSimple(host.getHostMips(), vm.getVmPes());
+                                            final var bootModelCpu = new UtilizationModelDynamic(0.5);
+                                            final var bootModelRam = new UtilizationModelDynamic(0.3);
+                                            createdVm.setRam(vm.getVmRam()).setBw(vm.getVmBw()).setSize(vm.getVmStorage());
+                                            createdVm.setCloudletScheduler(new CloudletSchedulerTimeShared());
+                                            createdVm.setBootModel(new BootModel(bootModelCpu, bootModelRam))
+                                                    .setStartupDelay(vm.getVmBootDelay())
+                                                    .setShutDownDelay(vm.getVmShutdownDelay());
+                                            return createdVm;
+                                        }))
+                        )
+                )
+                .forEach(vmStream -> vmStream.forEach(vmList::add));
+        return vmList;
     }
 }

@@ -39,29 +39,7 @@ public class HostFaultInjectionSimulationImpl implements HostFaultInjectionSimul
     private static final Logger log = LoggerFactory.getLogger(HostFaultInjectionSimulationImpl.class);
     private static final int SCHEDULE_TIME_TO_PROCESS_DATACENTER_EVENTS = 0;
     private static final int BROKERS = 1;
-    private static final int HOSTS = 8;
-    private static final int HOST_PES = 5;
-    private static final int HOST_MIPS_BY_PE = 1000;
-    private static final long HOST_RAM = 500000; //host memory (Megabyte)
-    private static final long HOST_STORAGE = 1000000; //host storage
-    private static final long HOST_BW = 100000000L;
-    private static final double MEAN_FAILURE_NUMBER_PER_HOUR = 0.01;
-    private static final double MAX_TIME_TO_FAIL_IN_HOURS = TimeUtil.daysToHours(30);
 
-    private static final int VMS_BY_BROKER = 2;
-    private static final int VM_PES = 2; //number of cpus
-    private static final int VM_MIPS = 1000;
-    private static final long VM_SIZE = 1000; //image size (Megabyte)
-    private static final int VM_RAM = 10000; //vm memory (Megabyte)
-    private static final long VM_BW = 100000;
-    private static final int CLOUDLETS_BY_BROKER = 6;
-    private static final int CLOUDLET_PES = 2;
-    private static final long CLOUDLET_LENGTH = 1_000_000_000L;
-    private static final long CLOUDLET_FILESIZE = 300;
-    private static final long CLOUDLET_OUTPUT_SIZE = 300;
-    private CloudSimPlus simulation;
-    private int createdVms;
-    private int createdCloudlets;
     private HostFaultInjection fault;
     private PoissonDistr poisson;
 
