@@ -9,12 +9,23 @@
 
 <header class="header">
     <a class="header-logo" th:href="@{/simulation}">CloudSim Web Application</a>
-    <nav class="header-links">
+    <nav class="header-links" th:if="${authenticated}">
         <a th:href="@{/account}">Личный кабинет</a>
     </nav>
-    <div class="logout-button-container">
+    <div class="logout-button-container" th:if="${authenticated}">
         <form th:method="POST" th:action="@{/logout}">
             <input class="logout-button" type="submit" value="Выйти"/>
+        </form>
+    </div>
+    <div th:unless="${authenticated}" class="button-container">
+        <form th:method="GET" th:action="@{/auth/login}">
+            <input class="logout-button" type="submit" value="Войти"/>
+        </form>
+
+        <div class="button-space"></div>
+
+        <form th:method="GET" th:action="@{/auth/registration}">
+            <input class="registration-button" type="submit" value="Регистрация"/>
         </form>
     </div>
 </header>

@@ -47,6 +47,29 @@ body {
     transition: background-color 0.3s ease;
 }
 
+.registration-button {
+    background-color: #6aeb8e;
+    color: #333;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.button-container {
+    display: inline-flex;
+}
+
+.button-space {
+    width: 10px;
+    display: inline-block;
+}
+
 .logout-button:hover {
     background-color: #ffd633;
+}
+
+.registration-button:hover {
+    background-color: #86efa3;
 }

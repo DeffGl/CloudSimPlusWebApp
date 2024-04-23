@@ -15,14 +15,14 @@
         <div id="simulationDTOJson" th:data-simulation-dto="${simulationDTOJson}"></div>
         <h1 th:text="#{hostFaultSimulation}"></h1>
 
-        <label th:text="#{nameSimulationLabel}" for="nameSimulation"></label>
-        <input type="text" th:field="*{nameSimulation}" id="nameSimulation" v-model="simulationDTO.nameSimulation">
+        <label th:text="#{nameSimulationLabel}" for="nameSimulation" th:if="${authenticated}"></label>
+        <input type="text" th:field="*{nameSimulation}" id="nameSimulation" v-model="simulationDTO.nameSimulation" th:if="${authenticated}">
 
         <div style="color:red" th:if="${#fields.hasErrors('nameSimulation')}" th:errors="*{nameSimulation}">Name
             simulation Errors
         </div>
 
-        <div class="checkbox-container">
+        <div class="checkbox-container" th:if="${authenticated}">
             <label th:text="#{saveResult}" for="saveResults"></label>
             <input id="saveResults" type="checkbox" v-model="simulationDTO.saveResults">
         </div>

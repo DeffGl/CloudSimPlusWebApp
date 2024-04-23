@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,13 +36,14 @@ public class AccountController {
     @GetMapping
     public String getAccountPage(
             Model model,
-            @RequestParam(required = false, defaultValue = "0") int page) throws JsonProcessingException {
+            @RequestParam(required = false, defaultValue = "0") int page, Authentication authentication) throws JsonProcessingException {
         Page<SimulationDTO> simulationDTOS = simulationService.getSimulationsByPerson(page);
         model.addAttribute("simulationDTOS", simulationDTOS.getContent());
         model.addAttribute("totalPages", simulationDTOS.getTotalPages());
         model.addAttribute("page", page);
         model.addAttribute("simulationDTOJson", objectMapper.writeValueAsString(simulationDTOS.getContent()));
         model.addAttribute("simulationDTOS", simulationDTOS.getContent());
+        model.addAttribute("authenticated", authentication != null && authentication.isAuthenticated());
         return "/account";
     }
 }

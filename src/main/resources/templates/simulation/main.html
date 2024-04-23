@@ -11,9 +11,9 @@
 <div class="cards">
     <a class="card-link" th:href="@{/simulation/basic}" th:text="#{basicSimulation}"></a>
     <a class="card-link" th:href="@{/simulation/lifetime}" th:text="#{lifeTimeSimulation}"></a>
-    <a class="card-link" th:href="@{/simulation/cancel}" th:text="#{cancelSimulation}"></a>
-    <a class="card-link" th:href="@{/simulation/hostFault}" th:text="#{hostFaultSimulation}"></a>
-    <a class="card-link" th:href="@{/simulation/bootAndOverhead}" th:text="#{bootAndOverheadSimulation}"></a>
+    <a class="card-link" th:href="@{/simulation/cancel}" th:text="#{cancelSimulation}" th:if="${authenticated}"></a>
+    <a class="card-link" th:href="@{/simulation/hostFault}" th:text="#{hostFaultSimulation}" th:if="${authenticated}"></a>
+    <a class="card-link" th:href="@{/simulation/bootAndOverhead}" th:text="#{bootAndOverheadSimulation}" th:if="${authenticated}"></a>
 </div>
 <div th:include="footer"></div>
 </body>

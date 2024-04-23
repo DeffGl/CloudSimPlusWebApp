@@ -20,17 +20,50 @@
     <label for="email">Введите почту:</label>
     <input type="text" th:field="*{personDTO.email}" id="email">
     <div style="color:red" th:if="${#fields.hasErrors('personDTO.email')}" th:errors="*{personDTO.email}">Username Errors</div>
+    <div id="emailFormatError" style="color:red; display:none;">Некорректный формат email</div>
+    <br/>
 
     <label for="password">Введите пароль:</label>
     <input type="password" th:field="*{password}" id="password">
     <div style="color:red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Password Errors</div>
     <br/>
+    <label for="repeatPassword">Повторите пароль:</label>
+    <input type="password" id="repeatPassword">
+    <div id="passwordMatchError" style="color:red; display:none;">Пароли не совпадают</div>
+    <br/>
     <input type="submit" value="Регистрация"/>
 
     <div th:if="${param.error}" style="color:red">
-        Неправильные имя и пароль
+        Пользователь с таким логином уже существует
     </div>
 </form>
+
+<script>
+    document.getElementById('repeatPassword').addEventListener('input', function () {
+        var password = document.getElementById('password').value;
+        var repeatPassword = this.value;
+
+        if (password === repeatPassword) {
+            document.getElementById('passwordMatchError').style.display = 'none';
+        } else {
+            document.getElementById('passwordMatchError').style.display = 'block';
+        }
+    });
+
+    document.getElementById('email').addEventListener('input', function () {
+        var email = this.value;
+        var emailFormatError = document.getElementById('emailFormatError');
+
+        // Регулярное выражение для проверки валидности email
+        var emailRegex = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/;
+
+        if (emailRegex.test(email)) {
+            emailFormatError.style.display = 'none';
+        } else {
+            emailFormatError.style.display = 'block';
+        }
+    });
+</script>
 
 
 </body>
